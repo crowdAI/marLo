@@ -49,9 +49,9 @@ RuntimeError: Schema file Mission.xsd not found in folder specified by
 MALMO_XSD_PATH environment variable:
 ```
 As the error message suggests, the `MALMO_XSD_PATH` needs to be set to the
-`Schemas` folder. If you are using the
-[Conda environment](https://www.anaconda.com/download), the library already
-does this for you. If not, you will have to download the contents of
+`Schemas` folder. **If you are using the
+[Conda environment](#install-malmo), the library already
+does this for you**. If not, you will have to download the contents of
 this folder, and manually set the `MALMO_XSD_PATH` environment variable to
 the absolute path of the `Schemas` folder.
 
