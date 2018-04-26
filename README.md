@@ -18,5 +18,5 @@ for _ in range(1000):
 ```
 
 # Authors
-S.P. Mohanty (<sharada.mohanty@epfl.ch>)   
-**...you could be next...**
+* S.P. Mohanty (<sharada.mohanty@epfl.ch>)   
+* **...you could be next...**
