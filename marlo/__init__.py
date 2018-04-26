@@ -1,15 +1,21 @@
 from gym.envs.registration import registry, register, make, spec
 import os
+import logging
+
+logger = logging.getLogger(__name__)
 
 register(
-    id='marlo-cliff_walking-v01',
-    entry_point='gym.envs.algorithmic:CopyEnv',
+    id='marlo-cliff_walking-v0',
+    entry_point='marlo.envs.marlo_base_env:MarloBaseEnv',
     tags={'wrapper_config.TimeLimit.max_episode_steps': 1000},
     reward_threshold=10**10,
 )
 
 """
 Set MALMO_XSD_PATH for Conda Environments
+
+If none of the special conditions are met, let MalmoPython throw the
+regular error
 """
 if "MALMO_XSD_PATH" not in os.environ.keys() or \
         os.environ["MALMO_XSD_PATH"] == "":
@@ -23,5 +29,3 @@ if "MALMO_XSD_PATH" not in os.environ.keys() or \
         if os.path.exists(tentative_malmo_xsd_path):
             os.environ["MALMO_XSD_PATH"] = os.path.dirname(
                                             tentative_malmo_xsd_path)
-# If none of the special conditions are met, let MalmoPython throw the
-# regular error
