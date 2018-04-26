@@ -13,6 +13,7 @@ setup(name='marlo',
       author_email='spmohanty91@gmail.com',
       license='MIT License',
       packages=find_packages(),
+      package_data={'': ['marlo_env_specs/*.xml']},
       zip_safe=False,
       install_requires=['gym>=0.10.5']
 )
