@@ -4,20 +4,23 @@
 
 # Installation
 Assuming you have [Anaconda](https://www.anaconda.com/download) installed :
-```
-# Env Setup
+### Env Setup
+```bash
 conda create python=2.7 --name malmo # you are free to replace '2.7' with python '3.5' or python '3.6'
 source activate malmo
 conda config --add channels conda-forge
-
-# Install malmo
+```
+### Install malmo
+```python
 conda install -c crowdai malmo
-
-# Check if Malmo is installed properly
+```
+### Check if Malmo is installed properly
+```python
 python -c "import MalmoPython" #for use of the Python API
 malmo-server -port 10001 # For launching the minecraft client
-
-# Install marlo
+```
+### Install marLo
+```python
 pip install git+https://github.com/spMohanty/marLo
 ```
 
