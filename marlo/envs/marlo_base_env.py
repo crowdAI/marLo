@@ -27,9 +27,14 @@ class MarloBaseEnv(gym.Env):
     """
     metadata = {'render.modes': ['human', 'rgb_array']}
 
-    def __init__(self):
+    def __init__(self, marlo_env_spec):
+        super(MarloBaseEnv, self).__init__()
+
         self.__version__ = "0.1.0"
         print("MarloBaseEnv - Version {}".format(self.__version__))
+
+        # Initialize Marlo Mission
+        self.load_mission_spec(marlo_env_spec)
 
         # General variables defining the environment
         self.action_space = spaces.Discrete(10)
@@ -45,6 +50,15 @@ class MarloBaseEnv(gym.Env):
         self.curr_episode = -1
         self.action_episode_memory = []
         self.is_done = False
+
+    def load_mission_spec(self, marlo_env_spec):
+        path_to_env_spec = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "..", "marlo_env_specs",
+            marlo_env_spec
+        )
+        marlo_env_spec = open(path_to_env_spec, "r").read()
+        self.mission_spec = MP.MissionSpec(marlo_env_spec, True)
 
     def _step(self, action):
         """
@@ -83,9 +97,11 @@ class MarloBaseEnv(gym.Env):
     def _take_action(self, action):
         """Take Action"""
         pass
+
     def _get_reward(self):
         """Reward is given for a sold banana."""
-        pass
+        return np.random.rand()
+
     def _reset(self):
         """
         Reset the state of the environment and returns an initial observation.
