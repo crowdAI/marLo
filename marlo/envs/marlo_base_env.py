@@ -55,7 +55,7 @@ class MarloBaseEnv(gym.Env):
         path_to_mission_spec = os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
             "..", "marlo_mission_specs",
-            marlo_mission_spec
+            marlo_mission_spec, "mission_spec.xml"
         )
         marlo_mission_spec = open(path_to_mission_spec, "r").read()
         self.mission_spec = MP.MissionSpec(marlo_mission_spec, True)

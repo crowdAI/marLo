@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 register(
     id='marlo-cliff_walking-v0',
     entry_point='marlo.envs.marlo_base_env:MarloBaseEnv',
-    kwargs={'marlo_mission_spec': 'cliff_walking.xml'},
+    kwargs={'marlo_mission_spec': 'marlo-cliff_walking-v0'},
     tags={'wrapper_config.TimeLimit.max_episode_steps': 1000},
     reward_threshold=10**10,
 )
