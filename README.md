@@ -45,7 +45,7 @@ for _ in range(1000):
 ```
 
 # FAQs
-* 1) I get an error about `MALMO_XSD_PATH`, what do I do ?
+* **I get an error about `MALMO_XSD_PATH`, what do I do ?**
 ```bash
 Traceback (most recent call last):
   File "tutorial_6.py", line 267, in <module>
