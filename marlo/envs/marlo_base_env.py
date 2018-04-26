@@ -27,14 +27,14 @@ class MarloBaseEnv(gym.Env):
     """
     metadata = {'render.modes': ['human', 'rgb_array']}
 
-    def __init__(self, marlo_env_spec):
+    def __init__(self, marlo_mission_spec):
         super(MarloBaseEnv, self).__init__()
 
         self.__version__ = "0.1.0"
         print("MarloBaseEnv - Version {}".format(self.__version__))
 
         # Initialize Marlo Mission
-        self.load_mission_spec(marlo_env_spec)
+        self.load_mission_spec(marlo_mission_spec)
 
         # General variables defining the environment
         self.action_space = spaces.Discrete(10)
@@ -51,14 +51,14 @@ class MarloBaseEnv(gym.Env):
         self.action_episode_memory = []
         self.is_done = False
 
-    def load_mission_spec(self, marlo_env_spec):
-        path_to_env_spec = os.path.join(
+    def load_mission_spec(self, marlo_mission_spec):
+        path_to_mission_spec = os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
-            "..", "marlo_env_specs",
-            marlo_env_spec
+            "..", "marlo_mission_specs",
+            marlo_mission_spec
         )
-        marlo_env_spec = open(path_to_env_spec, "r").read()
-        self.mission_spec = MP.MissionSpec(marlo_env_spec, True)
+        marlo_mission_spec = open(path_to_mission_spec, "r").read()
+        self.mission_spec = MP.MissionSpec(marlo_mission_spec, True)
 
     def _step(self, action):
         """
