@@ -24,6 +24,11 @@ malmo-server -port 10001 # For launching the minecraft client
 pip install git+https://github.com/spMohanty/marLo
 ```
 
+### Set MALMO_XSD_PATH
+```python
+export MALMO_XSD_PATH=$CONDA_PREFIX/install/Schemas
+```
+
 # Usage
 ```python
 import marlo
