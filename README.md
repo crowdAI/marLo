@@ -6,7 +6,9 @@
 Assuming you have [Anaconda](https://www.anaconda.com/download) installed :
 ### Env Setup
 ```bash
-conda create python=2.7 --name malmo # you are free to replace '2.7' with python '3.5' or python '3.6'
+conda create python=3.6 --name malmo
+# you are free to replace '3.6' with python '3.5' or python '2.7'.
+# Though only python 3.* versions will be officially supported.
 source activate malmo
 conda config --add channels conda-forge
 ```

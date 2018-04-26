@@ -12,6 +12,7 @@ a mission_spec
 mission_specs_dir = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
     "..", "marlo_mission_specs")
+
 for mission_spec in os.listdir(mission_specs_dir):
     config_path = os.path.join(
                 mission_specs_dir,
