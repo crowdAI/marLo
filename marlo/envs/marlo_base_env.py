@@ -1,15 +1,31 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import random
-import gym
+import time
+import os
 import numpy as np
-from gym import spaces
+
+import logger
+logger = logging.getLogger(__name__)
+
+import gym
+from gym import spaces, error
+
+try:
+    import MalmoPython as MP
+except ImportError as e:
+    raise error.DependencyNotInstalled(
+        "MalmoPython doesnt seem to be installed. Please follow the \
+        instructions at https://github.com/spMohanty/marLo#env-setup.")
 
 TOTAL_TIME_STEPS = 1000
+
+
 class MarloBaseEnv(gym.Env):
     """
     Define a base environment class for Marlo Envs
     """
+    metadata = {'render.modes': ['human', 'rgb_array']}
 
     def __init__(self):
         self.__version__ = "0.1.0"
