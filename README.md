@@ -24,7 +24,6 @@ conda config --add channels conda-forge
 conda install -c crowdai malmo
 conda install gcc psutil
 pip install pygame
-pip install gym
 ```
 ### Check if Malmo is installed properly
 ```python
@@ -42,8 +41,6 @@ git clone -b dev https://github.com/spMohanty/marlo
 cd marlo
 python setup.py install
 ```
-
- `marlo` needs `pygame` to render Minecraft screen. It is best to have pygame installed via your system commands, i.e. `sudo apt-get install python-pygame` or `conda install pygame`. Otherwise setup will automatically download and compile `pygame`. This might need some additional dependencies though, see instructions for [Ubuntu](http://www.pygame.org/wiki/CompileUbuntu), [OSX](http://pygame.org/wiki/MacCompile) or [Windows](http://pygame.org/wiki/CompileWindows).
 
 ## Running
 
