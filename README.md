@@ -46,14 +46,19 @@ python setup.py install
 
 *Note*: Ensure that you have the env directory `MALMO_XSD_PATH` pointing to the correct Schemas folder.
 If you are using the conda package for malmo, then you can do a :
-`export MALMO_XSD_PATH=$CONDA_PREFIX/install/Schemas`.
+`export MALMO_XSD_PATH=$CONDA_PREFIX/install/Schemas`.   
+
+Also do ensure that you have a minecraft-client running on port `10000`.
 
 ```python
 import gym
 import marlo
 
 env = gym.make('MinecraftBasic-v0')
-env.init(False)
+env.init(
+    allowContinuousMovement=["move", "turn"],
+    videoResolution=[800, 600]
+    )
 env.reset()
 
 done = False
