@@ -350,24 +350,9 @@ class MinecraftEnv(gym.Env):
 
         return image, reward, done, info
 
-    def _render(self, mode='human', close=False):
+    def _render(self, mode='rgb_array', close=False):
         if mode == 'rgb_array':
             return self.last_image
-        elif mode == 'human':
-            try:
-                import pygame
-            except ImportError as e:
-                raise error.DependencyNotInstalled("{}. (HINT: install pygame using `pip install pygame`".format(e))
-
-            if close:
-                pygame.quit()
-            else:
-                if self.screen is None:
-                    pygame.init()
-                    self.screen = pygame.display.set_mode((self.video_width, self.video_height))
-                img = pygame.surfarray.make_surface(self.last_image.swapaxes(0, 1))
-                self.screen.blit(img, (0, 0))
-                pygame.display.update()
         else:
             raise error.UnsupportedMode("Unsupported render mode: " + mode)
 
