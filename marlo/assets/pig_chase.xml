@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!--
+#  Copyright (c) 2018 Microsoft Corporation
+#
+#  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+#  associated documentation files (the "Software"), to deal in the Software without restriction,
+#  including without limitation the rights to use, copy, modify, merge, publish, distribute,
+#  sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+#  furnished to do so, subject to the following conditions:
+#
+#  The above copyright notice and this permission notice shall be included in all copies or
+#  substantial portions of the Software.
+#
+#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+#  NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+#  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+#  DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+-->
+
+<Mission xmlns="http://ProjectMalmo.microsoft.com">
+
+    <About>
+        <Summary>Catch the pig!</Summary>
+    </About>
+
+    <ModSettings>
+        <MsPerTick>4</MsPerTick>
+    </ModSettings>
+
+    <ServerSection>
+        <ServerInitialConditions>
+            <Time>
+                <StartTime>6000</StartTime>
+                <AllowPassageOfTime>false</AllowPassageOfTime>
+            </Time>
+            <Weather>clear</Weather>
+            <AllowSpawning>false</AllowSpawning>
+        </ServerInitialConditions>
+        <ServerHandlers>
+            <FlatWorldGenerator generatorString="3;minecraft:bedrock,2*minecraft:dirt,minecraft:grass;1;village"/>
+            <DrawingDecorator>
+                <!-- Tricks to clean the map before drawing (avoid entity duplication on the map) -->
+                <!-- coordinates for cuboid are inclusive -->
+                <DrawCuboid x1="-10" y1="4" z1="-10" x2="10" y2="45" z2="10" type="air"/>
+
+                <!-- Area Limits -->
+                <DrawLine x1="1" y1="3" z1="0" x2="7" y2="3" z2="0" type="sand"/>
+                <DrawLine x1="1" y1="4" z1="0" x2="7" y2="4" z2="0" type="fence"/>
+
+                <DrawLine x1="1" y1="3" z1="6" x2="7" y2="3" z2="6" type="sand"/>
+                <DrawLine x1="1" y1="4" z1="6" x2="7" y2="4" z2="6" type="fence"/>
+
+                <DrawLine x1="1" y1="3" z1="0" x2="1" y2="3" z2="2" type="sand"/>
+                <DrawLine x1="1" y1="4" z1="0" x2="1" y2="4" z2="2" type="fence"/>
+                <DrawLine x1="0" y1="3" z1="2" x2="0" y2="3" z2="4" type="sand"/>
+                <DrawLine x1="0" y1="4" z1="2" x2="0" y2="4" z2="4" type="fence"/>
+                <DrawLine x1="1" y1="3" z1="4" x2="1" y2="3" z2="6" type="sand"/>
+                <DrawLine x1="1" y1="4" z1="4" x2="1" y2="4" z2="6" type="fence"/>
+
+                <DrawLine x1="7" y1="3" z1="0" x2="7" y2="3" z2="2" type="sand"/>
+                <DrawLine x1="7" y1="4" z1="0" x2="7" y2="4" z2="2" type="fence"/>
+                <DrawLine x1="8" y1="3" z1="2" x2="8" y2="3" z2="4" type="sand"/>
+                <DrawLine x1="8" y1="4" z1="2" x2="8" y2="4" z2="4" type="fence"/>
+                <DrawLine x1="7" y1="3" z1="4" x2="7" y2="3" z2="6" type="sand"/>
+                <DrawLine x1="7" y1="4" z1="4" x2="7" y2="4" z2="6" type="fence"/>
+
+                <!-- Path blocker -->
+                <DrawBlock x="3" y="3" z="2" type="sand"/>
+                <DrawBlock x="3" y="4" z="2" type="fence"/>
+
+                <DrawBlock x="3" y="3" z="4" type="sand"/>
+                <DrawBlock x="3" y="4" z="4" type="fence"/>
+
+                <DrawBlock x="5" y="3" z="2" type="sand"/>
+                <DrawBlock x="5" y="4" z="2" type="fence"/>
+
+                <DrawBlock x="5" y="3" z="4" type="sand"/>
+                <DrawBlock x="5" y="4" z="4" type="fence"/>
+
+                <DrawBlock x="1" y="3" z="3" type="lapis_block"/>
+                <DrawBlock x="7" y="3" z="3" type="lapis_block"/>
+
+                <!-- Pig -->
+                <DrawEntity x="4.5" y="4" z="3.5" type="Pig"/>
+
+            </DrawingDecorator>
+            <ServerQuitFromTimeUp timeLimitMs="1000000"/>
+            <ServerQuitWhenAnyAgentFinishes/>
+        </ServerHandlers>
+    </ServerSection>
+
+    <AgentSection mode="Survival">
+        <Name>Agent_1</Name>
+        <AgentStart>
+            <Placement x="5.5" y="4" z="1.5" pitch="30" yaw="0"/>
+            <Inventory>
+                <InventoryObject type="diamond_helmet" slot="39"/>
+            </Inventory>
+        </AgentStart>
+        <AgentHandlers>
+            <MissionQuitCommands quitDescription="Agent_1_caught_pig"/>
+            <ObservationFromNearbyEntities>
+                <Range name="entities" xrange="8" yrange="2" zrange="6"/>
+            </ObservationFromNearbyEntities>
+            <ObservationFromGrid>
+                <Grid name="board" absoluteCoords="true">
+                    <min x="0" y="3" z="-1"/>
+                    <max x="8" y="3" z="7"/>
+                </Grid>
+            </ObservationFromGrid>
+            <ObservationFromFullStats/>
+            <TurnBasedCommands requestedPosition="1">
+                <DiscreteMovementCommands>
+                    <ModifierList type="deny-list">
+                        <command>attack</command>
+                    </ModifierList>
+                </DiscreteMovementCommands>
+            </TurnBasedCommands>
+            <RewardForTouchingBlockType>
+                <Block reward="5.0" type="lapis_block" behaviour="onceOnly"/>
+            </RewardForTouchingBlockType>
+            <RewardForSendingCommand reward="-1"/>
+            <AgentQuitFromTouchingBlockType>
+                <Block type="lapis_block" description="Agent_1_defaulted"/>
+            </AgentQuitFromTouchingBlockType>
+            <VideoProducer want_depth="false">
+                <Width>640</Width>
+                <Height>480</Height>
+            </VideoProducer>
+        </AgentHandlers>
+    </AgentSection>
+
+    <AgentSection mode="Survival">
+        <Name>Agent_2</Name>
+        <AgentStart>
+            <Placement x="2.5" y="4" z="5.5" pitch="30" yaw="180"/>
+            <Inventory>
+                <InventoryObject type="iron_helmet" slot="39"/>
+            </Inventory>
+        </AgentStart>
+        <AgentHandlers>
+            <MissionQuitCommands quitDescription="Agent_2_caught_pig"/>
+            <ObservationFromNearbyEntities>
+                <Range name="entities" xrange="8" yrange="2" zrange="6"/>
+            </ObservationFromNearbyEntities>
+            <ObservationFromGrid>
+                <Grid name="board" absoluteCoords="true">
+                    <min x="0" y="3" z="-1"/>
+                    <max x="8" y="3" z="7"/>
+                </Grid>
+            </ObservationFromGrid>
+            <ObservationFromFullStats/>
+            <TurnBasedCommands requestedPosition="1">
+                <DiscreteMovementCommands>
+                    <ModifierList type="deny-list">
+                        <command>attack</command>
+                    </ModifierList>
+                </DiscreteMovementCommands>
+            </TurnBasedCommands>
+            <RewardForTouchingBlockType>
+                <Block reward="5.0" type="lapis_block" behaviour="onceOnly"/>
+            </RewardForTouchingBlockType>
+            <RewardForCatchingMob>
+                <Mob type="Pig" reward="25.0" distribution="Agent_1:1 Agent_2:1" oneshot="true" global="true"/>
+            </RewardForCatchingMob>
+            <RewardForSendingCommand reward="-1"/>
+            <AgentQuitFromReachingCommandQuota total="25" description="command_quota_reached"/>
+            <AgentQuitFromTouchingBlockType>
+                <Block type="lapis_block" description="Agent_2_defaulted"/>
+            </AgentQuitFromTouchingBlockType>
+            <AgentQuitFromCatchingMob>
+                <Mob type="Pig" description="caught_the_pig" global="true"/>
+            </AgentQuitFromCatchingMob>
+            <VideoProducer want_depth="false">
+                <Width>640</Width>
+                <Height>480</Height>
+            </VideoProducer>
+        </AgentHandlers>
+    </AgentSection>
+</Mission>
