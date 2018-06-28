@@ -86,6 +86,10 @@ while not done:
 env.close()
 ```
 
+## Available Options
+More documentation about configuration options is in [docs/init.md](docs/init.md).
+
+
 ### Marlo installation with self-compiled Malmo
 If you have taken the time to compile Malmo on your own, then chances are this step is unneeded. Simply clone Marlo from the [GitHub repository](https://github.com/spMohanty/marLo/tree/dev) and run the setup file via *python setup.py install*.
 
