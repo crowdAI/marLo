@@ -109,6 +109,7 @@ class MinecraftEnv(gym.Env):
                 self.mission_spec.allowAllDiscreteMovementCommands()
             elif isinstance(allowDiscreteMovement, list):
                 for cmd in allowDiscreteMovement:
+                    print("allow discrete command " + cmd)
                     self.mission_spec.allowDiscreteMovementCommand(cmd)
 
             if allowAbsoluteMovement is True:
@@ -132,8 +133,8 @@ class MinecraftEnv(gym.Env):
         self.observation_space = spaces.Box(low=0, high=255,
                 shape=(self.video_height, self.video_width, self.video_depth))
         # dummy image just for the first observation
-        self.last_image = np.zeros((self.video_height, self.video_width, self.video_depth), dtype=np.uint8)
-
+        # self.last_image = np.zeros((self.video_height, self.video_width, self.video_depth), dtype=np.uint8)
+        self.last_image = np.zeros((self.video_height * self.video_width * self.video_depth), dtype=np.uint8)
         self._create_action_space()
 
         # mission recording
@@ -266,6 +267,7 @@ class MinecraftEnv(gym.Env):
                 logger.warn(error.text)
 
         logger.info("Mission running")
+
         return self._get_video_frame(world_state)
 
     def _take_action(self, actions):
@@ -277,13 +279,16 @@ class MinecraftEnv(gym.Env):
         for spc, cmds, acts in zip(self.action_spaces, self.action_names, actions):
             if isinstance(spc, spaces.Discrete):
                 logger.debug(cmds[acts])
+                print("cmdD " + cmds[acts])
                 self.agent_host.sendCommand(cmds[acts])
             elif isinstance(spc, spaces.Box):
                 for cmd, val in zip(cmds, acts):
+                    print("cmd " + cmd + " " + str(val))
                     logger.debug(cmd + " " + str(val))
                     self.agent_host.sendCommand(cmd + " " + str(val))
             elif isinstance(spc, spaces.MultiDiscrete):
                 for cmd, val in zip(cmds, acts):
+                    print("cmd " + cmd + " " + str(val))
                     logger.debug(cmd + " " + str(val))
                     self.agent_host.sendCommand(cmd + " " + str(val))
             else:
@@ -306,7 +311,7 @@ class MinecraftEnv(gym.Env):
             frame = world_state.video_frames[0]
 
             image = np.frombuffer(frame.pixels, dtype=np.uint8)
-            image = image.reshape((frame.height, frame.width, frame.channels))
+            # image = image.reshape((frame.height, frame.width, frame.channels))
             logger.debug(image)
             self.last_image = image
         else:

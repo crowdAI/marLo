@@ -4,6 +4,7 @@ from threading import Thread
 from lxml import etree
 import uuid
 
+
 def _run_agent(env_name, config, role, rounds):
     """thread function to run an agent in open ai gym"""
 
@@ -16,7 +17,7 @@ def _run_agent(env_name, config, role, rounds):
     env.init(**config2)
 
     for i in range(rounds):
-        print("reset for new game " + str(i + 1))
+        print("reset " + str(role) + " for new game " + str(i + 1))
         env.reset()
 
         done = False
@@ -26,7 +27,6 @@ def _run_agent(env_name, config, role, rounds):
             action = env.action_space.sample()
 
             obs, reward, done, info = env.step(action)
-            print(action)
 
     env.close()
 

@@ -8,7 +8,7 @@ from marlo.multiagent import start_agents
 
 
 def main():
-    """Running Malmo gym env with multiple agents."""
+    """Running Malmo gym env for multiple agents."""
 
     parser = argparse.ArgumentParser(description='Multi-agent example')
     parser.add_argument('--rollouts', type=int, default=1, help='number of rollouts')
@@ -31,8 +31,8 @@ def main():
     # Create one env to obtain the mission xml.
     env = gym.make(env_name)
 
-    resolution = [84, 84]  # [800, 600]
-    config = {'allowContinuousMovement': ["move", "turn"], 'videoResolution': resolution}
+    resolution = [800, 600]
+    config = {'allowDiscreteMovement': ["move", "turn"], 'videoResolution': resolution}
 
     join_agents = start_agents(env, env_name, config, number_of_rollouts)
 
