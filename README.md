@@ -1,8 +1,14 @@
-# marLo
+# Marlo
 
 **marLo : Multi Agent Reinforcement Learning using [MalmÖ](https://github.com/Microsoft/malmo)**
 
-# Installation
+**NOTE : THIS IS A WORK IN PROGRESS. AND NOT READY FOR THE FIRST RELEASE YET**
+
+
+List of task :  [MalmoMissionTable_CurrentTasks_2016_06_14.pdf](https://github.com/Microsoft/malmo/raw/master/sample_missions/MalmoMissionTable_CurrentTasks_2016_06_14.pdf).
+
+## Installation
+
 Assuming you have [Anaconda](https://www.anaconda.com/download) installed :
 ### Env Setup
 ```bash
@@ -12,51 +18,66 @@ conda create python=3.6 --name malmo
 source activate malmo
 conda config --add channels conda-forge
 ```
+
 ### Install malmo
 ```python
 conda install -c crowdai malmo
+conda install gcc psutil
+pip install pygame
 ```
 ### Check if Malmo is installed properly
 ```python
 python -c "import MalmoPython" #for use of the Python API
-malmo-server -port 10001 # For launching the minecraft client
+malmo-server -port 10000 # For launching the minecraft client (TODO: Fix name conventions)
+# Or if you are not using the conda package, then you are free to launch the minecraft client
+# using your method of choice.
+
+# This might take a few seconds on the first execution. So hang in there.
 ```
+
 ### Install marLo
-```python
-pip install git+https://github.com/spMohanty/marLo
+ ```
+git clone -b dev https://github.com/spMohanty/marlo
+cd marlo
+python setup.py install
 ```
 
-# Usage
+## Running
+
+*Note*: Ensure that you have the env directory `MALMO_XSD_PATH` pointing to the correct Schemas folder.
+If you are using the conda package for malmo, then you can do a :
+`export MALMO_XSD_PATH=$CONDA_PREFIX/install/Schemas`.   
+
+Also do ensure that you have a minecraft-client running on port `10000`.
+
 ```python
+import gym
 import marlo
-env = marlo.make('marlo-nips2018-env01')
-env.init()
-observation = env.reset()
 
-for _ in range(1000):
-  env.render()
-  action = env.action_space.sample() # take a random action
-  observation, reward, done, info = env.step(action)
-  if done:
-    break
+env = gym.make('MinecraftBasic-v0')
+env.init(
+    allowContinuousMovement=["move", "turn"],
+    videoResolution=[800, 600]
+    )
+env.reset()
+
+done = False
+while not done:
+        env.render()
+        action = env.action_space.sample()
+        obs, reward, done, info = env.step(action)
+        print(action)
+
+env.close()
 ```
 
-# FAQs
-* **I get an error about `MALMO_XSD_PATH`, what do I do ?**
-```bash
-Traceback (most recent call last):
-  File "tutorial_6.py", line 267, in <module>
-    my_mission = MalmoPython.MissionSpec(mission_xml, True)
-RuntimeError: Schema file Mission.xsd not found in folder specified by
-MALMO_XSD_PATH environment variable:
-```
-As the error message suggests, the `MALMO_XSD_PATH` needs to be set to the
-`Schemas` folder. **If you are using the
-[Conda environment](#install-malmo), the library already
-does this for you**. If not, you will have to download the contents of
-this folder, and manually set the `MALMO_XSD_PATH` environment variable to
-the absolute path of the `Schemas` folder.
+## Available Envs
+List of all available envs can be found [available_envs.md](docs/available_envs.md)
 
-# Authors
-* S.P. Mohanty (<sharada.mohanty@epfl.ch>)   
-* **...you could be next...**
+## Available Options
+
+More documentation about configuration options is in [docs/init.md](docs/init.md).
+
+
+# Author
+Sharada Mohanty (sharada.mohanty@epfl.ch)

@@ -1,19 +1,15 @@
 from setuptools import setup, find_packages
 
 setup(name='marlo',
-      version='0.0.1',
-      description='Environments for Multi Agent Reinforcement Learning \
-      using MalmÖ',
-      long_description=""" A collection of OpenAI Gym-like environments \
-      for Multi Agent reinforcement learning tasks on MineCraft using \
-      Project MalmÖ
-      """,
-      url='https://github.com/spMohanty/marLo',
+      version='0.0.1dev1',
+      description='Marlo',
+      url='https://github.com/spMohanty/marlo',
       author='S.P. Mohanty',
-      author_email='spmohanty91@gmail.com',
+      author_email='sharada.mohanty@epfl.ch',
       license='MIT License',
       packages=find_packages(),
-      package_data={'': ['marlo_env_specs/*.xml']},
+      package_data={'': ['assets/*.xml']},
       zip_safe=False,
-      install_requires=['gym>=0.10.5']
+      install_requires=['gym==0.7.4'],
+      dependency_links=[]
 )
