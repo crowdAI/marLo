@@ -24,6 +24,7 @@
         <StartTime> 0 </StartTime>
         <AllowPassageOfTime> false </AllowPassageOfTime>
       </Time>
+      <Weather>clear</Weather>
       <AllowSpawning> false </AllowSpawning>
     </ServerInitialConditions>
     <ServerHandlers>
