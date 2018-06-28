@@ -6,7 +6,6 @@ import time
 env = gym.make('MinecraftBasic-v0')
 
 env.init(
-    allowContinuousMovement=["move", "turn"],
     videoResolution=[800, 600]
     )
 # List of all available options at : https://github.com/spMohanty/marLo/blob/dev/docs/init.md

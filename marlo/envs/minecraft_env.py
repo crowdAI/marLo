@@ -353,6 +353,10 @@ class MinecraftEnv(gym.Env):
     def _render(self, mode='rgb_array', close=False):
         if mode == 'rgb_array':
             return self.last_image
+        elif mode == 'human':
+            # Placeholder render mode until we find a better solution
+            # for human mode rendering.
+            return self.last_image
         else:
             raise error.UnsupportedMode("Unsupported render mode: " + mode)
 
