@@ -14,7 +14,11 @@ def main():
     parser.add_argument('--rollouts', type=int, default=1, help='number of rollouts')
     # Example missions: 'pig_chase.xml' or 'bb_mission_1.xml' or 'th_mission_1.xml'
     parser.add_argument('--mission_file', type=str, default="basic.xml", help='the mission xml')
+    parser.add_argument('--turn_based', action='store_true')
     args = parser.parse_args()
+
+    turn_based = args.turn_based
+    print("turn based " + str(turn_based))
 
     number_of_rollouts = args.rollouts
 
@@ -32,7 +36,7 @@ def main():
     env = gym.make(env_name)
 
     resolution = [800, 600]
-    config = {'allowDiscreteMovement': ["move", "turn"], 'videoResolution': resolution}
+    config = {'allowDiscreteMovement': ["move", "turn"], 'videoResolution': resolution, 'turn_based': turn_based}
 
     join_agents = start_agents(env, env_name, config, number_of_rollouts)
 

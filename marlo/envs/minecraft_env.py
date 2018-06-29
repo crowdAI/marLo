@@ -26,6 +26,30 @@ SINGLE_DIRECTION_DISCRETE_MOVEMENTS = [ "jumpeast", "jumpnorth", "jumpsouth", "j
 
 MULTIPLE_DIRECTION_DISCRETE_MOVEMENTS = [ "move", "turn", "look", "strafe",
                                           "jumpmove", "jumpstrafe" ]
+class TurnState(object):
+    def __init__(self):
+        self._turn_key = None
+        self._has_played = False
+
+    def update(self, key):
+        self._has_played = False
+        self._turn_key = key
+
+    @property
+    def can_play(self):
+        return self._turn_key is not None and not self._has_played
+
+    @property
+    def key(self):
+        return self._turn_key
+
+    @property
+    def has_played(self):
+        return self._has_played
+
+    @has_played.setter
+    def has_played(self, value):
+        self._has_played = bool(value)
 
 class MinecraftEnv(gym.Env):
     metadata = {'render.modes': ['human', 'rgb_array']}
@@ -42,6 +66,7 @@ class MinecraftEnv(gym.Env):
         self.mc_process = None
         self.screen = None
         self.experiment_id = None
+        self._turn = None
 
     def load_mission_file(self, mission_file):
         logger.info("Loading mission from " + mission_file)
@@ -64,6 +89,7 @@ class MinecraftEnv(gym.Env):
              recordObservations=None, recordRewards=None,
              recordCommands=None, recordMP4=None,
              gameMode=None, forceWorldReset=None,
+             turn_based=False,
              experiment_id="experimentid"):
 
         self.role = role
@@ -75,6 +101,8 @@ class MinecraftEnv(gym.Env):
         self.continuous_discrete = continuous_discrete
         self.add_noop_command = add_noop_command
         self.experiment_id = experiment_id
+        if turn_based:
+            self._turn = TurnState()
 
         if videoResolution:
             if videoWithDepth:
@@ -270,27 +298,37 @@ class MinecraftEnv(gym.Env):
 
         return self._get_video_frame(world_state)
 
+    def _send_command(self, cmd):
+        if self._turn:
+            self.agent_host.sendCommand(cmd, self._turn.key)
+            self._turn.has_payed = True
+        else:
+            self.agent_host.sendCommand(cmd)
+
     def _take_action(self, actions):
         # if there is only one action space, it wasn't wrapped in Tuple
         if len(self.action_spaces) == 1:
             actions = [actions]
+        if self._turn:
+            if not self._turn.can_play:
+                return
 
         # send appropriate command for different actions
         for spc, cmds, acts in zip(self.action_spaces, self.action_names, actions):
             if isinstance(spc, spaces.Discrete):
                 logger.debug(cmds[acts])
                 print("cmdD " + cmds[acts])
-                self.agent_host.sendCommand(cmds[acts])
+                self._send_command(cmds[acts])
             elif isinstance(spc, spaces.Box):
                 for cmd, val in zip(cmds, acts):
                     print("cmd " + cmd + " " + str(val))
                     logger.debug(cmd + " " + str(val))
-                    self.agent_host.sendCommand(cmd + " " + str(val))
+                    self._send_command(cmd + " " + str(val))
             elif isinstance(spc, spaces.MultiDiscrete):
                 for cmd, val in zip(cmds, acts):
                     print("cmd " + cmd + " " + str(val))
                     logger.debug(cmd + " " + str(val))
-                    self.agent_host.sendCommand(cmd + " " + str(val))
+                    self._send_command(cmd + " " + str(val))
             else:
                 logger.warn("Unknown action space for %s, ignoring." % cmds)
 
@@ -339,6 +377,14 @@ class MinecraftEnv(gym.Env):
             self._take_action(action)
         # wait for the new state
         world_state = self._get_world_state()
+
+        # Update turn state
+        if world_state.number_of_observations_since_last_state > 0:
+            data = json.loads(world_state.observations[-1].text)
+            turn_key = data.get(u'turn_key', None)
+
+            if turn_key is not None and turn_key != self._turn.key:
+                self._turn.update(turn_key)
 
         # log errors and control messages
         for error in world_state.errors:
