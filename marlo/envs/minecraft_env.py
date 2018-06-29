@@ -9,9 +9,14 @@ import gym
 from gym import spaces, error
 
 try:
-    import MalmoPython
+    import malmo.MalmoPython as MalmoPython
 except ImportError as e:
-    raise error.DependencyNotInstalled("{}. MalmoPython doesnt seem to be installed. Can you install it from https://github.com/Microsoft/malmo".format(e))
+    err = e
+    try:
+        import MalmoPython
+    except ImportError:
+        raise error.DependencyNotInstalled("{}. Malmo doesn't seem to be installed."
+                "Please install Malmo from GitHub or with \"pip3 install malmo\".".format(err))
 
 logger = logging.getLogger(__name__)
 
