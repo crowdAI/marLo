@@ -71,6 +71,16 @@ while not done:
 env.close()
 ```
 
+## Running the multi agent examples
+
+The multi-agent examples can be run from the marLo directory using after starting Minecraft on ports 1000 and 10001:
+
+```python
+python -m examples.multiagentexample --turn_based --rollouts 10  --mission_file mob_chase.xml
+
+```
+
+
 ## Available Envs
 List of all available envs can be found [available_envs.md](docs/available_envs.md)
 
