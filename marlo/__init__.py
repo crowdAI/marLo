@@ -149,6 +149,12 @@ register(
     reward_threshold=32000
 )
 
+register(
+    id="CatchTheMobSinglePlayer-v0",
+    entry_point='marlo.envs:MinecraftEnv',
+    kwargs={'mission_file': 'single_player_mob_chase.xml'},
+)
+
 # Scoreboard registration
 # ==========================
 add_group(

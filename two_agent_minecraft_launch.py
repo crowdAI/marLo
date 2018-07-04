@@ -22,7 +22,7 @@ def kill(processes):
 if os.name == 'nt':
     minecraft_dir = "C:\malmo\MalmoPlatform\Minecraft"
 else: 
-    minecraft_dir = "~/MalmoPlatform/Minecraft"
+    minecraft_dir = "/mnt/c/malmo/MalmoPlatform/Minecraft"
 
 os.chdir(minecraft_dir)
 
@@ -31,6 +31,11 @@ launch_processes = launch_minecraft_in_background(minecraft_dir, [10000, 10001],
 
 # TODO Add agent code here.
 
-print("Killing ...")
+while True:
+    quit = input("\nInput \"quit\" to stop launched Minecraft game: ")
+    if quit == "quit":
+        break
+
+print("Terminating Minecraft ...")
 
 kill(launch_processes)

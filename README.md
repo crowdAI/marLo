@@ -73,11 +73,18 @@ env.close()
 
 ## Running the multi agent examples
 
-The multi-agent examples can be run from the marLo directory using after starting Minecraft on ports 1000 and 10001:
+The multi-agent examples can be run from the marLo directory using:
+
+First start Minecraft on ports 1000 and 10001 by running the following in a cmd terminal or shell:
 
 ```python
-python -m examples.multiagentexample --turn_based --rollouts 10  --mission_file mob_chase.xml
+python3 two_agent_minecraft_launch.py 
+```
 
+Then run the multi agent example with:
+
+```python
+python3 -m examples.multiagentexample --turn_based --rollouts 10  --mission_file mob_chase.xml
 ```
 
 

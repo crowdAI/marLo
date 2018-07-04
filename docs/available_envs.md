@@ -30,6 +30,7 @@
 * MinecraftComplexityUsage-v0
 * MinecraftMedium-v0
 * MinecraftHard-v0
+* CatchTheMobSinglePlayer-v0
 
 You can use these by
 ```python
