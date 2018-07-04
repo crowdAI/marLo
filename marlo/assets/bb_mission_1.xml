@@ -1,0 +1,133 @@
+<?xml version="1.0"?>
+<!-- ~ Copyright (c) 2017 Microsoft
+        Corporation. ~ ~ Permission is hereby granted, free of charge, to any person obtaining a copy of this
+        software and ~ associated documentation files (the "Software"), to deal in the Software without restriction,
+        including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+        and/or sell copies of the Software, and to permit persons to whom the Software is ~ furnished to do so,
+        subject to the following conditions: ~ ~ The above copyright notice and this permission notice shall be
+        included in all copies or substantial portions of the Software. ~ ~ THE SOFTWARE IS PROVIDED "AS IS",
+        WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+        MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+        COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+        TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+        THE SOFTWARE. -->
+<Mission xmlns="http://ProjectMalmo.microsoft.com">
+  <About>
+    <Summary> Build Battle where the task is to copy a built cuboid structure in a defined area. </Summary>
+  </About>
+
+  <ModSettings>
+    <MsPerTick>5</MsPerTick>
+    <PrioritiseOffscreenRendering>false</PrioritiseOffscreenRendering>
+  </ModSettings>
+
+  <ServerSection>
+    <ServerInitialConditions>
+      <Time>
+        <StartTime> 1000 </StartTime>
+        <AllowPassageOfTime> false </AllowPassageOfTime>
+      </Time>
+      <Weather>clear</Weather>
+      <AllowSpawning> false </AllowSpawning>
+    </ServerInitialConditions>
+    <ServerHandlers>
+      <FlatWorldGenerator forceReset="true" generatorString="0;80;0"/>
+      <DrawingDecorator>
+        <DrawCuboid type="air" x1="-11" x2="17" y1="4" y2="11" z1="-11" z2="12"/>
+        <DrawCuboid type="emerald_block" x1="0" x2="1" y1="5" y2="6" z1="0" z2="1"/>
+        <DrawBlock type="emerald_block" x="5" y="5" z="0"/>
+        <DrawBlock type="emerald_block" x="5" y="5" z="1"/>
+        <DrawBlock type="air" x="5" y="6" z="0"/>
+        <DrawBlock type="emerald_block" x="5" y="6" z="1"/>
+        <DrawBlock type="air" x="6" y="5" z="0"/>
+        <DrawBlock type="air" x="6" y="5" z="1"/>
+        <DrawBlock type="air" x="6" y="6" z="0"/>
+        <DrawBlock type="emerald_block" x="6" y="6" z="1"/>
+        <DrawCuboid type="glowstone" x1="-11" x2="17" y1="-1" y2="4" z1="-11" z2="12"/>
+        <DrawCuboid type="emerald_block" x1="4" x2="4" y1="5" y2="5" z1="-1" z2="2"/>
+        <DrawCuboid type="emerald_block" x1="4" x2="7" y1="5" y2="5" z1="-1" z2="-1"/>
+        <DrawCuboid type="emerald_block" x1="7" x2="7" y1="5" y2="5" z1="-1" z2="2"/>
+        <DrawCuboid type="emerald_block" x1="4" x2="7" y1="5" y2="5" z1="2" z2="2"/>
+        <DrawCuboid type="glowstone" x1="-11" x2="17" y1="11" y2="16" z1="-11" z2="12"/>
+        <DrawCuboid type="glowstone" x1="-16" x2="-11" y1="4" y2="11" z1="-11" z2="12"/>
+        <DrawCuboid type="glowstone" x1="-11" x2="17" y1="4" y2="11" z1="-16" z2="-11"/>
+        <DrawCuboid type="glowstone" x1="-11" x2="17" y1="4" y2="11" z1="12" z2="17"/>
+        <DrawCuboid type="glowstone" x1="17" x2="22" y1="4" y2="11" z1="-11" z2="12"/>
+      </DrawingDecorator>
+      <BuildBattleDecorator>
+        <PlayerStructureBounds>
+          <min x="5" y="5" z="0"/>
+          <max x="6" y="6" z="1"/>
+        </PlayerStructureBounds>
+        <GoalStructureBounds>
+          <min x="0" y="5" z="0"/>
+          <max x="1" y="6" z="1"/>
+        </GoalStructureBounds>
+        <BlockTypeOnCorrectPlacement type="gold_block"/>
+        <BlockTypeOnIncorrectPlacement type="redstone_block"/>
+      </BuildBattleDecorator>
+      <ServerQuitFromTimeUp description="out_of_time" timeLimitMs="4600000.0"/>
+      <ServerQuitWhenAnyAgentFinishes/>
+    </ServerHandlers>
+  </ServerSection>
+
+  <AgentSection mode="Creative">
+    <Name>Agent0</Name>
+    <AgentStart>
+      <Placement x="4" y="6" z="-1"/>
+      <Inventory>
+        <InventoryBlock quantity="1" slot="0" type="emerald_block"/>
+      </Inventory>
+    </AgentStart>
+    <AgentHandlers>
+      <TurnBasedCommands requestedPosition="1">
+        <DiscreteMovementCommands/>
+      </TurnBasedCommands>
+      <ObservationFromGrid>
+        <Grid absoluteCoords="true" name="board">
+          <min x="-10" y="0" z="-10"/>
+          <max x="10" y="10" z="10"/>
+        </Grid>
+      </ObservationFromGrid>
+      <ObservationFromFullStats/>
+      <RewardForStructureCopying rewardDistribution="Agent0:2 Agent1:-1">
+        <RewardDensity>PER_BLOCK</RewardDensity>
+      </RewardForStructureCopying>
+      <RewardForSendingCommand reward="0"/>
+      <VideoProducer want_depth="false">
+        <Width>640</Width>
+        <Height>480</Height>
+      </VideoProducer>
+    </AgentHandlers>
+  </AgentSection>
+
+  <AgentSection mode="Creative">
+    <Name>Agent1</Name>
+    <AgentStart>
+      <Placement x="3" y="6" z="-1"/>
+      <Inventory>
+        <InventoryBlock quantity="1" slot="0" type="emerald_block"/>
+      </Inventory>
+    </AgentStart>
+    <AgentHandlers>
+      <TurnBasedCommands requestedPosition="2">
+        <DiscreteMovementCommands/>
+      </TurnBasedCommands>
+      <ObservationFromGrid>
+        <Grid absoluteCoords="true" name="board">
+          <min x="-10" y="0" z="-10"/>
+          <max x="10" y="10" z="10"/>
+        </Grid>
+      </ObservationFromGrid>
+      <ObservationFromFullStats/>
+      <RewardForStructureCopying rewardDistribution="Agent1:2 Agent0:-1">
+        <RewardDensity>PER_BLOCK</RewardDensity>
+      </RewardForStructureCopying>
+      <RewardForSendingCommand reward="0"/>
+      <VideoProducer want_depth="false">
+        <Width>640</Width>
+        <Height>480</Height>
+      </VideoProducer>
+    </AgentHandlers>
+  </AgentSection>
+</Mission>

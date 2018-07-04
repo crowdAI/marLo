@@ -1,0 +1,91 @@
+from __future__ import print_function
+# ------------------------------------------------------------------------------------------------
+# Copyright (c) 2016 Microsoft Corporation
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+# associated documentation files (the "Software"), to deal in the Software without restriction,
+# including without limitation the rights to use, copy, modify, merge, publish, distribute,
+# sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all copies or
+# substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+# NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+# DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# ------------------------------------------------------------------------------------------------
+
+# Used for integration tests.
+
+from builtins import str
+from builtins import range
+import io
+import os
+import platform
+import socket
+import subprocess
+import sys
+import time
+
+
+def _port_has_listener(port):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    result = sock.connect_ex(('127.0.0.1', port))
+    sock.close()
+    return result == 0
+
+
+def launch_minecraft_in_background(minecraft_path, ports=None, timeout=360, replaceable=False):
+    if ports is None:
+        ports = []
+    if len(ports) == 0:
+        ports = [10000]  # Default
+    processes = []
+    for port in ports:
+        if _port_has_listener(port):
+            print('Something is listening on port', port, '- will assume Minecraft is running.')
+            continue
+        replaceable_arg = "" if not replaceable else " -replaceable "
+        print('Nothing is listening on port', port, '- will attempt to launch Minecraft from a new terminal.')
+        if os.name == 'nt':
+            p = subprocess.Popen([minecraft_path + '/launchClient.bat', '-port', str(port), replaceable_arg.strip()],
+                             creationflags=subprocess.CREATE_NEW_CONSOLE, close_fds=True)
+        elif sys.platform == 'darwin':
+            # Can't pass parameters to launchClient via Terminal.app, so create a small launch
+            # script instead.
+            # (Launching a process to run the terminal app to run a small launch script to run
+            # the launchClient script to run Minecraft... is it possible that this is not the most
+            # straightforward way to go about things?)
+            tmp_file = open("/tmp/launcher.sh", "w")
+            tmp_file.write(minecraft_path + '/launchClient.sh -port ' + str(port) + replaceable_arg)
+            tmp_file.close()
+            os.chmod("/tmp/launcher.sh", 0o777)
+            p = subprocess.Popen(['open', '-a', 'Terminal.app', '/tmp/launcher.sh'])
+        else:
+            p = subprocess.Popen(minecraft_path + "/launchClient.sh -port " + str(port) + replaceable_arg,
+                             close_fds=True, shell=True,
+                             stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        processes.append(p)
+        print('Giving Minecraft some time to launch... ')
+        launched = False
+        for i in range(timeout // 3):
+            print('.', end=' ')
+            time.sleep(3)
+            if _port_has_listener(port):
+                print('ok')
+                launched = True
+                break
+        if not launched:
+            print('Minecraft not yet launched. Giving up.')
+            exit(1)
+    return processes
+
+
+if __name__ == "__main__":
+    minecraft_launch_path = os.path.dirname(os.path.abspath(__file__))
+    launch_ports = [int(port_arg) for port_arg in sys.argv[1:]]
+
+    launch_minecraft_in_background(minecraft_launch_path, launch_ports, 300)

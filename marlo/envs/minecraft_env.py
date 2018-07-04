@@ -26,6 +26,30 @@ SINGLE_DIRECTION_DISCRETE_MOVEMENTS = [ "jumpeast", "jumpnorth", "jumpsouth", "j
 
 MULTIPLE_DIRECTION_DISCRETE_MOVEMENTS = [ "move", "turn", "look", "strafe",
                                           "jumpmove", "jumpstrafe" ]
+class TurnState(object):
+    def __init__(self):
+        self._turn_key = None
+        self._has_played = False
+
+    def update(self, key):
+        self._has_played = False
+        self._turn_key = key
+
+    @property
+    def can_play(self):
+        return self._turn_key is not None and not self._has_played
+
+    @property
+    def key(self):
+        return self._turn_key
+
+    @property
+    def has_played(self):
+        return self._has_played
+
+    @has_played.setter
+    def has_played(self, value):
+        self._has_played = bool(value)
 
 class MinecraftEnv(gym.Env):
     metadata = {'render.modes': ['human', 'rgb_array']}
@@ -35,12 +59,14 @@ class MinecraftEnv(gym.Env):
 
         self.agent_host = MalmoPython.AgentHost()
         assets_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../assets')
-        mission_file = os.path.join(assets_dir, mission_file)
-        self.load_mission_file(mission_file)
+        self.mission_file = os.path.join(assets_dir, mission_file)
+        self.load_mission_file(self.mission_file)
 
         self.client_pool = None
         self.mc_process = None
         self.screen = None
+        self.experiment_id = None
+        self._turn = None
 
     def load_mission_file(self, mission_file):
         logger.info("Loading mission from " + mission_file)
@@ -51,7 +77,7 @@ class MinecraftEnv(gym.Env):
         self.mission_spec = MalmoPython.MissionSpec(mission_xml, True)
         logger.info("Loaded mission: " + self.mission_spec.getSummary())
 
-    def init(self, client_pool=None,
+    def init(self, client_pool=None, role=0,
              continuous_discrete=True, add_noop_command=None,
              max_retries=90, retry_sleep=10, step_sleep=0.001, skip_steps=0,
              videoResolution=None, videoWithDepth=None,
@@ -62,8 +88,11 @@ class MinecraftEnv(gym.Env):
              allowAbsoluteMovement=None, recordDestination=None,
              recordObservations=None, recordRewards=None,
              recordCommands=None, recordMP4=None,
-             gameMode=None, forceWorldReset=None):
+             gameMode=None, forceWorldReset=None,
+             turn_based=False,
+             experiment_id="experimentid"):
 
+        self.role = role
         self.max_retries = max_retries
         self.retry_sleep = retry_sleep
         self.step_sleep = step_sleep
@@ -71,6 +100,9 @@ class MinecraftEnv(gym.Env):
         self.forceWorldReset = forceWorldReset
         self.continuous_discrete = continuous_discrete
         self.add_noop_command = add_noop_command
+        self.experiment_id = experiment_id
+        if turn_based:
+            self._turn = TurnState()
 
         if videoResolution:
             if videoWithDepth:
@@ -105,6 +137,7 @@ class MinecraftEnv(gym.Env):
                 self.mission_spec.allowAllDiscreteMovementCommands()
             elif isinstance(allowDiscreteMovement, list):
                 for cmd in allowDiscreteMovement:
+                    print("allow discrete command " + cmd)
                     self.mission_spec.allowDiscreteMovementCommand(cmd)
 
             if allowAbsoluteMovement is True:
@@ -112,7 +145,6 @@ class MinecraftEnv(gym.Env):
             elif isinstance(allowAbsoluteMovement, list):
                 for cmd in allowAbsoluteMovement:
                     self.mission_spec.allowAbsoluteMovementCommand(cmd)
-
 
         if client_pool:
             if not isinstance(client_pool, list):
@@ -129,8 +161,8 @@ class MinecraftEnv(gym.Env):
         self.observation_space = spaces.Box(low=0, high=255,
                 shape=(self.video_height, self.video_width, self.video_depth))
         # dummy image just for the first observation
-        self.last_image = np.zeros((self.video_height, self.video_width, self.video_depth), dtype=np.uint8)
-
+        # self.last_image = np.zeros((self.video_height, self.video_width, self.video_depth), dtype=np.uint8)
+        self.last_image = np.zeros((self.video_height * self.video_width * self.video_depth), dtype=np.uint8)
         self._create_action_space()
 
         # mission recording
@@ -221,17 +253,26 @@ class MinecraftEnv(gym.Env):
             self.action_space = spaces.Tuple(self.action_spaces)
         logger.debug(self.action_space)
 
-    def _reset(self):
+    def reset(self):
+
+        logger.info("reset agent " + str(self.role))
         # force new world each time
         if self.forceWorldReset:
             self.mission_spec.forceWorldReset()
-        # this seemed to increase probability of success in first try
-        time.sleep(0.1)
+
+        # Give the server time to start
+        if self.role != 0:
+            time.sleep(1)
+        else:
+            # this seemed to increase probability of success in first try
+            time.sleep(0.1)
+
         # Attempt to start a mission
         for retry in range(self.max_retries + 1):
             try:
                 if self.client_pool:
-                    self.agent_host.startMission(self.mission_spec, self.client_pool, self.mission_record_spec, 0, "experiment_id")
+                    self.agent_host.startMission(self.mission_spec, self.client_pool, self.mission_record_spec,
+                                                 self.role, self.experiment_id)
                 else:
                     self.agent_host.startMission(self.mission_spec, self.mission_record_spec)
                 break
@@ -254,26 +295,40 @@ class MinecraftEnv(gym.Env):
                 logger.warn(error.text)
 
         logger.info("Mission running")
+
         return self._get_video_frame(world_state)
+
+    def _send_command(self, cmd):
+        if self._turn:
+            self.agent_host.sendCommand(cmd, self._turn.key)
+            self._turn.has_payed = True
+        else:
+            self.agent_host.sendCommand(cmd)
 
     def _take_action(self, actions):
         # if there is only one action space, it wasn't wrapped in Tuple
         if len(self.action_spaces) == 1:
             actions = [actions]
+        if self._turn:
+            if not self._turn.can_play:
+                return
 
         # send appropriate command for different actions
         for spc, cmds, acts in zip(self.action_spaces, self.action_names, actions):
             if isinstance(spc, spaces.Discrete):
                 logger.debug(cmds[acts])
-                self.agent_host.sendCommand(cmds[acts])
+                print("cmdD " + cmds[acts])
+                self._send_command(cmds[acts])
             elif isinstance(spc, spaces.Box):
                 for cmd, val in zip(cmds, acts):
+                    print("cmd " + cmd + " " + str(val))
                     logger.debug(cmd + " " + str(val))
-                    self.agent_host.sendCommand(cmd + " " + str(val))
+                    self._send_command(cmd + " " + str(val))
             elif isinstance(spc, spaces.MultiDiscrete):
                 for cmd, val in zip(cmds, acts):
+                    print("cmd " + cmd + " " + str(val))
                     logger.debug(cmd + " " + str(val))
-                    self.agent_host.sendCommand(cmd + " " + str(val))
+                    self._send_command(cmd + " " + str(val))
             else:
                 logger.warn("Unknown action space for %s, ignoring." % cmds)
 
@@ -292,9 +347,10 @@ class MinecraftEnv(gym.Env):
         if world_state.number_of_video_frames_since_last_state > 0:
             assert len(world_state.video_frames) == 1
             frame = world_state.video_frames[0]
+
             image = np.frombuffer(frame.pixels, dtype=np.uint8)
-            image = image.reshape((frame.height, frame.width, frame.channels))
-            #logger.debug(image)
+            # image = image.reshape((frame.height, frame.width, frame.channels))
+            logger.debug(image)
             self.last_image = image
         else:
             # can happen only when mission ends before we get frame
@@ -306,14 +362,14 @@ class MinecraftEnv(gym.Env):
     def _get_observation(self, world_state):
         if world_state.number_of_observations_since_last_state > 0:
             missed = world_state.number_of_observations_since_last_state - len(world_state.observations) - self.skip_steps
-            if missed > 0:
+            if False and missed > 0:
                 logger.warn("Agent missed %d observation(s).", missed)
             assert len(world_state.observations) == 1
             return json.loads(world_state.observations[0].text)
         else:
             return None
 
-    def _step(self, action):
+    def step(self, action):
         # take the action only if mission is still running
         world_state = self.agent_host.peekWorldState()
         if world_state.is_mission_running:
@@ -321,6 +377,14 @@ class MinecraftEnv(gym.Env):
             self._take_action(action)
         # wait for the new state
         world_state = self._get_world_state()
+
+        # Update turn state
+        if world_state.number_of_observations_since_last_state > 0:
+            data = json.loads(world_state.observations[-1].text)
+            turn_key = data.get(u'turn_key', None)
+
+            if turn_key is not None and turn_key != self._turn.key:
+                self._turn.update(turn_key)
 
         # log errors and control messages
         for error in world_state.errors:
@@ -355,21 +419,19 @@ class MinecraftEnv(gym.Env):
 
         return image, reward, done, info
 
-    def _render(self, mode='rgb_array', close=False):
+    def render(self, mode='rgb_array', close=False):
         if mode == 'rgb_array':
             return self.last_image
         elif mode == 'human':
-            # Placeholder render mode until we find a better solution
-            # for human mode rendering.
-            return self.last_image
+            return None
         else:
             raise error.UnsupportedMode("Unsupported render mode: " + mode)
 
-    def _close(self):
+    def close(self):
         if hasattr(self, 'mc_process') and self.mc_process:
             # To be handled
             foo = 1
 
-    def _seed(self, seed=None):
+    def seed(self, seed=None):
         self.mission_spec.setWorldSeed(str(seed))
         return [seed]

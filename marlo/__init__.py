@@ -1,5 +1,15 @@
 from gym.envs.registration import register
-from gym.scoreboard.registration import add_task, add_group
+
+try:
+    from gym.scoreboard.registration import add_task, add_group
+except:
+    print("Stub out regitration as newer version of gym")
+
+    def add_task(*arg, **kwargs):
+        pass
+
+    def add_group(*arg, **kwargs):
+        pass
 
 # Env registration
 # ==========================
