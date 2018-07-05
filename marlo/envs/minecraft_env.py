@@ -297,8 +297,8 @@ class MinecraftEnv(gym.Env):
                     logger.error("Error starting mission: "+str(e))
                     raise
                 else:
-                    logger.warn("Error starting mission: "+str(e))
-                    logger.info("Sleeping for %d seconds...", self.retry_sleep)
+                    logger.warn("On starting mission: "+str(e))
+                    logger.warn("Will retry after %d seconds...", self.retry_sleep)
                     time.sleep(self.retry_sleep)
 
         # Loop until mission starts:
