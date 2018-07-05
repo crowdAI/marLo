@@ -8,6 +8,8 @@ import xml.etree.ElementTree as ET
 import gym
 from gym import spaces, error
 
+reshape = False
+
 try:
     import malmo.MalmoPython as MalmoPython
 except ImportError as e:
@@ -365,7 +367,8 @@ class MinecraftEnv(gym.Env):
             frame = world_state.video_frames[0]
 
             image = np.frombuffer(frame.pixels, dtype=np.uint8)
-            image = image.reshape((frame.height, frame.width, frame.channels))
+            if reshape:
+                image = image.reshape((frame.height, frame.width, frame.channels))
             logger.debug(image)
             self.last_image = image
         else:
