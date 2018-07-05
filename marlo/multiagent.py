@@ -31,7 +31,7 @@ def _run_agent(env_name, config, role, rounds):
     env.close()
 
 
-def start_agents(env, env_name, config, number_of_rollouts):
+def start_agents(env, env_name, config, number_of_rollouts, daemon=False):
     """Start background agents in multi-agent games"""
 
     xml = etree.parse(env.mission_file)
@@ -44,7 +44,7 @@ def start_agents(env, env_name, config, number_of_rollouts):
     config['client_pool'] = client_pool
     config['experiment_id'] = experiment_id
 
-    threads = [Thread(target=_run_agent, args=(env_name, config, t + 1, number_of_rollouts))
+    threads = [Thread(target=_run_agent, args=(env_name, config, t + 1, number_of_rollouts), daemon=daemon)
                for t in range(number_of_agents - 1)]
     [t.start() for t in threads]
     return lambda: [t.join() for t in threads]

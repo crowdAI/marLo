@@ -57,7 +57,6 @@ def main():
         kwargs={'mission_file': args.mission_file}
     )
 
-    # Create one env to obtain the mission xml.
     env = gym.make(env_name)
 
     resolution = [84, 84]  # [800, 600]
