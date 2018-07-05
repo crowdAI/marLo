@@ -97,7 +97,7 @@ class MinecraftEnv(gym.Env):
 
     def init(self, client_pool=None, role=0,
              continuous_discrete=True, add_noop_command=None,
-             max_retries=90, retry_sleep=10, step_sleep=0.001, skip_steps=0,
+             max_retries=30, retry_sleep=3, step_sleep=0.001, skip_steps=0,
              videoResolution=None, videoWithDepth=None,
              observeRecentCommands=None, observeHotBar=None,
              observeFullInventory=None, observeGrid=None,
@@ -155,7 +155,6 @@ class MinecraftEnv(gym.Env):
                 self.mission_spec.allowAllDiscreteMovementCommands()
             elif isinstance(allowDiscreteMovement, list):
                 for cmd in allowDiscreteMovement:
-                    print("allow discrete command " + cmd)
                     self.mission_spec.allowDiscreteMovementCommand(cmd)
 
             if allowAbsoluteMovement is True:
@@ -335,7 +334,7 @@ class MinecraftEnv(gym.Env):
         for spc, cmds, acts in zip(self.action_spaces, self.action_names, actions):
             if isinstance(spc, spaces.Discrete):
                 logger.debug(cmds[acts])
-                print("cmdD " + cmds[acts])
+                print("cmd " + cmds[acts])
                 self._send_command(cmds[acts])
             elif isinstance(spc, spaces.Box):
                 for cmd, val in zip(cmds, acts):
