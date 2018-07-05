@@ -1,12 +1,14 @@
 import logging
 import time
 import os
-
+from pathlib import Path
 import numpy as np
 import json
 import xml.etree.ElementTree as ET
 import gym
 from gym import spaces, error
+
+reshape = False
 
 try:
     import malmo.MalmoPython as MalmoPython
@@ -26,6 +28,13 @@ SINGLE_DIRECTION_DISCRETE_MOVEMENTS = [ "jumpeast", "jumpnorth", "jumpsouth", "j
 
 MULTIPLE_DIRECTION_DISCRETE_MOVEMENTS = [ "move", "turn", "look", "strafe",
                                           "jumpmove", "jumpstrafe" ]
+
+
+class InvalidMissionFile(Exception):
+    def __init__(self, file_name):
+        self.file_name = file_name
+
+
 class TurnState(object):
     def __init__(self):
         self._turn_key = None
@@ -51,6 +60,7 @@ class TurnState(object):
     def has_played(self, value):
         self._has_played = bool(value)
 
+
 class MinecraftEnv(gym.Env):
     metadata = {'render.modes': ['human', 'rgb_array']}
 
@@ -58,8 +68,16 @@ class MinecraftEnv(gym.Env):
         super(MinecraftEnv, self).__init__()
 
         self.agent_host = MalmoPython.AgentHost()
-        assets_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../assets')
-        self.mission_file = os.path.join(assets_dir, mission_file)
+
+        # Allow full paths for mission files.
+        if Path(mission_file).is_file():
+            self.mission_file = mission_file
+        else:
+            assets_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../assets')
+            self.mission_file = os.path.join(assets_dir, mission_file)
+            if not Path(self.mission_file).is_file():
+                raise InvalidMissionFile(mission_file)
+
         self.load_mission_file(self.mission_file)
 
         self.client_pool = None
@@ -281,8 +299,8 @@ class MinecraftEnv(gym.Env):
                     logger.error("Error starting mission: "+str(e))
                     raise
                 else:
-                    logger.warn("Error starting mission: "+str(e))
-                    logger.info("Sleeping for %d seconds...", self.retry_sleep)
+                    logger.warn("On starting mission: "+str(e))
+                    logger.warn("Will retry after %d seconds...", self.retry_sleep)
                     time.sleep(self.retry_sleep)
 
         # Loop until mission starts:
@@ -349,7 +367,8 @@ class MinecraftEnv(gym.Env):
             frame = world_state.video_frames[0]
 
             image = np.frombuffer(frame.pixels, dtype=np.uint8)
-            # image = image.reshape((frame.height, frame.width, frame.channels))
+            if reshape:
+                image = image.reshape((frame.height, frame.width, frame.channels))
             logger.debug(image)
             self.last_image = image
         else:

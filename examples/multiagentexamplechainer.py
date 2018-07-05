@@ -67,7 +67,7 @@ def main():
 
     env.init(**config)
 
-    obs_size = 84 * 84 * 3  # env.observation_space.shape[0]
+    obs_size = 84 * 84 * 3
     n_actions = env.action_space.n
     q_func = QFunction(obs_size, n_actions)
 
