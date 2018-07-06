@@ -62,7 +62,7 @@ def main():
     resolution = [84, 84]  # [800, 600]
     config = {'allowDiscreteMovement': ["move", "turn"], 'videoResolution': resolution, "turn_based": turn_based}
 
-    join_agents = start_agents(env, env_name, config, number_of_rollouts)
+    join_agents = start_agents(env, env_name, None, config, number_of_rollouts)
 
     env.init(**config)
 
@@ -132,7 +132,7 @@ def main():
     print("evaluate")
     number_of_evals = 1
 
-    join_agents = start_agents(env, env_name, config, number_of_evals)
+    join_agents = start_agents(env, env_name, None, config, number_of_evals)
 
     env.init(**config)
 

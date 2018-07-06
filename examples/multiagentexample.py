@@ -7,6 +7,20 @@ import time
 from marlo.multiagent import start_agents
 
 
+class MyBackgroundAgent(object):
+    """Example background agent"""
+    def __init__(self, env):
+        self._env = env
+
+    def create_agent(self, env):
+        # Called to create an agent for a specified (environment) env
+        return MyBackgroundAgent(env)
+
+    def action(self, obs):
+        # Replace value returned for behaviour other than randomly sampled actions!
+        return self._env.action_space.sample()
+
+
 def main():
     """Running Malmo gym env for multiple agents."""
 
@@ -37,7 +51,7 @@ def main():
     resolution = [800, 600]
     config = {'allowDiscreteMovement': ["move", "turn"], 'videoResolution': resolution, 'turn_based': turn_based}
 
-    join_agents = start_agents(env, env_name, config, number_of_rollouts)
+    join_agents = start_agents(env, env_name, MyBackgroundAgent(env), config, number_of_rollouts)
 
     env.init(**config)
 
