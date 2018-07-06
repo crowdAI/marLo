@@ -1,5 +1,4 @@
 from chainerrl.agents.dqn import DQN
-from chainerrl import experiments
 from chainerrl import explorers
 from chainerrl import links
 from chainerrl import misc
@@ -10,6 +9,8 @@ import chainerrl
 import logging
 import sys, os
 
+import chainer
+
 import gym
 gym.undo_logger_setup()  # NOQA
 from gym import spaces
@@ -17,6 +18,7 @@ import gym.wrappers
 
 import numpy as np
 import marlo
+from marlo import experiments
 import time
 
 # Tweakable parameters
@@ -26,7 +28,7 @@ start_epsilon = 1.0
 end_epsilon = 0.1
 final_exploration_steps = 10 ** 4
 outdir = 'results'
-gpu = None
+gpu = 0
 gamma = 0.99
 replay_start_size = 1000
 target_update_interval = 10 ** 2
@@ -34,7 +36,7 @@ update_interval = 1
 target_update_method = 'hard'
 soft_update_tau = 1e-2
 rbuf_capacity = 5 * 10 ** 5
-steps = 10 ** 5
+steps = 10 ** 4
 eval_n_runs = 100
 eval_interval = 10 ** 4
 
@@ -42,7 +44,7 @@ def phi(obs):
     return obs.astype(np.float32)
 
 # Ensure that you have a minecraft-client running with : marlo-server --port 10000
-env = gym.make('MinecraftCliffWalking1-v0')
+env = gym.make('CatchTheMobSinglePlayer-v0')
 
 env.init(
     allowContinuousMovement=["move", "turn"],
@@ -93,6 +95,11 @@ explorer = explorers.ConstantEpsilonGreedy(
 # Set up Adam optimizer
 opt = optimizers.Adam()
 opt.setup(q_func)
+
+# Use GPU if any available
+if gpu >= 0:
+	chainer.cuda.get_device(gpu).use()
+	q_func.to_gpu(gpu)
 
 # DQN uses Experience Replay.
 # Specify a replay buffer and its capacity.
