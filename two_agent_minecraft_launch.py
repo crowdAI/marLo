@@ -3,6 +3,7 @@ import signal
 import psutil
 
 from marlo.launch_minecraft_in_background import launch_minecraft_in_background
+from pathlib import Path
 
 
 def kill(processes):
@@ -18,21 +19,26 @@ def kill(processes):
         os.kill(parent.pid, signal.SIGTERM)
 
 
-# Configure location of Minecraft TODO requires knowing exact install dir
-if os.name == 'nt':
-    minecraft_dir = "C:\malmo\MalmoPlatform\Minecraft"
-else: 
-    minecraft_dir = "/mnt/c/malmo/MalmoPlatform/Minecraft"
+minecraft_dir = Path("MalmoPlatform/Minecraft")
 
+if not minecraft_dir.is_dir():
+    print("Malmo Minecraft downloaded and build ...")
+    try:
+        import malmo
+        from malmo.minecraftbootstrap import download
+        download(branch="master", buildMod=True)
+    except e:
+        print("Could not download Marlo and build from GitHub: " + str(e))
+        exit(1)
+
+minecraft_path = str(minecraft_dir.absolute())
 os.chdir(minecraft_dir)
 
 print("Launching ...")
-launch_processes = launch_minecraft_in_background(minecraft_dir, [10000, 10001], replaceable=False)
-
-# TODO Add agent code here.
+launch_processes = launch_minecraft_in_background(minecraft_path, [10000, 10001], replaceable=False)
 
 while True:
-    quit = input("\nInput \"quit\" to stop launched Minecraft game: ")
+    quit = input("\nInput \"quit\" to stop launched Minecraft: ")
     if quit == "quit":
         break
 
