@@ -32,7 +32,7 @@ if not minecraft_dir.is_dir():
         exit(1)
 
 minecraft_path = str(minecraft_dir.absolute())
-os.chdir(minecraft_dir)
+os.chdir(str(minecraft_dir))
 
 print("Launching ...")
 launch_processes = launch_minecraft_in_background(minecraft_path, [10000, 10001], replaceable=False)
