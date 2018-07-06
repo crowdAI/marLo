@@ -38,7 +38,7 @@ print("Launching ...")
 launch_processes = launch_minecraft_in_background(minecraft_path, [10000, 10001], replaceable=False)
 
 while True:
-    quit = input("\nInput \"quit\" to stop launched Minecraft game: ")
+    quit = input("\nInput \"quit\" to stop launched Minecraft: ")
     if quit == "quit":
         break
 
