@@ -8,8 +8,8 @@ standard_library.install_aliases()  # NOQA
 import logging
 import os
 
-from experiments.evaluator import Evaluator
-from experiments.evaluator import save_agent
+from marlo.experiments.evaluator import Evaluator
+from marlo.experiments.evaluator import save_agent
 from chainerrl.misc.ask_yes_no import ask_yes_no
 from chainerrl.misc.makedirs import makedirs
 
