@@ -29,7 +29,7 @@ def ask_and_save_agent_replay_buffer(agent, t, outdir, suffix=''):
 
 def train_agent(agent, env, steps, outdir, max_episode_len=None,
                 step_offset=0, evaluator=None, successful_score=None,
-                step_hooks=[], logger=None):
+                step_hooks=[], num_resets=10**6, logger=None):
 
     logger = logger or logging.getLogger(__name__)
 
@@ -38,6 +38,7 @@ def train_agent(agent, env, steps, outdir, max_episode_len=None,
 
     # o_0, r_0
     obs = env.reset()
+    num_resets -= 1
     r = 0
 
     t = step_offset
@@ -46,8 +47,7 @@ def train_agent(agent, env, steps, outdir, max_episode_len=None,
 
     episode_len = 0
     try:
-        while t < steps:
-
+        while t < steps or num_resets > 0:
             # a_t
             action = agent.act_and_train(obs, r)
             # o_{t+1}, r_{t+1}
@@ -64,19 +64,22 @@ def train_agent(agent, env, steps, outdir, max_episode_len=None,
                 logger.info('outdir:%s step:%s episode:%s R:%s',
                             outdir, t, episode_idx, episode_r)
                 logger.info('statistics:%s', agent.get_statistics())
-                if evaluator is not None:
+                if evaluator is not None and num_resets > evaluator.n_runs:
                     evaluator.evaluate_if_necessary(
                         t=t, episodes=episode_idx + 1)
                     if (successful_score is not None and
                             evaluator.max_score >= successful_score):
                         break
-                if t == steps:
+                if t == steps and num_resets > 0:
+                    print("WARNING ran out of steps. Any background agents will continue to run.")
+                if t == steps or num_resets == 0:
                     break
                 # Start a new episode
                 episode_r = 0
                 episode_idx += 1
                 episode_len = 0
                 obs = env.reset()
+                num_resets -= 1
                 r = 0
 
     except (Exception, KeyboardInterrupt):
@@ -102,6 +105,7 @@ def train_agent_with_evaluation(agent,
                                 successful_score=None,
                                 step_hooks=[],
                                 save_best_so_far_agent=True,
+                                num_resets=10**6,
                                 logger=None,
                                 ):
     """Train an agent while regularly evaluating it.
@@ -127,6 +131,7 @@ def train_agent_with_evaluation(agent,
         save_best_so_far_agent (bool): If set to True, after each evaluation,
             if the score (= mean return of evaluation episodes) exceeds
             the best-so-far score, the current agent is saved.
+        num_resets: The number of resets to do - synchronized with background agents.
         logger (logging.Logger): Logger used in this function.
     """
 
@@ -158,4 +163,5 @@ def train_agent_with_evaluation(agent,
         evaluator=evaluator,
         successful_score=successful_score,
         step_hooks=step_hooks,
+        num_resets=num_resets,
         logger=logger)
