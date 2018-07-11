@@ -73,7 +73,7 @@ env = gym.make(env_name)
 resolution = [84, 84]  # [800, 600]
 config = {'allowDiscreteMovement': ["move", "turn"], 'videoResolution': resolution, "turn_based": turn_based}
 
-join_agents = start_agents(env, env_name, config, number_of_rollouts, daemon=True)
+join_agents = start_agents(env, env_name, None, config, number_of_rollouts, daemon=True)
 
 env.init(**config)
 
