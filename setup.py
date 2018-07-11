@@ -10,6 +10,6 @@ setup(name='marlo',
       packages=find_packages(),
       package_data={'': ['assets/*.xml']},
       zip_safe=False,
-      install_requires=['malmo', 'gym', 'lxml', 'psutil', 'chainerrl', 'pillow'],
+      install_requires=['gym', 'lxml', 'psutil', 'chainerrl', 'pillow'],
       dependency_links=[]
 )
