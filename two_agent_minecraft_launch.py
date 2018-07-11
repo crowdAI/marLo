@@ -1,6 +1,7 @@
 import os
 import signal
 import psutil
+import sys
 
 from marlo.launch_minecraft_in_background import launch_minecraft_in_background
 from pathlib import Path
@@ -27,15 +28,19 @@ if not minecraft_dir.is_dir():
         import malmo
         from malmo.minecraftbootstrap import download
         download(branch="master", buildMod=True)
-    except e:
+    except Exception as e:
         print("Could not download Marlo and build from GitHub: " + str(e))
         exit(1)
 
 minecraft_path = str(minecraft_dir.absolute())
-os.chdir(minecraft_dir)
+os.chdir(str(minecraft_dir))
 
 print("Launching ...")
 launch_processes = launch_minecraft_in_background(minecraft_path, [10000, 10001], replaceable=False)
+
+if sys.platform == "darwin":
+    # Minecraft launched in separate terminals.
+    exit(0)
 
 while True:
     quit = input("\nInput \"quit\" to stop launched Minecraft: ")
