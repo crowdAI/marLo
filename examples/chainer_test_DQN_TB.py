@@ -1,4 +1,5 @@
 from chainerrl.agents.dqn import DQN
+from chainerrl import experiments
 from chainerrl import explorers
 from chainerrl import links
 from chainerrl import misc
@@ -9,8 +10,6 @@ import chainerrl
 import logging
 import sys, os
 
-import chainer
-
 import gym
 gym.undo_logger_setup()  # NOQA
 from gym import spaces
@@ -18,8 +17,34 @@ import gym.wrappers
 
 import numpy as np
 import marlo
-from marlo import experiments
 import time
+
+from tb_chainer import name_scope, within_name_scope
+
+class QFunction(chainer.Chain):
+
+    def __init__(self, obs_size, n_actions, n_hidden_channels=50):
+        super().__init__()
+        with self.init_scope():
+            self.l0 = L.Linear(obs_size, n_hidden_channels)
+            self.l1 = L.Linear(n_hidden_channels, n_hidden_channels)
+            self.l2 = L.Linear(n_hidden_channels, n_actions)
+
+	@within_name_scope('MLP')
+    def __call__(self, x, test=False):
+        """
+        Args:
+            x (ndarray or chainer.Variable): An observation
+            test (bool): a flag indicating whether it is in test mode
+        """
+		with name_scope('linear1', self.l0.params()):
+			h1 = F.tanh(self.l0(x))
+		with name_scope('linear2', self.l1.params()):
+			h2 = F.tanh(self.l1(h1))
+		with name_scope('linear3', self.l2.params()):
+            o = self.l2(h2)
+			
+        return chainerrl.action_value.DiscreteActionValue(o)
 
 # Tweakable parameters
 n_hidden_channels = 100
@@ -28,7 +53,7 @@ start_epsilon = 1.0
 end_epsilon = 0.1
 final_exploration_steps = 10 ** 4
 outdir = 'results'
-gpu = -1
+gpu = None
 gamma = 0.99
 replay_start_size = 1000
 target_update_interval = 10 ** 2
@@ -36,7 +61,7 @@ update_interval = 1
 target_update_method = 'hard'
 soft_update_tau = 1e-2
 rbuf_capacity = 5 * 10 ** 5
-steps = 10 ** 4
+steps = 10 ** 5
 eval_n_runs = 100
 eval_interval = 10 ** 4
 
@@ -44,7 +69,7 @@ def phi(obs):
     return obs.astype(np.float32)
 
 # Ensure that you have a minecraft-client running with : marlo-server --port 10000
-env = gym.make('CatchTheMobSinglePlayer-v0')
+env = gym.make('MinecraftCliffWalking1-v0')
 
 env.init(
     allowContinuousMovement=["move", "turn"],
@@ -71,10 +96,15 @@ obs_size = obs_space.low.size
 action_space = env.action_space
 
 n_actions = action_space.n
-q_func = q_functions.FCStateQFunctionWithDiscreteAction(
+
+#q_func = q_functions.FCStateQFunctionWithDiscreteAction(
+			#obs_size, n_actions,
+			#n_hidden_channels=n_hidden_channels,
+			#n_hidden_layers=n_hidden_layers
+		#)
+	
+q_func = QFunction(
 			obs_size, n_actions,
-			n_hidden_channels=n_hidden_channels,
-			n_hidden_layers=n_hidden_layers
 		)
 		
 # Use epsilon-greedy for exploration
@@ -96,11 +126,6 @@ explorer = explorers.ConstantEpsilonGreedy(
 opt = optimizers.Adam()
 opt.setup(q_func)
 
-# Use GPU if any available
-if gpu >= 0:
-	chainer.cuda.get_device(gpu).use()
-	q_func.to_gpu(gpu)
-
 # DQN uses Experience Replay.
 # Specify a replay buffer and its capacity.
 rbuf = chainerrl.replay_buffer.ReplayBuffer(capacity=rbuf_capacity)
@@ -119,7 +144,11 @@ agent = DQN(
 		soft_update_tau=soft_update_tau,
 		episodic_update_len=16
 	)
+
 	
+# Start tensorboard writer
+writer = SummaryWriter('runs/'+datetime.now().strftime('%B%d  %H:%M:%S'))
+
 # Start training
 experiments.train_agent_with_evaluation(
 		agent=agent, 

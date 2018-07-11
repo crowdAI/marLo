@@ -19,7 +19,7 @@ import marlo
 import time
 
 outdir = 'results'
-gpu = -1
+gpu = 0
 batchsize = 10
 rollout_len = 10
 n_hidden_channels = 100
@@ -42,7 +42,7 @@ def phi(obs):
     return obs.astype(np.float32)
 	
 # Ensure that you have a minecraft-client running with : marlo-server --port 10000
-env = gym.make('MinecraftCliffWalking1-v0')
+env = gym.make('CatchTheMobSinglePlayer-v0')
 
 env.init(
     allowContinuousMovement=["move", "turn"],

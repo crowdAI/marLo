@@ -18,8 +18,9 @@ import gym.wrappers
 
 import numpy as np
 import marlo
-from marlo import experiments
 import time
+
+import experiments
 
 # Tweakable parameters
 n_hidden_channels = 100

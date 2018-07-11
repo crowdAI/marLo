@@ -14,7 +14,7 @@ import marlo
 import time
 
 # Tweakable parameters, can be turned into args if needed
-gpu = None
+gpu = 0
 steps = 10 ** 6
 eval_n_runs = 10
 eval_interval = 10000
@@ -41,7 +41,7 @@ def phi(obs):
 
 
 # Ensure that you have a minecraft-client running with : marlo-server --port 10000
-env = gym.make('MinecraftCliffWalking1-v0')
+env = gym.make("CatchTheMobSinglePlayer-v0")
 
 env.init(
     allowContinuousMovement=["move", "turn"],
@@ -96,6 +96,11 @@ def clip_eps_setter(env, agent, value):
 clip_eps_decay_hook = experiments.LinearInterpolationHook(
 	steps, 0.2, 0, clip_eps_setter)
 
+# Use GPU if any available
+if gpu >= 0:
+	chainer.cuda.get_device(gpu).use()
+	model.to_gpu(gpu)
+	
 # Start training/evaluation
 experiments.train_agent_with_evaluation(
 	agent=agent,

@@ -1,5 +1,6 @@
+from marlo import experiments
+
 from chainerrl.agents.dqn import DQN
-from chainerrl import experiments
 from chainerrl import explorers
 from chainerrl import links
 from chainerrl import misc
@@ -39,10 +40,9 @@ update_interval = 1
 target_update_method = 'hard'
 soft_update_tau = 1e-2
 rbuf_capacity = 5 * 10 ** 5
-steps = 10 ** 2
+max_steps = 10 ** 8  # set really high so that we do the specified number of rollouts
 eval_n_runs = 10
 eval_interval = 10 ** 4
-number_of_rollouts = 10 ** 4  # Set very high to keep background agent(s) starting episodes.
 
 
 def phi(obs):
@@ -51,12 +51,14 @@ def phi(obs):
 
 parser = argparse.ArgumentParser(description='Multi-agent chainerrl DQN example')
 # Example missions: 'pig_chase.xml' or 'bb_mission_1.xml' or 'th_mission_1.xml'
+parser.add_argument('--rollouts', type=int, default=1, help='number of rollouts')
 parser.add_argument('--mission_file', type=str, default="basic.xml", help='the mission xml')
 parser.add_argument('--turn_based', action='store_true')
 args = parser.parse_args()
 
 
 turn_based = args.turn_based
+number_of_rollouts = args.rollouts
 
 # Register the multi-agent environment.
 env_name = 'malmo-multi-agent-v0'
@@ -73,7 +75,7 @@ env = gym.make(env_name)
 resolution = [84, 84]  # [800, 600]
 config = {'allowDiscreteMovement': ["move", "turn"], 'videoResolution': resolution, "turn_based": turn_based}
 
-join_agents = start_agents(env, env_name, None, config, number_of_rollouts, daemon=True)
+join_agents = start_agents(env, env_name, config, number_of_rollouts + 1, daemon=True)
 
 env.init(**config)
 
@@ -95,6 +97,8 @@ print('sample action:', str(env.action_space.sample))
 while not done:
     action = env.action_space.sample()
     obs, r, done, info = env.step(action)
+
+print("Setup for training")
 
 timestep_limit = env.spec.tags.get('wrapper_config.TimeLimit.max_episode_steps')
 obs_space = env.observation_space
@@ -153,14 +157,17 @@ experiments.train_agent_with_evaluation(
     agent=agent,
     env=env,
     eval_env=env,
-    steps=steps,
+    steps=max_steps,
     eval_n_runs=eval_n_runs,
     eval_interval=eval_interval,
     outdir=outdir,
-    max_episode_len=timestep_limit
+    max_episode_len=timestep_limit,
+    num_resets=number_of_rollouts
 )
 
 print("training done")
+
+join_agents()
 
 # Draw the computational graph and save it in the output directory.
 chainerrl.misc.draw_computational_graph(
