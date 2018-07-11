@@ -17,6 +17,7 @@ pip3 install malmo
 If the above fails then you may need to install malmo manually:
 Please see [Malmo GitHub](https://github.com/Microsoft/malmo) on how to install Malmo from a binary release or building from source.
 On Linux and MacOS, You will need to include the MalmoPython.so library on your PYTHONPATH.
+Mincraft can be launched from the malmo/Minecraft directory using the launchClient.sh or launchClient.bat script with the -port argument specifying the port.
 
 ### Install marlo from GitHub
 
@@ -30,13 +31,14 @@ python setup.py install
 
 The multi-agent examples can be run from the marlo directory.
 
-First start Minecraft on ports 1000 and 10001 by running the following in a cmd terminal or shell:
+Assuming malmo was installed with pip, you can start Minecraft on ports 1000 and 10001 
+by running the following in a cmd terminal or shell:
 
 ```
 python3 two_agent_minecraft_launch.py 
 ```
 
-Then run the multi agent example with:
+Once two minecraft windows appear, run the multi agent example with:
 
 ```
 python3 -m examples.multiagentexample --turn_based --rollouts 10  --mission_file mob_chase.xml
