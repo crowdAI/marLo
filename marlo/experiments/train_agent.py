@@ -13,6 +13,9 @@ from marlo.experiments.evaluator import save_agent
 from chainerrl.misc.ask_yes_no import ask_yes_no
 from chainerrl.misc.makedirs import makedirs
 
+from datetime import datetime
+from tb_chainer import utils, SummaryWriter
+
 
 def save_agent_replay_buffer(agent, t, outdir, suffix='', logger=None):
     logger = logger or logging.getLogger(__name__)
@@ -32,6 +35,8 @@ def train_agent(agent, env, steps, outdir, max_episode_len=None,
                 step_hooks=[], num_resets=10**6, logger=None):
 
     logger = logger or logging.getLogger(__name__)
+
+    writer = SummaryWriter(r"test")
 
     episode_r = 0
     episode_idx = 0
@@ -74,6 +79,10 @@ def train_agent(agent, env, steps, outdir, max_episode_len=None,
                     print("WARNING ran out of steps. Any background agents will continue to run.")
                 if t == steps or num_resets == 0:
                     break
+                    
+                print("reward for step " + str(t) + "is r = " + str(r))
+                writer.add_scalar('reward', r, t)
+                
                 # Start a new episode
                 episode_r = 0
                 episode_idx += 1
@@ -89,6 +98,8 @@ def train_agent(agent, env, steps, outdir, max_episode_len=None,
 
     # Save the final model
     save_agent(agent, t, outdir, logger, suffix='_finish')
+    
+    writer.close()
 
 
 def train_agent_with_evaluation(agent,
