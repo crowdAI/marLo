@@ -277,15 +277,13 @@ class MinecraftEnv(gym.Env):
         if self.forceWorldReset:
             self.mission_spec.forceWorldReset()
 
-        # Give the server time to start
-        if self.role != 0:
-            time.sleep(1)
-        else:
-            # this seemed to increase probability of success in first try
-            time.sleep(0.1)
-
         # Attempt to start a mission
         for retry in range(self.max_retries + 1):
+            # Give the server time to start
+            if self.role != 0:
+                time.sleep(1)
+            else:
+                time.sleep(0.1)
             try:
                 if self.client_pool:
                     self.agent_host.startMission(self.mission_spec, self.client_pool, self.mission_record_spec,
@@ -334,16 +332,16 @@ class MinecraftEnv(gym.Env):
         for spc, cmds, acts in zip(self.action_spaces, self.action_names, actions):
             if isinstance(spc, spaces.Discrete):
                 logger.debug(cmds[acts])
-                print("cmd " + cmds[acts])
+                # print("cmd " + cmds[acts])
                 self._send_command(cmds[acts])
             elif isinstance(spc, spaces.Box):
                 for cmd, val in zip(cmds, acts):
-                    print("cmd " + cmd + " " + str(val))
+                    # print("cmd " + cmd + " " + str(val))
                     logger.debug(cmd + " " + str(val))
                     self._send_command(cmd + " " + str(val))
             elif isinstance(spc, spaces.MultiDiscrete):
                 for cmd, val in zip(cmds, acts):
-                    print("cmd " + cmd + " " + str(val))
+                    # print("cmd " + cmd + " " + str(val))
                     logger.debug(cmd + " " + str(val))
                     self._send_command(cmd + " " + str(val))
             else:
