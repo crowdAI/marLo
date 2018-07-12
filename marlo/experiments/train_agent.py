@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 from __future__ import division
 from __future__ import absolute_import
 from future import standard_library
+from matplotlib.axes._base import _AxesBase
+
 standard_library.install_aliases()  # NOQA
 
 import logging
@@ -65,8 +67,10 @@ def train_agent(agent, env, steps, outdir, max_episode_len=None,
                             outdir, t, episode_idx, episode_r)
                 logger.info('statistics:%s', agent.get_statistics())
                 if evaluator is not None and num_resets > evaluator.n_runs:
-                    evaluator.evaluate_if_necessary(
+                    evaluated, score = evaluator.evaluate_if_necessary(
                         t=t, episodes=episode_idx + 1)
+                    if evaluated:
+                        num_resets -= evaluator.n_runs
                     if (successful_score is not None and
                             evaluator.max_score >= successful_score):
                         break
@@ -80,6 +84,7 @@ def train_agent(agent, env, steps, outdir, max_episode_len=None,
                 episode_len = 0
                 obs = env.reset()
                 num_resets -= 1
+                print("eval resets " + str(num_resets))
                 r = 0
 
     except (Exception, KeyboardInterrupt):
