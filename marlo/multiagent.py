@@ -31,7 +31,7 @@ def _run_agent(env_name, background_agent, config, role, rounds):
     agent = background_agent.create_agent(env)
 
     for i in range(rounds):
-        print("reset " + str(role) + " for new game " + str(i + 1))
+        print("reset agent " + str(role) + " for new game " + str(i + 1))
         env.reset()
 
         obs = None

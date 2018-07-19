@@ -50,6 +50,7 @@ def run_evaluation_episodes(env, agent, n_runs, max_episode_len=None,
     """
     logger = logger or logging.getLogger(__name__)
     scores = []
+    print("evaluate " + str(n_runs) + " runs")
     for i in range(n_runs):
         obs = env.reset()
         done = False
@@ -197,6 +198,6 @@ class Evaluator(object):
         if t >= self.prev_eval_t + self.eval_interval:
             score = self.evaluate_and_update_max_score(t, episodes)
             self.prev_eval_t = t - t % self.eval_interval
-            return score
-        return None
+            return True, score
+        return False, None
 
