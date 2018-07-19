@@ -64,6 +64,9 @@ register(
 
 env = gym.make(env_name)
 
+resolution = [84, 84]  # [800, 600]
+config = {'allowDiscreteMovement': ["move", "turn"], 'videoResolution': resolution, "turn_based": turn_based}
+
 env.init(**config)
 
 #env.init(
