@@ -80,8 +80,8 @@ def train_agent(agent, env, steps, outdir, max_episode_len=None,
                 if t == steps or num_resets == 0:
                     break
                     
-                print("reward for step " + str(t) + "is r = " + str(r))
-                writer.add_scalar('reward', r, t)
+                print("reward for step " + str(t) + "is episode_r = " + str(episode_r))
+                writer.add_scalar('reward', episode_r, t)
                 
                 # Start a new episode
                 episode_r = 0
