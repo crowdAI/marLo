@@ -17,19 +17,6 @@
 * minecraft
 * MinecraftDefaultWorld1-v0
 * MinecraftDefaultFlat1-v0
-* TrickyArena1-v0
-* Eating1-v0
-* CliffWalking1-v0
-* Maze1-v0
-* Maze2-v0
-* MinecraftBasic-v0
-* MinecraftObstacles-v0
-* MinecraftSimpleRoomMaze-v0
-* MinecraftAttic-v0
-* MinecraftVertical-v0
-* MinecraftComplexityUsage-v0
-* MinecraftMedium-v0
-* MinecraftHard-v0
 * CatchTheMobSinglePlayer-v0
 
 You can use these by
