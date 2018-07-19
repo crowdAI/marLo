@@ -50,7 +50,10 @@ parser = argparse.ArgumentParser(description='Multi-agent chainerrl DQN example'
 parser.add_argument('--rollouts', type=int, default=1, help='number of rollouts')
 parser.add_argument('--mission_file', type=str, default="basic.xml", help='the mission xml')
 parser.add_argument('--turn_based', action='store_true')
-args = parser.parse_args()
+args = parser.parse_args()	
+
+turn_based = args.turn_based
+number_of_rollouts = args.rollouts
 	
 # Ensure that you have a minecraft-client running with : marlo-server --port 10000
 env_name = 'debug-v0'
