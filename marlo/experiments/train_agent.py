@@ -8,7 +8,7 @@ from matplotlib.axes._base import _AxesBase
 standard_library.install_aliases()  # NOQA
 
 import logging
-import os
+import sys, os, time
 
 from marlo.experiments.evaluator import Evaluator
 from marlo.experiments.evaluator import save_agent
@@ -38,8 +38,11 @@ def train_agent(agent, env, steps, outdir, max_episode_len=None,
 
     logger = logger or logging.getLogger(__name__)
 
-    writer = SummaryWriter(r"test")
-    testLog = open("testlog.txt","w") 
+    # Use time string and agent class name as file name identifiers
+    timestr = time.strftime("%Y%m%d-%H%M%S")
+    agentClassName = agent.__class__.__name__[:10]
+    writer = SummaryWriter(r"tensorboard/tensorBoard_exp_"+timestr+"_"+agentClassName)
+    testLog = open("logging/step_rewardLog_"+timestr+"_"+agentClassName+".txt","w") 
 
     episode_r = 0
     episode_idx = 0
