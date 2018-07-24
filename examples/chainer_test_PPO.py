@@ -1,16 +1,21 @@
 from chainerrl.agents import a3c
 from chainerrl.agents import PPO
-from chainerrl import experiments
 from chainerrl import links
 from chainerrl import misc
 from chainerrl.optimizers.nonbias_weight_decay import NonbiasWeightDecay
 from chainerrl import policies
 import chainer
+
 import logging
 import sys
+import argparse
+
 import gym
+from gym.envs.registration import register
+
 import numpy as np
 import marlo
+from marlo import experiments
 import time
 
 # Tweakable parameters, can be turned into args if needed
@@ -39,14 +44,32 @@ class A3CFFSoftmax(chainer.ChainList, a3c.A3CModel):
 def phi(obs):
     return obs.astype(np.float32)
 
+parser = argparse.ArgumentParser(description='Multi-agent chainerrl DQN example')
+# Example missions: 'pig_chase.xml' or 'bb_mission_1.xml' or 'th_mission_1.xml'
+parser.add_argument('--rollouts', type=int, default=1, help='number of rollouts')
+parser.add_argument('--mission_file', type=str, default="basic.xml", help='the mission xml')
+parser.add_argument('--turn_based', action='store_true')
+args = parser.parse_args()	
 
+turn_based = args.turn_based
+number_of_rollouts = args.rollouts
+	
 # Ensure that you have a minecraft-client running with : marlo-server --port 10000
-env = gym.make("CatchTheMobSinglePlayer-v0")
+env_name = 'debug-v0'
 
-env.init(
-    allowContinuousMovement=["move", "turn"],
-    videoResolution=[800, 600]
-    )
+register(
+    id=env_name,
+    entry_point='marlo.envs:MinecraftEnv',
+    # Make sure mission xml is in the marlo/assets directory.
+    kwargs={'mission_file': args.mission_file}
+)
+
+env = gym.make(env_name)
+
+resolution = [84, 84]  # [800, 600]
+config = {'allowDiscreteMovement': ["move", "turn"], 'videoResolution': resolution, "turn_based": turn_based}
+
+env.init(**config)
 
 obs = env.reset()
 env.render(mode="rgb_array")
@@ -87,14 +110,16 @@ def lr_setter(env, agent, value):
 	agent.optimizer.alpha = value
 
 lr_decay_hook = experiments.LinearInterpolationHook(
-	steps, 3e-4, 0, lr_setter)
+	steps, 3e-4, 0, lr_setter
+	)
 
 # Linearly decay the clipping parameter to zero
 def clip_eps_setter(env, agent, value):
 	agent.clip_eps = value
 
 clip_eps_decay_hook = experiments.LinearInterpolationHook(
-	steps, 0.2, 0, clip_eps_setter)
+	steps, 0.2, 0, clip_eps_setter
+	)
 
 # Use GPU if any available
 if gpu >= 0:
@@ -116,3 +141,9 @@ experiments.train_agent_with_evaluation(
 		clip_eps_decay_hook,
 	],
 )
+
+# Draw the computational graph and save it in the output directory.
+chainerrl.misc.draw_computational_graph(
+	[q_func(np.zeros_like(obs_space.low, dtype=np.float32)[None])],
+	os.path.join(outdir, 'model')
+	)

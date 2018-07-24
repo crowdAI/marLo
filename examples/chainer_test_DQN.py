@@ -6,11 +6,11 @@ from chainerrl import q_functions
 from chainerrl import replay_buffer
 from chainer import optimizers
 import chainerrl
+import chainer
+
 import logging
 import sys, os
 import argparse
-
-import chainer
 
 import gym
 gym.undo_logger_setup()  # NOQA
@@ -30,7 +30,7 @@ start_epsilon = 1.0
 end_epsilon = 0.1
 final_exploration_steps = 10 ** 4
 outdir = 'results'
-gpu = -1
+gpu = 0
 gamma = 0.99
 replay_start_size = 1000
 target_update_interval = 10 ** 2
@@ -38,7 +38,7 @@ update_interval = 1
 target_update_method = 'hard'
 soft_update_tau = 1e-2
 rbuf_capacity = 5 * 10 ** 5
-steps = 10 ** 4
+steps = 10 ** 5
 eval_n_runs = 100
 eval_interval = 10 ** 4
 
@@ -145,12 +145,6 @@ agent = DQN(
 		soft_update_tau=soft_update_tau,
 		episodic_update_len=16
 	)	
-
-# Draw the computational graph and save it in the output directory.
-chainerrl.misc.draw_computational_graph(
-	[q_func(np.zeros_like(obs_space.low, dtype=np.float32)[None])],
-	os.path.join(outdir, 'model')
-	)
 	
 # Start training
 experiments.train_agent_with_evaluation(
@@ -162,4 +156,10 @@ experiments.train_agent_with_evaluation(
 		eval_interval=eval_interval,
 		outdir=outdir, 
 		max_episode_len=timestep_limit
+	)
+	
+# Draw the computational graph and save it in the output directory.
+chainerrl.misc.draw_computational_graph(
+	[q_func(np.zeros_like(obs_space.low, dtype=np.float32)[None])],
+	os.path.join(outdir, 'model')
 	)

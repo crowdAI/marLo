@@ -39,6 +39,7 @@ def train_agent(agent, env, steps, outdir, max_episode_len=None,
     logger = logger or logging.getLogger(__name__)
 
     writer = SummaryWriter(r"test")
+    testLog = open("testlog.txt","w") 
 
     episode_r = 0
     episode_idx = 0
@@ -63,11 +64,14 @@ def train_agent(agent, env, steps, outdir, max_episode_len=None,
             episode_r += r
             episode_len += 1
 
+            testLog.write("reward for step " + str(t) + " = " + str(r) + "\n")
+            
             for hook in step_hooks:
                 hook(env, agent, t)
 
             if done or episode_len == max_episode_len or t == steps:
-                agent.stop_episode_and_train(obs, r, done=done)
+                writer.add_scalar('last reward in episode', r, t)
+                agent.stop_episode_and_train(obs, episode_r, done=done)
                 logger.info('outdir:%s step:%s episode:%s R:%s',
                             outdir, t, episode_idx, episode_r)
                 logger.info('statistics:%s', agent.get_statistics())
@@ -105,6 +109,7 @@ def train_agent(agent, env, steps, outdir, max_episode_len=None,
     save_agent(agent, t, outdir, logger, suffix='_finish')
     
     writer.close()
+    testLog.close()
 
 
 def train_agent_with_evaluation(agent,
