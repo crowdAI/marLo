@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='marlo',
-      version='0.0.1dev2',
+      version='0.0.1dev3',
       description='Marlo',
       url='https://github.com/crowdAI/marlo',
       author='S.P. Mohanty',
@@ -10,6 +10,6 @@ setup(name='marlo',
       packages=find_packages(),
       package_data={'': ['assets/*.xml']},
       zip_safe=False,
-      install_requires=['gym==0.9.6'],
+      install_requires=['gym'],
       dependency_links=[]
 )
