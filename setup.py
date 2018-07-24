@@ -10,6 +10,6 @@ setup(name='marlo',
       packages=find_packages(),
       package_data={'': ['assets/*.xml']},
       zip_safe=False,
-      install_requires=['gym==0.7.4'],
+      install_requires=['gym==0.9.6'],
       dependency_links=[]
 )
