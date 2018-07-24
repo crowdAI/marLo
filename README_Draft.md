@@ -43,7 +43,7 @@ pip install pygame
 ### Check if Malmo is installed properly
 ```python
 python -c "import MalmoPython" #for use of the Python API
-malmo-server -port 10000 # For launching the minecraft client (TODO: Fix name conventions)
+$MALMO_MINECRAFT_ROOT/launchClient.sh -port 10000 # For launching the minecraft client (TODO: Fix name conventions)
 # Or if you are not using the conda package, then you are free to launch the minecraft client
 # using your method of choice.
 
