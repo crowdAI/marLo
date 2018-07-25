@@ -95,20 +95,35 @@ class MinecraftEnv(gym.Env):
         self.mission_spec = MalmoPython.MissionSpec(mission_xml, True)
         logger.info("Loaded mission: " + self.mission_spec.getSummary())
 
-    def init(self, client_pool=None, role=0,
-             continuous_discrete=True, add_noop_command=None,
-             max_retries=30, retry_sleep=3, step_sleep=0.001, skip_steps=0,
-             videoResolution=None, videoWithDepth=None,
-             observeRecentCommands=None, observeHotBar=None,
-             observeFullInventory=None, observeGrid=None,
-             observeDistance=None, observeChat=None,
-             allowContinuousMovement=None, allowDiscreteMovement=None,
-             allowAbsoluteMovement=None, recordDestination=None,
-             recordObservations=None, recordRewards=None,
-             recordCommands=None, recordMP4=None,
-             gameMode=None, forceWorldReset=None,
+    def init(self, client_pool=None, 
+             role=0,
+             continuous_discrete=True, 
+             add_noop_command=None,
+             max_retries=30, 
+             retry_sleep=3, 
+             step_sleep=0.001, 
+             skip_steps=0,
+             videoResolution=None, 
+             videoWithDepth=None,
+             observeRecentCommands=None, 
+             observeHotBar=None,
+             observeFullInventory=None, 
+             observeGrid=None,
+             observeDistance=None, 
+             observeChat=None,
+             allowContinuousMovement=None, 
+             allowDiscreteMovement=None,
+             allowAbsoluteMovement=None, 
+             recordDestination=None,
+             recordObservations=None, 
+             recordRewards=None,
+             recordCommands=None, 
+             recordMP4=None,
+             gameMode=None, 
+             forceWorldReset=None,
              turn_based=False,
-             experiment_id="experimentid"):
+             experiment_id="experimentid"
+             ):
 
         self.role = role
         self.max_retries = max_retries
