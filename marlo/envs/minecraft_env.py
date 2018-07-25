@@ -415,7 +415,8 @@ class MinecraftEnv(gym.Env):
                 for el in root.findall('{http://ProjectMalmo.microsoft.com}HumanReadableStatus'):
                     logger.info("Mission ended: %s", el.text)
 
-        # sum rewards (actually there should be only one)
+        # sum rewards
+        # Get Cumulative Reward 
         reward = 0
         for r in world_state.rewards:
             reward += r.getValue()
