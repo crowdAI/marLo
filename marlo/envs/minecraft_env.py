@@ -175,8 +175,11 @@ class MinecraftEnv(gym.Env):
         self.video_height = self.mission_spec.getVideoHeight(0)
         self.video_width = self.mission_spec.getVideoWidth(0)
         self.video_depth = self.mission_spec.getVideoChannels(0)
-        self.observation_space = spaces.Box(low=0, high=255,
-                shape=(self.video_height, self.video_width, self.video_depth))
+        self.observation_space = spaces.Box(
+                low=0, high=255,
+                shape=(self.video_height, self.video_width, self.video_depth),
+                dtype=np.uint8
+                )
         # dummy image just for the first observation
         # self.last_image = np.zeros((self.video_height, self.video_width, self.video_depth), dtype=np.uint8)
         self.last_image = np.zeros((self.video_height * self.video_width * self.video_depth), dtype=np.uint8)
