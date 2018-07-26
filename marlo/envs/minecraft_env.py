@@ -6,7 +6,8 @@ import numpy as np
 import json
 import xml.etree.ElementTree as ET
 import gym
-from gym import spaces, error
+
+
 
 reshape = False
 
@@ -17,7 +18,7 @@ except ImportError as e:
     try:
         import MalmoPython
     except ImportError:
-        raise error.DependencyNotInstalled("{}. Malmo doesn't seem to be installed."
+        raise error.DependencyNotInstalled("{}.\n Malmo doesn't seem to be installed."
                 "Please install Malmo from GitHub or with \"pip3 install malmo\".".format(err))
 
 logger = logging.getLogger(__name__)

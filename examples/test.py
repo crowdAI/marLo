@@ -4,6 +4,7 @@ import time
 
 # Ensure that you have a minecraft-client running with : marlo-server --port 10000
 env = gym.make('MinecraftBasic-v0')
+#TODO marlo.make('env_name') # return a gym environment
 
 env.init(
     videoResolution=[800, 600]
