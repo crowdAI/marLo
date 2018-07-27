@@ -1,9 +1,4 @@
-from gym import spaces, error
-from gym.envs.registration import register
-from marlo.base_env_builder import MarloEnvBuilderBase
-
-
-# Import MalmoPython
+import gym
 try:
     import malmo.MalmoPython as MalmoPython
 except ImportError as e:
@@ -11,13 +6,30 @@ except ImportError as e:
     try:
         import MalmoPython
     except ImportError:
-        raise error.DependencyNotInstalled(
+        raise gym.error.DependencyNotInstalled(
                         "{}.\n Malmo doesn't seem to be installed."
                         "Please install Malmo from GitHub or with \n"
                         "> conda install -c crowdai malmo \n"
                         " OR \n"
                         "> pip3 install malmo \n".format(err))
 
+
+from gym.envs.registration import register
+from marlo.base_env_builder import MarloEnvBuilderBase
+# Import Constants
+from .constants import JOIN_WHITELISTED_PARAMS
+
+register(
+    id='MazeRunner-v0',
+    entry_point='marlo.envs:MarloEnvBuilder',
+    kwargs={},
+)
+
+def make(env_name, params={}):
+    env = gym.make(env_name)
+    env.init(params)
+    return env
+    
 ########################################################################
 # Implement marlo.make
 ########################################################################

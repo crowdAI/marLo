@@ -1,3 +1,3 @@
 #!/usr/bin/env python
 
-from main import MarloEnvBuilder
+from .main import MarloEnvBuilder

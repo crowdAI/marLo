@@ -1,5 +1,8 @@
 #!/usr/bin/env python
-from marlo import MalmoPython, MarloEnvBuilderBase
+import marlo
+from marlo import MarloEnvBuilderBase
+from marlo import MalmoPython
+
 
 import os
 from pathlib import Path
@@ -13,22 +16,17 @@ class MarloEnvBuilder(MarloEnvBuilderBase):
                             "templates"
                 )
         )
+        self.params = self._default_params()
 
-    @property
     def _default_params(self):
         _default_params = super(MarloEnvBuilder, self).default_base_params
         _default_params.update(
             dict(
-                seed="random",
                 tick_length = 50,
                 agent_name="MarLo-agent0"
             )
         )
         return _default_params
-
-    @property
-    def params(self):
-        return self._default_params
 
 
 if __name__ == "__main__":
