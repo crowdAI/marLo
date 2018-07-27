@@ -1,5 +1,8 @@
+import os
 import gym
 import importlib
+from pathlib import Path
+
 try:
     import malmo.MalmoPython as MalmoPython
 except ImportError as e:
@@ -19,18 +22,32 @@ from gym.envs.registration import register
 from marlo.base_env_builder import MarloEnvBuilderBase
 # Import Constants
 from .constants import JOIN_WHITELISTED_PARAMS
+from .utils import register_environments
 
-register(
-    id='MazeRunner-v0',
-    entry_point='marlo.envs:MazeRunner',
-    kwargs={},
-)
+########################################################################
+# Register All environments
+########################################################################
+MARLO_ENV_PATHS = [
+        os.path.join(
+            os.path.abspath(Path(__file__).parent),
+            "envs")
+    ]
+if os.getenv("MARLO_ENVS_DIRECTORY") is not None:
+    # This environment variable expects a list of directories 
+    # which contain marlo compatible env definitions
+    MARLO_ENV_PATHS += os.getenv("MARLO_ENVS_DIRECTORY").split(":")
+register_environments(MARLO_ENV_PATHS)
+########################################################################
+# Register Envs Complete
+########################################################################
+
 
 def make(env_name, params={}):
     env = gym.make(env_name)
     env.init(params)
     return env
-    
+
+
 ########################################################################
 # Implement marlo.make
 ########################################################################
