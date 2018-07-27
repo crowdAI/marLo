@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 import time
+import json
 import gym
 import numpy as np
 import marlo
 from marlo import MalmoPython
+
+import xml.etree.ElementTree as ElementTree
 
 import traceback
 
@@ -19,6 +22,32 @@ class dotdict(dict):
     __getattr__ = dict.get
     __setattr__ = dict.__setitem__
     __delattr__ = dict.__delitem__
+
+
+class TurnState(object):
+    def __init__(self):
+        self._turn_key = None
+        self._has_played = False
+
+    def update(self, key):
+        self._has_played = False
+        self._turn_key = key
+
+    @property
+    def can_play(self):
+        return self._turn_key is not None and not self._has_played
+
+    @property
+    def key(self):
+        return self._turn_key
+
+    @property
+    def has_played(self):
+        return self._has_played
+
+    @has_played.setter
+    def has_played(self, value):
+        self._has_played = bool(value)
 
 
 class MarloEnvBuilderBase(gym.Env):
@@ -37,6 +66,8 @@ class MarloEnvBuilderBase(gym.Env):
         self.mission_spec = None
         self.client_pool = None
         self.experiment_id = "experiment_id"
+        
+        self._turn = None
 
     def setup_templating(self):
         self.jinja2_fileloader = jinja2FileSystemLoader(self.templates_folder)
@@ -63,8 +94,7 @@ class MarloEnvBuilderBase(gym.Env):
                  role=0,
                  experiment_id="something",
                  client_pool = None,
-                 continuous_discrete=True,
-                 add_noop_command=None,
+                 add_noop_command=True,
                  max_retries=30,
                  retry_sleep=3,
                  step_sleep=0.001,
@@ -77,16 +107,17 @@ class MarloEnvBuilderBase(gym.Env):
                  observeGrid=None,
                  observeDistance=None,
                  observeChat=None,
-                 allowContinuousMovement=None,
-                 allowDiscreteMovement=None,
-                 allowAbsoluteMovement=None,
+                 continuous_discrete=True,
+                 allowContinuousMovement=True,
+                 allowDiscreteMovement=True,
+                 allowAbsoluteMovement=True,
                  recordDestination=None,
                  recordObservations=None,
                  recordRewards=None,
                  recordCommands=None,
                  recordMP4=None,
                  gameMode=None,
-                 forceWorldReset=None,
+                 forceWorldReset=True,
                  turn_based=False,
             )
         return self._default_base_params
@@ -226,7 +257,7 @@ class MarloEnvBuilderBase(gym.Env):
                             "Unknown discrete action : {}".format(command)
                         )
                 elif command_handler in ["AbsoluteMovement", "Inventory"]:
-                    raise NotImplementedError(
+                    logger.warn(
                         "Command Handler `{}` Not Implemented".format(
                             command_handler
                         )
@@ -246,18 +277,18 @@ class MarloEnvBuilderBase(gym.Env):
             self.action_spaces.append(
                 gym.spaces.Discrete(len(discrete_actions))
                 )
-            self.action_names.append(discrete_actions)
+            self.action_names += discrete_actions
         # Continuous Actions
         if len(continuous_actions) > 0:
             self.action_spaces.append(
                 gym.spaces.Box(-1, 1, (len(continuous_actions),))
                 )
-            self.action_names.append(continuous_actions)
+            self.action_names += continuous_actions
         if len(multidiscrete_actions) > 0:
             self.action_spaces.append(
                 gym.spaces.MultiDiscrete(multidiscrete_action_ranges)
                 )
-            self.action_names.append(multidiscrete_actions)
+            self.action_names += multidiscrete_actions
 
         # No tuples in case a single action
         if len(self.action_spaces) == 1:
@@ -337,9 +368,6 @@ class MarloEnvBuilderBase(gym.Env):
     ########################################################################
     # Env interaction functions
     ########################################################################
-    def step(self, action):
-        return True
-
     def reset(self):
         if self.params.forceWorldReset:
             # Force a World Reset on each reset
@@ -347,14 +375,13 @@ class MarloEnvBuilderBase(gym.Env):
 
         # Attempt to start a mission
         for retry in range(self.params.max_retries + 1):
-            print("RETRY : {}".format(retry))
+            logger.debug("RETRY : {}".format(retry))
             # Role 0 (the server) could take some extra time to start
             if self.params.role != 0:
                 time.sleep(1)
             else:
                 time.sleep(0.1)
             try:
-                print("Client Pool : ", self.client_pool)
                 if self.client_pool:
                     self.agent_host.startMission(
                         self.mission_spec,
@@ -389,7 +416,7 @@ class MarloEnvBuilderBase(gym.Env):
             time.sleep(0.1)
             world_state = self.agent_host.getWorldState()
             for error in world_state.errors:
-                print("Error", error)
+                logger.error("Error", error)
                 logger.warn(error.text)
 
         logger.info("Mission Running")
@@ -401,9 +428,8 @@ class MarloEnvBuilderBase(gym.Env):
         while True:
             time.sleep(self.params.step_sleep)
             world_state = self.agent_host.peekWorldState()
-            print("World State : ", world_state)
             if world_state.number_of_observations_since_last_state > \
-                    self.skip_steps or not world_state.is_mission_running:
+                    self.params.skip_steps or not world_state.is_mission_running:
                 break
         return self.agent_host.getWorldState()
 
@@ -421,3 +447,110 @@ class MarloEnvBuilderBase(gym.Env):
             # then just use the last frame, it doesn't matter much anyway
             image = self.last_image
         return image
+
+    def _get_observation(self, world_state):
+        if world_state.number_of_observations_since_last_state > 0:
+            missed = world_state.number_of_observations_since_last_state \
+                    - len(world_state.observations) - self.params.skip_steps
+            if missed > 0:
+                logger.warn("Agent missed %d observation(s).", missed)
+            assert len(world_state.observations) == 1
+            return json.loads(world_state.observations[0].text)
+        else:
+            return None
+
+    def _send_command(self, command):
+        if self._turn:
+            self.agent_host.sendCommand(command, self._turn.key)
+            self._turn.has_payed = True
+        else:
+            print(command)
+            self.agent_host.sendCommand(command)
+
+    def _take_action(self, actions):
+        # no tuple in case of a single action
+        if len(self.action_spaces) == 1:
+            actions = [actions]
+        if self._turn:
+            if not self._turn.can_play:
+                return
+
+        # send corresponding command
+        for _spaces, _commands, _actions in zip(self.action_spaces, self.action_names, actions):
+            if isinstance(_spaces, gym.spaces.Discrete):
+                logger.debug(_commands[_actions])
+                # print("cmd " + cmds[acts])
+                self._send_command(_commands[_actions])
+            elif isinstance(_spaces, spaces.Box):
+                for command, value in zip(_commands, _actions):
+                    print("command " + command + " " + str(val))
+                    logger.debug(command + " " + str(val))
+                    self._send_command(command + " " + str(val))
+            elif isinstance(spc, spaces.MultiDiscrete):
+                for command, value in zip(_commands, _actions):
+                    # print("cmd " + cmd + " " + str(val))
+                    logger.debug(command + " " + str(value))
+                    self._send_command(command + " " + str(value))
+            else:
+                logger.warn("Ignoring unknown action space for {}".format(_commands))
+
+    def step(self, action):
+        world_state = self.agent_host.peekWorldState()
+        if world_state.is_mission_running:
+            self._take_action(action)
+
+        world_state = self._get_world_state()
+
+        # Update turn state
+        if world_state.number_of_observations_since_last_state > 0:
+            data = json.loads(world_state.observations[-1].text)
+            turn_key = data.get(u'turn_key', None)
+            if turn_key is not None and turn_key != self._turn_key:
+                self._turn.update(turn_key)
+
+        # Log
+        for error in world_state.errors:
+            logger.warn(error.text)
+        for message in world_state.mission_control_messages:
+            logger.debug(message.text)
+            root = ElementTree.fromstring(message.text)
+            if root.tag == '{http://ProjectMalmo.microsoft.com}MissionEnded':
+                for el in root.findall('{http://ProjectMalmo.microsoft.com}HumanReadableStatus'):
+                    logger.info("Mission ended: %s", el.text)
+
+        # Compute Rewards
+        reward = 0
+        for _reward in world_state.rewards:
+            reward += _reward.getValue()
+
+        # Get observation
+        image = self._get_video_frame(world_state)
+
+        # detect if done ?
+        done = not world_state.is_mission_running
+
+        # gather info
+        info = {}
+        info['has_mission_begun'] = world_state.has_mission_begun
+        info['is_mission_running'] = world_state.is_mission_running
+        info['number_of_video_frames_since_last_state'] = world_state.number_of_video_frames_since_last_state
+        info['number_of_rewards_since_last_state'] = world_state.number_of_rewards_since_last_state
+        info['number_of_observations_since_last_state'] = world_state.number_of_observations_since_last_state
+        info['mission_control_messages'] = [msg.text for msg in world_state.mission_control_messages]
+        info['observation'] = self._get_observation(world_state)
+
+        return image, reward, done, info
+
+    def render(self, mode='rgb_array', close=False):
+        if mode == "rgb_array":
+            return self.last_image
+        elif mode == "human":
+            # TODO: Implement this
+            raise None
+        else:
+            raise NotImplemented("Render Mode not implemented : {}"
+                                 .format(mode))
+
+    def seed(self, seed=None):
+        self.mission_spec.setWorldSeed(str(seed))
+        return [seed]

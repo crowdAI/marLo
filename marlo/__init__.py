@@ -41,8 +41,8 @@ register_environments(MARLO_ENV_PATHS)
 # Register Envs Complete
 ########################################################################
 
-def make(env_name, params={}):
-    env = gym.make(env_name)
+def make(env_key, params={}):
+    env = gym.make(env_key)
     env.init(params)
     return env
 

@@ -1,17 +1,31 @@
 import marlo
-
+import time
 # Ensure that you have a minecraft-client running with : marlo-server --port 10000
 env = marlo.make('MazeRunner-v0',
                  params={
-                    "videoResolution" : [800, 600]
+                    "videoResolution" : [800, 600],
+                    "client_pool" : [("127.0.0.1", 10000)],
+                    "forceWorldReset" : True,
+                    "allowContinuousMovement" : ["move", "turn"],
+                    "continuous_discrete": True
                  })
 
 frame = env.reset()
 print(frame.shape)
-print(env.action_space)
-print(env.action_space.sample())
+print(env.action_names)
 import json
 print(json.dumps(env.params, indent=4))
+
+
+done = False
+while not done:
+    _action = env.action_space.sample()
+    obs, reward, done, info = env.step(env.action_space.sample())
+    time.sleep(0.5)
+    print("reward:", reward)
+    # print("done:", done)
+    # print("info", info)    
+
 
 #TODO marlo.make('env_name') # return a gym environment
 
