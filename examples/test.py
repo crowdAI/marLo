@@ -1,15 +1,17 @@
 import marlo
 
 # Ensure that you have a minecraft-client running with : marlo-server --port 10000
-# env = marlo.make('MazeRunner-v0',
-#                  params={
-#                     "videoResolution" : [1024, 768]
-#                  })
-# 
-# print(env.action_space)
-# print(env.action_space.sample())
-# import json
-# print(json.dumps(env.params, indent=4))
+env = marlo.make('MazeRunner-v0',
+                 params={
+                    "videoResolution" : [800, 600]
+                 })
+
+frame = env.reset()
+print(frame.shape)
+print(env.action_space)
+print(env.action_space.sample())
+import json
+print(json.dumps(env.params, indent=4))
 
 #TODO marlo.make('env_name') # return a gym environment
 

@@ -9,7 +9,7 @@ from pathlib import Path
 
 
 class MarloEnvBuilder(MarloEnvBuilderBase):
-    def __init__(self, extra_param={}):
+    def __init__(self, extra_params={}):
         super(MarloEnvBuilder, self).__init__(
                 templates_folder = os.path.join(
                             Path(__file__).parent,

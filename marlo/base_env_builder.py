@@ -1,9 +1,11 @@
 #!/usr/bin/env python
+import time
 import gym
 import numpy as np
 import marlo
 from marlo import MalmoPython
 
+import traceback
 
 from jinja2 import Environment as jinja2Environment
 from jinja2 import FileSystemLoader as jinja2FileSystemLoader
@@ -34,7 +36,7 @@ class MarloEnvBuilderBase(gym.Env):
         self.agent_host = MalmoPython.AgentHost()
         self.mission_spec = None
         self.client_pool = None
-        self.experiment_id = None
+        self.experiment_id = "experiment_id"
 
     def setup_templating(self):
         self.jinja2_fileloader = jinja2FileSystemLoader(self.templates_folder)
@@ -60,6 +62,7 @@ class MarloEnvBuilderBase(gym.Env):
                  seed="random",
                  role=0,
                  experiment_id="something",
+                 client_pool = None,
                  continuous_discrete=True,
                  add_noop_command=None,
                  max_retries=30,
@@ -330,11 +333,91 @@ class MarloEnvBuilderBase(gym.Env):
 
         self.setup_mission_record(params)
         self.setup_game_mode(params)
-        
-        print(self.action_spaces)
 
+    ########################################################################
+    # Env interaction functions
+    ########################################################################
     def step(self, action):
         return True
 
     def reset(self):
-        return True
+        if self.params.forceWorldReset:
+            # Force a World Reset on each reset
+            self.mission_spec.forceWorldReset()
+
+        # Attempt to start a mission
+        for retry in range(self.params.max_retries + 1):
+            print("RETRY : {}".format(retry))
+            # Role 0 (the server) could take some extra time to start
+            if self.params.role != 0:
+                time.sleep(1)
+            else:
+                time.sleep(0.1)
+            try:
+                print("Client Pool : ", self.client_pool)
+                if self.client_pool:
+                    self.agent_host.startMission(
+                        self.mission_spec,
+                        self.client_pool,
+                        self.mission_record_spec,
+                        self.params.role,
+                        self.experiment_id
+                    )
+                else:
+                    self.agent_host.startMission(
+                        self.mission_spec, 
+                        self.mission_record_spec
+                        )
+                break #Break out of the try-to-connect loop
+            except RuntimeError as e:
+                traceback.format_exc()
+                if retry == self.params.max_retries:
+                    logger.error("Error Starting Mission : {}".format(
+                        traceback.format_exc()
+                    ))
+                    raise e
+                else:
+                    logger.warn("Error on attempting to start mission : {}"
+                                .format(str(e)))
+                    logger.warn("Will attempt again after {} seconds."
+                                .format(self.params.retry_sleep))
+                    time.sleep(self.params.retry_sleep)
+
+        logger.info("Waiting for mission to start...")
+        world_state = self.agent_host.getWorldState()
+        while not world_state.has_mission_begun:
+            time.sleep(0.1)
+            world_state = self.agent_host.getWorldState()
+            for error in world_state.errors:
+                print("Error", error)
+                logger.warn(error.text)
+
+        logger.info("Mission Running")
+        frame = self._get_video_frame(world_state)
+        return frame
+
+    def _get_world_state(self):
+        # patiently wait till we get the next observation
+        while True:
+            time.sleep(self.params.step_sleep)
+            world_state = self.agent_host.peekWorldState()
+            print("World State : ", world_state)
+            if world_state.number_of_observations_since_last_state > \
+                    self.skip_steps or not world_state.is_mission_running:
+                break
+        return self.agent_host.getWorldState()
+
+    def _get_video_frame(self, world_state):
+        if world_state.number_of_video_frames_since_last_state > 0:
+            assert len(world_state.video_frames) == 1
+            frame = world_state.video_frames[0]
+
+            image = np.frombuffer(frame.pixels, dtype=np.uint8)
+            image = image.reshape((frame.height, frame.width, frame.channels))
+            print("Frame Receieved : ".format(image.shape))
+            self.last_image = image
+        else:
+            # can happen only when mission ends before we get frame
+            # then just use the last frame, it doesn't matter much anyway
+            image = self.last_image
+        return image
