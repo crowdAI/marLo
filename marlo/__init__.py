@@ -1,4 +1,5 @@
 import gym
+import importlib
 try:
     import malmo.MalmoPython as MalmoPython
 except ImportError as e:
@@ -21,7 +22,7 @@ from .constants import JOIN_WHITELISTED_PARAMS
 
 register(
     id='MazeRunner-v0',
-    entry_point='marlo.envs:MarloEnvBuilder',
+    entry_point='marlo.envs:MazeRunner',
     kwargs={},
 )
 
