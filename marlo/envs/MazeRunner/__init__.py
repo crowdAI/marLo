@@ -11,6 +11,8 @@ def _register():
     gym.envs.registration.register(
         id='MazeRunner-v0',
         entry_point=MarloEnvBuilder,
+        max_episode_steps=1000,
+        reward_threshold=1000,
         kwargs={
             "extra_param" : {
                 "val1":"val1",
