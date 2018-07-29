@@ -10,7 +10,6 @@ join_tokens = marlo.make('MazeRunner-v0',
                     "forceWorldReset" : True,
                     "client_pool" : client_pool,
                     "allowContinuousMovement" : ["move", "turn"],
-                    # "continuous_discrete": True
                  })
 
 

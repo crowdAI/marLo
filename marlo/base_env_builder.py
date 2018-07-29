@@ -88,7 +88,7 @@ class MarloEnvBuilderBase(gym.Env):
             "videoResolution",
             "client_pool",
             "allowContinuousMovement",
-            "continuous_discrete"
+            "continuous_to_discrete"
             "recordMP4"
         ]
 
@@ -113,7 +113,7 @@ class MarloEnvBuilderBase(gym.Env):
                  observeGrid=None,
                  observeDistance=None,
                  observeChat=None,
-                 continuous_discrete=True,
+                 continuous_to_discrete=True,
                  allowContinuousMovement=True,
                  allowDiscreteMovement=True,
                  allowAbsoluteMovement=False,
@@ -237,13 +237,13 @@ class MarloEnvBuilderBase(gym.Env):
                 logger.debug("Command : {}".format(command))
                 if command_handler == "ContinuousMovement":
                     if command in ["move", "strafe", "pitch", "turn"]:
-                        if params.continuous_discrete:
+                        if params.continuous_to_discrete:
                             discrete_actions.append(command + " 1")
                             discrete_actions.append(command + " -1")
                         else:
                             continuous_actions.append(command)
                     elif command in ["crouch", "jump", "attack", "use"]:
-                        if params.continuous_discrete:
+                        if params.continuous_to_discrete:
                             discrete_actions.append(command + " 1")
                             discrete_actions.append(command + " 0")
                         else:
