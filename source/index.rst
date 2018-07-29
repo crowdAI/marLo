@@ -5,13 +5,18 @@
 
 Welcome to MarLo's documentation!
 =================================
+MarLo is a high level library on top of Project Malmo which provides a convenient 
+API to run both single agent and multi agent reinforcement learning tasks on Minecraft.
+
+
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
-
-.. automodule:: marlo
-  :members: make, init, launch_clients
+   
+   installation
+   usage
+   marlo
 
 Indices and tables
 ==================
