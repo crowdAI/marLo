@@ -8,6 +8,7 @@ join_tokens = marlo.make('MarLo-MazeRunner-v0',
                  params={
                     "videoResolution" : [800, 600],
                     "client_pool" : client_pool,
+                    "agent_names" : ["MarLo-Agent0", "MarLo-Agent1"],
                     "allowContinuousMovement" : ["move", "turn"],
                  })
 
@@ -19,10 +20,11 @@ def run_agent(join_token):
     count = 0
     while not done:
         _action = env.action_space.sample()
-        obs, reward, done, info = env.step(_action)
-        print("reward:", reward)
-        print("done:", done)
-        print("info", info)
+        # obs, reward, done, info = env.step(_action)
+        time.sleep(0.5)
+        # print("reward:", reward)
+        # print("done:", done)
+        # print("info", info)
     env.close()
 
 for _join_token in join_tokens:

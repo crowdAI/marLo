@@ -4,6 +4,13 @@ Usage
 Basic Usage
 -----------
 
+In the simplest of the use cases, we will start a single agent 
+**Marlo** environment, and connect an agent to the environment and take some 
+*random actions*.
+
+.. image:: https://i.imgur.com/XpiVIoD.png
+  
+
 - **Start Minecraft Clients**
 
 .. code-block:: bash
@@ -53,6 +60,13 @@ Basic Usage
 Multi Agent Example
 -------------------
 
+.. image:: https://i.imgur.com/mlF3X0M.png
+
+In a Multi Agent setup, the number of agents is estimated from the list of 
+``agent_names`` passed as a param to ``marlo.make``. Then marlo returns ``join_tokens``
+for all the agents in the specified game as a list. Then ``marlo.init`` can be used to 
+join the game as separate agents.
+
 - **Start Minecraft Clients**
 
 .. code-block:: bash
@@ -99,7 +113,7 @@ Multi Agent Example
 **Note** : Notice the ``@marlo.threaded`` decorator, which jus runs the given 
 function in a separate thread.
 
-- Run both the Agents
+- **Run both the Agents**
 
 .. code-block:: python
 
