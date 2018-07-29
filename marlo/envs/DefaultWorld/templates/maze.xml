@@ -1,0 +1,14 @@
+<MazeDecorator>
+    <SizeAndPosition length="19" width="19" scale="3" yOrigin="225" zOrigin="0" height="180"/>
+    <GapProbability variance="0.4">0.5</GapProbability>
+    <Seed>{{ params.seed }}</Seed>
+    <MaterialSeed>{{ params.seed }}</MaterialSeed>
+    <AllowDiagonalMovement>false</AllowDiagonalMovement>
+    <StartBlock fixedToEdge="true" type="emerald_block" height="1"/>
+    <EndBlock fixedToEdge="true" type="redstone_block lapis_block" height="12"/>
+    <PathBlock type="stained_glass" colour="WHITE ORANGE MAGENTA LIGHT_BLUE YELLOW LIME PINK GRAY SILVER CYAN PURPLE BLUE BROWN GREEN RED BLACK" height="1"/>
+    <FloorBlock type="glowstone"/>
+    <GapBlock type="stone" height="{{ params.maze_height }}"/>
+    <AddQuitProducer description="finished maze"/>
+    <AddNavigationObservations/>
+</MazeDecorator>
