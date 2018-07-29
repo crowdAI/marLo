@@ -23,6 +23,7 @@ In the simplest of the use cases, we will start a single agent
 - **Make and Instantiate Environment**
 
 .. code-block:: python
+  :linenos:
   
   import marlo
   client_pool = [('127.0.0.1', 10000)]
@@ -40,12 +41,14 @@ In the simplest of the use cases, we will start a single agent
 - **Get first Observation**
 
 .. code-block:: python
+  :lineno-start: 13
   
   observation = env.reset()
 
 - **Start Game Loop**
 
 .. code-block:: python
+  :lineno-start: 14
   
   done = False
   while not done:
@@ -80,13 +83,18 @@ join the game as separate agents.
 - **Create Game**
 
 .. code-block:: python
+  :linenos:
 
   import marlo
   client_pool = [('127.0.0.1', 10000),('127.0.0.1', 10001)]
   join_tokens = marlo.make('MarLo-MazeRunner-v0', 
                             params={
                               "client_pool": client_pool,
-                              "agent_names" : ["MarLo-Agent-0", "MarLo-Agent-1"]
+                              "agent_names" : 
+                                [
+                                  "MarLo-Agent-0", 
+                                  "MarLo-Agent-1"
+                                ]
                             })
   # As this is a two-agent scenario, 
   # there will just two join tokens
@@ -95,6 +103,7 @@ join the game as separate agents.
 - **Define a function for running a single Agent**
 
 .. code-block:: python
+  :lineno-start: 15
 
   @marlo.threaded
   def run_agent(join_token):
@@ -116,6 +125,7 @@ function in a separate thread.
 - **Run both the Agents**
 
 .. code-block:: python
+  :lineno-start: 28
 
   # Run agent-0
   run_agent(join_tokens[0])
@@ -150,7 +160,11 @@ If the ``game_params`` provided to ``marlo.make`` do not contain the ``client_po
   import marlo
   join_tokens = marlo.make('MarLo-MazeRunner-v0', 
                             params={
-                              "agent_names" : ["MarLo-Agent-0", "MarLo-Agent-1"]
+                              "agent_names" : 
+                                [
+                                  "MarLo-Agent-0", 
+                                  "MarLo-Agent-1"
+                                ]
                             })
 
 The code above should automatically start two Minecraft clients. 
@@ -170,7 +184,7 @@ The code above should automatically start two Minecraft clients.
   The ``marlo.launch_clients`` helper function will launch the clients.
 
 |
-**Note-1** : **The Minecraft Client processes created by this approach are not automatically cleaned up.**
 
+**Note-1** : **The Minecraft Client processes created by this approach are not automatically cleaned up.**
 
 **Note-2** : Both the approaches above expect the ``MALMO_MINECRAFT_ROOT`` environment variable to point to the absolute path of the Minecraft folder containing the ``launchClient`` scripts.
