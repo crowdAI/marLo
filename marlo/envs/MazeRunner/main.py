@@ -18,13 +18,15 @@ class MarloEnvBuilder(MarloEnvBuilderBase):
         )
         self.params = self._default_params()
         # You can do something with the extra_params if you wish
+        self.params.update(extra_params)
 
     def _default_params(self):
         _default_params = super(MarloEnvBuilder, self).default_base_params
         _default_params.update(
             dict(
                 tick_length = 50,
-                agent_name="MarLo-agent0"
+                agent_names=["MarLo-agent0"],
+                maze_height= 2
             )
         )
         return _default_params

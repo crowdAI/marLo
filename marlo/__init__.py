@@ -5,6 +5,10 @@ import gym
 import importlib
 from pathlib import Path
 import tempfile
+import atexit
+
+import logging
+logger = logging.getLogger(__name__)
 
 try:
     import malmo.MalmoPython as MalmoPython
@@ -26,6 +30,13 @@ from marlo.base_env_builder import MarloEnvBuilderBase
 # Import Constants
 from .constants import JOIN_WHITELISTED_PARAMS
 from .utils import register_environments
+from .utils import threaded
+from .utils import launch_clients
+
+########################################################################
+# Runtime Variables
+########################################################################
+HOMEBREWED_MINECRAFT_PROCESSES = []
 
 ########################################################################
 # Register All environments
@@ -44,11 +55,12 @@ register_environments(MARLO_ENV_PATHS)
 # Register Envs Complete
 ########################################################################
 
+
 def make(env_key, params={}):
     if Path(env_key).is_file():
         """
             If a real mission file is passed instead
-            of an env_key, then build the env 
+            of an env_key, then build the env
             from the mission_file
         """
         mission_file = env_key
@@ -56,7 +68,7 @@ def make(env_key, params={}):
         env = gym.make("RawXMLEnv-v0")
     else:
         env = gym.make(env_key)
-    join_tokens = env.init(params)
+    join_tokens = env.init(params, dry_run=True)
     return join_tokens
 
 
@@ -66,11 +78,10 @@ def init(join_token, params={}):
         )
 
     env = gym.make("RawXMLEnv-v0")
-
     game_params = join_token["game_params"]
     game_params["role"] = join_token["role"]
     game_params["mission_xml"] = join_token["mission_xml"]
     game_params["experiment_id"] = join_token["experiment_id"]
-    # game_params.update(params)
+    game_params.update(params)
     env.init(game_params)
     return env

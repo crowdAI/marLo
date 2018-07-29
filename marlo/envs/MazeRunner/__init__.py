@@ -5,15 +5,14 @@ from .main import MarloEnvBuilder
 
 def _register():
     ##########################################
-    # Version 0 of env
+    # Version 0 of env 
     ##########################################
     gym.envs.registration.register(
         id='MazeRunner-v0',
         entry_point=MarloEnvBuilder,
         kwargs={
             "extra_params" : {
-                "val1":"val1",
-                "val2":"val2"
+                "maze_height":"2"
             }
         },
     )
@@ -26,8 +25,7 @@ def _register():
         entry_point=MarloEnvBuilder,
         kwargs={
             "extra_params" : {
-                "val1":"val1-alternate",
-                "val2":"val2-alternate"
+                "maze_height":"3"
             }
         },
     )

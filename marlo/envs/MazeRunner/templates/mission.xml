@@ -21,7 +21,7 @@
     </ServerSection>
 
     <AgentSection mode="Survival">
-        <Name>{{ params.agent_name }}</Name>
+        <Name>{{ params.agent_names[0] }}</Name>
         <AgentStart>
             <Placement x="-204" y="81" z="217"/>
         </AgentStart>

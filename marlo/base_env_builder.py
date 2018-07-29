@@ -116,7 +116,7 @@ class MarloEnvBuilderBase(gym.Env):
                  continuous_discrete=True,
                  allowContinuousMovement=True,
                  allowDiscreteMovement=True,
-                 allowAbsoluteMovement=True,
+                 allowAbsoluteMovement=False,
                  recordDestination=None,
                  recordObservations=None,
                  recordRewards=None,
@@ -307,14 +307,20 @@ class MarloEnvBuilderBase(gym.Env):
         ############################################################
         # Setup Client Pool
         ############################################################
-        if params.client_pool:
-            self.client_pool = MalmoPython.ClientPool()
-            for _client in params.client_pool:
-                self.client_pool.add(MalmoPython.ClientInfo(*_client))
+        if not params.client_pool:
+            logger.warn("No client pool provided, attempting to create "
+                         "a client_pool of the correct size")
+            number_of_agents = self.mission_spec.getNumberOfAgents()
+            params.client_pool = marlo.launch_clients(number_of_agents)
+            
+        self.client_pool = MalmoPython.ClientPool()
+        for _client in params.client_pool:
+            self.client_pool.add(MalmoPython.ClientInfo(*_client))
 
-            if not isinstance(params.client_pool, list):
-                raise ValueError("params.client_pool must be a list of tuples"
-                                 "of (ip_address, port)")
+        if not isinstance(params.client_pool, list):
+            raise ValueError("params.client_pool must be a list of tuples"
+                             "of (ip_address, port)")
+            
 
     def setup_mission_record(self, params):
         ############################################################
@@ -357,8 +363,9 @@ class MarloEnvBuilderBase(gym.Env):
         if params.turn_based:
             self._turn = TurnState()
 
-    def init(self, params):
+    def init(self, params, dry_run=False):
         self.params.update(params)
+        self.dry_run = dry_run
         self.build_env(self.params)
         number_of_agents = self.mission_spec.getNumberOfAgents()
         mission_xml = self.mission_spec.getAsXML(False)
@@ -406,24 +413,20 @@ class MarloEnvBuilderBase(gym.Env):
                 time.sleep(1)
             else:
                 time.sleep(0.1)
-            
+
             if self.params.experiment_id:
                 self.experiment_id = self.params.experiment_id
-            
+
             try:
-                if self.client_pool:
-                    self.agent_host.startMission(
-                        self.mission_spec,
-                        self.client_pool,
-                        self.mission_record_spec,
-                        self.params.role,
-                        self.experiment_id
-                    )
-                else:
-                    self.agent_host.startMission(
-                        self.mission_spec, 
-                        self.mission_record_spec
-                        )
+                if not self.client_pool:
+                    raise Exception("client_pool not specified.")
+                self.agent_host.startMission(
+                    self.mission_spec,
+                    self.client_pool,
+                    self.mission_record_spec,
+                    self.params.role,
+                    self.experiment_id
+                )
                 break #Break out of the try-to-connect loop
             except RuntimeError as e:
                 traceback.format_exc()
@@ -493,7 +496,7 @@ class MarloEnvBuilderBase(gym.Env):
             self.agent_host.sendCommand(command, self._turn.key)
             self._turn.has_payed = True
         else:
-            print(command)
+            logger.debug("Send Command : {}".format(command))
             self.agent_host.sendCommand(command)
 
     def _take_action(self, actions):
@@ -509,30 +512,26 @@ class MarloEnvBuilderBase(gym.Env):
         for _spaces, _commands, _actions in \
                 zip(self.action_spaces, self.action_names, actions):
 
-            print("Spaces : ", _spaces)
-            print("commands : ", _commands)
-            print("actions : ", _actions)
             if isinstance(_spaces, gym.spaces.Discrete):
                 logger.debug(_commands[_actions])
                 # print("cmd " + cmds[acts])
                 self._send_command(_commands[_actions])
-            elif isinstance(_spaces, spaces.Box):
+            elif isinstance(_spaces, gym.spaces.Box):
                 for command, value in zip(_commands, _actions):
-                    print("command " + command + " " + str(val))
-                    logger.debug(command + " " + str(val))
-                    self._send_command(command + " " + str(val))
-            elif isinstance(spc, spaces.MultiDiscrete):
+                    _command = "{}-{}".format(command, value)
+                    logger.debug(_command)
+                    self._send_command(_command)
+            elif isinstance(_spaces, gym.spaces.MultiDiscrete):
                 for command, value in zip(_commands, _actions):
-                    # print("cmd " + cmd + " " + str(val))
-                    logger.debug(command + " " + str(value))
-                    self._send_command(command + " " + str(value))
+                    _command = "{}-{}".format(command, value)
+                    logger.debug(_command)
+                    self._send_command(_command)
             else:
-                logger.warn("Ignoring unknown action space for {}".format(_commands))
+                logger.warn("Ignoring unknown action space for {}".format(
+                    _commands
+                    ))
 
     def step(self, action):
-        print(self.action_names)
-        print("Action : ", action)
-
         world_state = self.agent_host.peekWorldState()
         if world_state.is_mission_running:
             self._take_action(action)
@@ -553,12 +552,15 @@ class MarloEnvBuilderBase(gym.Env):
             logger.debug(message.text)
             root = ElementTree.fromstring(message.text)
             if root.tag == '{http://ProjectMalmo.microsoft.com}MissionEnded':
-                for el in root.findall('{http://ProjectMalmo.microsoft.com}HumanReadableStatus'):
+                for el in root.findall(
+                        '{http://ProjectMalmo.microsoft.com}HumanReadableStatus' # noqa: E501
+                        ):
                     logger.info("Mission ended: %s", el.text)
 
         # Compute Rewards
         reward = 0
         for _reward in world_state.rewards:
+            print(_reward)
             reward += _reward.getValue()
 
         # Get observation
@@ -571,10 +573,10 @@ class MarloEnvBuilderBase(gym.Env):
         info = {}
         info['has_mission_begun'] = world_state.has_mission_begun
         info['is_mission_running'] = world_state.is_mission_running
-        info['number_of_video_frames_since_last_state'] = world_state.number_of_video_frames_since_last_state
-        info['number_of_rewards_since_last_state'] = world_state.number_of_rewards_since_last_state
-        info['number_of_observations_since_last_state'] = world_state.number_of_observations_since_last_state
-        info['mission_control_messages'] = [msg.text for msg in world_state.mission_control_messages]
+        info['number_of_video_frames_since_last_state'] = world_state.number_of_video_frames_since_last_state # noqa: E501
+        info['number_of_rewards_since_last_state'] = world_state.number_of_rewards_since_last_state # noqa: E501
+        info['number_of_observations_since_last_state'] = world_state.number_of_observations_since_last_state # noqa: E501
+        info['mission_control_messages'] = [msg.text for msg in world_state.mission_control_messages] # noqa: E501
         info['observation'] = self._get_observation(world_state)
 
         return image, reward, done, info
