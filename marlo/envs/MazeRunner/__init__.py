@@ -2,7 +2,6 @@
 import gym
 from .main import MarloEnvBuilder
 
-MOHANTY="something"
 
 def _register():
     ##########################################

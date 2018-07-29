@@ -1,7 +1,10 @@
 import os
+import json
+import base64
 import gym
 import importlib
 from pathlib import Path
+import tempfile
 
 try:
     import malmo.MalmoPython as MalmoPython
@@ -42,158 +45,32 @@ register_environments(MARLO_ENV_PATHS)
 ########################################################################
 
 def make(env_key, params={}):
-    env = gym.make(env_key)
-    env.init(params)
+    if Path(env_key).is_file():
+        """
+            If a real mission file is passed instead
+            of an env_key, then build the env 
+            from the mission_file
+        """
+        mission_file = env_key
+        params["mission_xml"] = open(mission_file).read()
+        env = gym.make("RawXMLEnv-v0")
+    else:
+        env = gym.make(env_key)
+    join_tokens = env.init(params)
+    return join_tokens
+
+
+def init(join_token, params={}):
+    join_token = json.loads(
+            base64.b64decode(join_token).decode('utf8')
+        )
+
+    env = gym.make("RawXMLEnv-v0")
+
+    game_params = join_token["game_params"]
+    game_params["role"] = join_token["role"]
+    game_params["mission_xml"] = join_token["mission_xml"]
+    game_params["experiment_id"] = join_token["experiment_id"]
+    # game_params.update(params)
+    env.init(game_params)
     return env
-
-
-########################################################################
-# Implement marlo.make
-########################################################################
-# def make(env_name, params={}):
-#     env = gym.make(env_name)
-# 
-# 
-# Env registration
-# ==========================
-
-# register(
-#     id='MinecraftDefaultWorld1-v0',
-#     entry_point='marlo.envs:MinecraftEnv',
-#     kwargs={'mission_file': 'default_world_1.xml'},
-#     #tags={'wrapper_config.TimeLimit.max_episode_steps': 6060},
-#     #timestep_limit=6060,
-#     reward_threshold=1000
-# )
-# 
-# register(
-#     id='MinecraftDefaultFlat1-v0',
-#     entry_point='marlo.envs:MinecraftEnv',
-#     kwargs={'mission_file': 'default_flat_1.xml'},
-#     #tags={'wrapper_config.TimeLimit.max_episode_steps': 2020},
-#     #timestep_limit=2020,
-#     reward_threshold=100
-# )
-# 
-# register(
-#     id='MinecraftTrickyArena1-v0',
-#     entry_point='marlo.envs:MinecraftEnv',
-#     kwargs={'mission_file': 'tricky_arena_1.xml'},
-#     #tags={'wrapper_config.TimeLimit.max_episode_steps': 303},
-#     #timestep_limit=303,
-#     reward_threshold=300
-# )
-# 
-# register(
-#     id='MinecraftEating1-v0',
-#     entry_point='marlo.envs:MinecraftEnv',
-#     kwargs={'mission_file': 'eating_1.xml'},
-#     #tags={'wrapper_config.TimeLimit.max_episode_steps': 303},
-#     #timestep_limit=303,
-#     reward_threshold=70
-# )
-# 
-# register(
-#     id='MinecraftCliffWalking1-v0',
-#     entry_point='marlo.envs:MinecraftEnv',
-#     kwargs={'mission_file': 'cliff_walking_1.xml'},
-#     #tags={'wrapper_config.TimeLimit.max_episode_steps': 404},
-#     #timestep_limit=404,
-#     reward_threshold=100
-# )
-# 
-# register(
-#     id='MinecraftMaze1-v0',
-#     entry_point='marlo.envs:MinecraftEnv',
-#     kwargs={'mission_file': 'maze_1.xml'},
-#     #tags={'wrapper_config.TimeLimit.max_episode_steps': 606},
-#     #timestep_limit=606,
-#     reward_threshold=1000
-# )
-# 
-# register(
-#     id='MinecraftMaze2-v0',
-#     entry_point='marlo.envs:MinecraftEnv',
-#     kwargs={'mission_file': 'maze_2.xml'},
-#     #tags={'wrapper_config.TimeLimit.max_episode_steps': 2020},
-#     #timestep_limit=2020,
-#     reward_threshold=1000
-# )
-# 
-# register(
-#     id='MinecraftBasic-v0',
-#     entry_point='marlo.envs:MinecraftEnv',
-#     kwargs={'mission_file': 'basic.xml'},
-#     #tags={'wrapper_config.TimeLimit.max_episode_steps': 606},
-#     #timestep_limit=606,
-#     reward_threshold=980
-# )
-# 
-# register(
-#     id='MinecraftObstacles-v0',
-#     entry_point='marlo.envs:MinecraftEnv',
-#     kwargs={'mission_file': 'obstacles.xml'},
-#     #tags={'wrapper_config.TimeLimit.max_episode_steps': 909},
-#     #timestep_limit=909,
-#     reward_threshold=2000
-# )
-# 
-# register(
-#     id='MinecraftSimpleRoomMaze-v0',
-#     entry_point='marlo.envs:MinecraftEnv',
-#     kwargs={'mission_file': 'simpleRoomMaze.xml'},
-#     #tags={'wrapper_config.TimeLimit.max_episode_steps': 909},
-#     #timestep_limit=909,
-#     reward_threshold=4000
-# )
-# 
-# register(
-#     id='MinecraftAttic-v0',
-#     entry_point='marlo.envs:MinecraftEnv',
-#     kwargs={'mission_file': 'attic.xml'},
-#     #tags={'wrapper_config.TimeLimit.max_episode_steps': 606},
-#     #timestep_limit=606,
-#     reward_threshold=1000
-# )
-# 
-# register(
-#     id='MinecraftVertical-v0',
-#     entry_point='marlo.envs:MinecraftEnv',
-#     kwargs={'mission_file': 'vertical.xml'},
-#     #tags={'wrapper_config.TimeLimit.max_episode_steps': 909},
-#     #timestep_limit=909,
-#     reward_threshold=8000
-# )
-# 
-# register(
-#     id='MinecraftComplexityUsage-v0',
-#     entry_point='marlo.envs:MinecraftEnv',
-#     kwargs={'mission_file': 'complexity_usage.xml'},
-#     #tags={'wrapper_config.TimeLimit.max_episode_steps': 606},
-#     #timestep_limit=606,
-#     reward_threshold=1000
-# )
-# 
-# register(
-#     id='MinecraftMedium-v0',
-#     entry_point='marlo.envs:MinecraftEnv',
-#     kwargs={'mission_file': 'medium.xml'},
-#     #tags={'wrapper_config.TimeLimit.max_episode_steps': 1818},
-#     #timestep_limit=1818,
-#     reward_threshold=16000
-# )
-# 
-# register(
-#     id='MinecraftHard-v0',
-#     entry_point='marlo.envs:MinecraftEnv',
-#     kwargs={'mission_file': 'hard.xml'},
-#     #tags={'wrapper_config.TimeLimit.max_episode_steps': 2424},
-#     #timestep_limit=2424,
-#     reward_threshold=32000
-# )
-# 
-# register(
-#     id="CatchTheMobSinglePlayer-v0",
-#     entry_point='marlo.envs:MinecraftEnv',
-#     kwargs={'mission_file': 'single_player_mob_chase.xml'},
-# )

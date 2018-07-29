@@ -1,7 +1,7 @@
 import marlo
 import time
 # Ensure that you have a minecraft-client running with : marlo-server --port 10000
-env = marlo.make('MazeRunner-v0',
+join_tokens = marlo.make('MazeRunner-v0',
                  params={
                     "videoResolution" : [800, 600],
                     "client_pool" : [("127.0.0.1", 10000)],
@@ -10,13 +10,32 @@ env = marlo.make('MazeRunner-v0',
                     "continuous_discrete": True
                  })
 
+# env, join_tokens = marlo.make("/Users/spmohanty/work/marlo/marlo-py/marlo/assets/mob_chase.xml", 
+#                  params={
+#                     "videoResolution" : [800, 600],
+#                     "client_pool" : [("127.0.0.1", 10000), ("127.0.0.1", 10001)],
+#                     "forceWorldReset" : True,
+#                     "allowContinuousMovement" : ["move", "turn"],
+#                     "continuous_discrete": True
+#                  })
+
+print(join_tokens)
+
+# frame = env.reset()
+# print(frame.shape)
+# print(env.action_names)
+# import json
+# print(json.dumps(env.params, indent=4))
+# 
+# 
+env = marlo.init(join_tokens[0])
 frame = env.reset()
 print(frame.shape)
 print(env.action_names)
 import json
 print(json.dumps(env.params, indent=4))
-
-
+# 
+# 
 done = False
 while not done:
     _action = env.action_space.sample()
@@ -25,7 +44,7 @@ while not done:
     print("reward:", reward)
     # print("done:", done)
     # print("info", info)    
-
+# 
 
 #TODO marlo.make('env_name') # return a gym environment
 

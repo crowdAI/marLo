@@ -5,6 +5,9 @@ import gym
 import numpy as np
 import marlo
 from marlo import MalmoPython
+import uuid
+import hashlib
+import base64
 
 import xml.etree.ElementTree as ElementTree
 
@@ -65,7 +68,7 @@ class MarloEnvBuilderBase(gym.Env):
         self.agent_host = MalmoPython.AgentHost()
         self.mission_spec = None
         self.client_pool = None
-        self.experiment_id = "experiment_id"
+        self.experiment_id = None
         
         self._turn = None
 
@@ -83,6 +86,9 @@ class MarloEnvBuilderBase(gym.Env):
     def white_listed_join_params(self):
         return [
             "videoResolution",
+            "client_pool",
+            "allowContinuousMovement",
+            "continuous_discrete"
             "recordMP4"
         ]
 
@@ -122,10 +128,11 @@ class MarloEnvBuilderBase(gym.Env):
             )
         return self._default_base_params
 
+
     def setup_video(self, params):
         ############################################################
         # Setup Video
-        ############################################################        
+        ############################################################
         if params.videoResolution:
             if params.videoWithDepth:
                 self.mission_spec.requestVideoWithDepth(
@@ -277,18 +284,18 @@ class MarloEnvBuilderBase(gym.Env):
             self.action_spaces.append(
                 gym.spaces.Discrete(len(discrete_actions))
                 )
-            self.action_names += discrete_actions
+            self.action_names.append(discrete_actions)
         # Continuous Actions
         if len(continuous_actions) > 0:
             self.action_spaces.append(
                 gym.spaces.Box(-1, 1, (len(continuous_actions),))
                 )
-            self.action_names += continuous_actions
+            self.action_names.append(continuous_actions)
         if len(multidiscrete_actions) > 0:
             self.action_spaces.append(
                 gym.spaces.MultiDiscrete(multidiscrete_action_ranges)
                 )
-            self.action_names += multidiscrete_actions
+            self.action_names.append(multidiscrete_actions)
 
         # No tuples in case a single action
         if len(self.action_spaces) == 1:
@@ -339,21 +346,39 @@ class MarloEnvBuilderBase(gym.Env):
                     params.gameMode
                 ))
 
-    def init(self, params):
-        #TODO: Filter unwanted params here in case of join
-        # for _key in params:
-        #     if _key not in marlo.JOIN_WHITELISTED_PARAMS:
-        #         del params[_key]
-                
-        self.params.update(params)
-        return self.build_env(self.params)
-    
-    def build_env(self, params):
+    def setup_mission_spec(self, params):
         ############################################################
         # Instantiate Mission Spec
         ############################################################
         mission_xml = self.render_mission_spec()
         self.mission_spec = MalmoPython.MissionSpec(mission_xml, True)
+
+    def setup_turn_based_games(self, params):
+        if params.turn_based:
+            self._turn = TurnState()
+
+    def init(self, params):
+        self.params.update(params)
+        self.build_env(self.params)
+        number_of_agents = self.mission_spec.getNumberOfAgents()
+        mission_xml = self.mission_spec.getAsXML(False)
+        join_tokens = []
+        experiment_id = str(uuid.uuid4())
+        for _idx in range(number_of_agents):
+            _join_token = {}
+            _join_token["role"] = _idx
+            _join_token["mission_xml"] = mission_xml
+            _join_token["experiment_id"] = experiment_id
+            _join_token["game_params"] = self.params
+            _join_token = base64.b64encode(
+                    json.dumps(_join_token).encode('utf8')
+            )
+            join_tokens.append(_join_token)
+        return join_tokens
+
+    def build_env(self, params):
+        self.setup_mission_spec(params)
+        self.setup_turn_based_games(params)
 
         self.setup_video(params)
         self.setup_observe_params(params)
@@ -381,6 +406,10 @@ class MarloEnvBuilderBase(gym.Env):
                 time.sleep(1)
             else:
                 time.sleep(0.1)
+            
+            if self.params.experiment_id:
+                self.experiment_id = self.params.experiment_id
+            
             try:
                 if self.client_pool:
                     self.agent_host.startMission(
@@ -471,12 +500,18 @@ class MarloEnvBuilderBase(gym.Env):
         # no tuple in case of a single action
         if len(self.action_spaces) == 1:
             actions = [actions]
+
         if self._turn:
             if not self._turn.can_play:
                 return
 
         # send corresponding command
-        for _spaces, _commands, _actions in zip(self.action_spaces, self.action_names, actions):
+        for _spaces, _commands, _actions in \
+                zip(self.action_spaces, self.action_names, actions):
+
+            print("Spaces : ", _spaces)
+            print("commands : ", _commands)
+            print("actions : ", _actions)
             if isinstance(_spaces, gym.spaces.Discrete):
                 logger.debug(_commands[_actions])
                 # print("cmd " + cmds[acts])
@@ -495,6 +530,9 @@ class MarloEnvBuilderBase(gym.Env):
                 logger.warn("Ignoring unknown action space for {}".format(_commands))
 
     def step(self, action):
+        print(self.action_names)
+        print("Action : ", action)
+
         world_state = self.agent_host.peekWorldState()
         if world_state.is_mission_running:
             self._take_action(action)
@@ -505,7 +543,7 @@ class MarloEnvBuilderBase(gym.Env):
         if world_state.number_of_observations_since_last_state > 0:
             data = json.loads(world_state.observations[-1].text)
             turn_key = data.get(u'turn_key', None)
-            if turn_key is not None and turn_key != self._turn_key:
+            if turn_key is not None and turn_key != self._turn.key:
                 self._turn.update(turn_key)
 
         # Log

@@ -158,48 +158,4 @@
          </VideoProducer>
       </AgentHandlers>
    </AgentSection>
-   <AgentSection mode="Survival">
-      <Name>Agent1</Name>
-      <AgentStart>
-         <Placement pitch="30" x="3.0" y="4" yaw="90" z="5.0" />
-         <Inventory>
-            <InventoryBlock quantity="1" slot="39" type="iron_helmet" />
-         </Inventory>
-      </AgentStart>
-      <AgentHandlers>
-         <MissionQuitCommands quitDescription="Agent1_caught_pig" />
-         <TurnBasedCommands requestedPosition="2">
-            <DiscreteMovementCommands>
-               <ModifierList type="deny-list">
-                  <command>attack</command>
-               </ModifierList>
-            </DiscreteMovementCommands>
-         </TurnBasedCommands>
-         <ObservationFromNearbyEntities>
-            <Range name="entities" xrange="8" yrange="2" zrange="6" />
-         </ObservationFromNearbyEntities>
-         <ObservationFromGrid>
-            <Grid absoluteCoords="true" name="board">
-               <min x="0" y="3" z="0" />
-               <max x="10" y="3" z="10" />
-            </Grid>
-         </ObservationFromGrid>
-         <ObservationFromFullStats />
-         <RewardForSendingCommand reward="-1" />
-         <RewardForTouchingBlockType>
-            <Block behaviour="onceOnly" reward="5" type="lapis_block" />
-         </RewardForTouchingBlockType>
-         <AgentQuitFromReachingCommandQuota description="command_quota_reached" total="25" />
-         <AgentQuitFromTouchingBlockType>
-            <Block description="Agent2_defaulted" type="lapis_block" />
-         </AgentQuitFromTouchingBlockType>
-         <AgentQuitFromCatchingMob>
-            <Mob description="caught_the_Pig" global="true" type="Pig" />
-         </AgentQuitFromCatchingMob>
-         <VideoProducer want_depth="false">
-            <Width>640</Width>
-            <Height>480</Height>
-         </VideoProducer>
-      </AgentHandlers>
-   </AgentSection>
 </Mission>
