@@ -7,7 +7,6 @@ client_pool = [('127.0.0.1', 10000), ('127.0.0.1', 10001)]
 join_tokens = marlo.make('MarLo-MazeRunner-v0',
                  params={
                     "videoResolution" : [800, 600],
-                    "forceWorldReset" : True,
                     "client_pool" : client_pool,
                     "allowContinuousMovement" : ["move", "turn"],
                  })
