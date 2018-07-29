@@ -97,6 +97,7 @@ class MarloEnvBuilderBase(gym.Env):
         if not self._default_base_params:
             self._default_base_params = dotdict(
                  seed="random",
+                 tick_length=50,
                  role=0,
                  experiment_id="something",
                  client_pool = None,
