@@ -62,5 +62,4 @@ def launch_clients(number_of_clients, replaceable=False):
                             )
 
     client_pool = [('127.0.0.1', port) for port in ports]
-    marlo.HOMEBREWED_MINECRAFT_PROCESSES += launch_processes
     return client_pool
