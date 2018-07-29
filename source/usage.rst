@@ -85,7 +85,7 @@ Multi Agent Example
   @marlo.threaded
   def run_agent(join_token):
       env = marlo.init(join_token)
-      frame = env.reset()
+      observation = env.reset()
       done = False
       count = 0
       while not done:
