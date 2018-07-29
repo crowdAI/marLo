@@ -330,12 +330,18 @@ class MarloEnvBuilderBase(gym.Env):
         self.mission_record_spec = MalmoPython.MissionRecordSpec() # empty
         if params.recordDestination:
             self.mission_record_spec.setDestination(params.recordDestination)
-        if params.recordRewards:
-            self.mission_record_spec.recordRewards()
-        if params.recordCommands:
-            self.mission_record_spec.recordCommands()
-        if params.recordMP4:
-            self.mission_record_spec.recordMP4(*params.recordMP4)
+            if params.recordRewards:
+                self.mission_record_spec.recordRewards()
+            if params.recordCommands:
+                self.mission_record_spec.recordCommands()
+            if params.recordMP4:
+                assert type(params.recordMP4) == list \
+                    and len(params.recordMP4) == 2
+                self.mission_record_spec.recordMP4(*(params.recordMP4))
+        else:
+            if params.recordRewards or params.recordCommands  or params.recordMP4:
+                raise Exception("recordRewards or recordCommands or recordMP4 "
+                                "provided without specifyin recordDestination")
 
     def setup_game_mode(self, params):
         ############################################################

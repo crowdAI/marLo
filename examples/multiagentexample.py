@@ -6,11 +6,12 @@ import base64
 client_pool = [('127.0.0.1', 10000), ('127.0.0.1', 10001)]
 join_tokens = marlo.make('MarLo-MazeRunner-v0',
                  params={
-                    "agent_names" : ["MarLo-Agent0", "MarLo-Agent1"],
+                    "agent_names" : ["MarLo-Agent0"],
                     "videoResolution" : [800, 600],
                     "forceWorldReset" : True,
                     "client_pool" : client_pool,
                     "allowContinuousMovement" : ["move", "turn"],
+                    "recordMP4" : "video"
                  })
 
 
