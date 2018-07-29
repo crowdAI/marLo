@@ -8,6 +8,6 @@ def _register():
     # Version 0 of env
     ##########################################
     gym.envs.registration.register(
-        id='RawXMLEnv-v0',
+        id='MarLo-RawXMLEnv-v0',
         entry_point=MarloEnvBuilder
     )

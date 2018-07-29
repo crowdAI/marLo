@@ -8,7 +8,7 @@ def _register():
     # Version 0 of env 
     ##########################################
     gym.envs.registration.register(
-        id='TrickyArena-v0',
+        id='MarLo-TrickyArena-v0',
         entry_point=MarloEnvBuilder,
         kwargs={
             "extra_params": {

@@ -4,7 +4,7 @@ import json
 import base64
 
 client_pool = [('127.0.0.1', 10000), ('127.0.0.1', 10001)]
-join_tokens = marlo.make('CatchTheMob-v0',
+join_tokens = marlo.make('MarLo-MazeRunner-v0',
                  params={
                     "videoResolution" : [800, 600],
                     "forceWorldReset" : True,

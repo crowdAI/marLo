@@ -65,7 +65,7 @@ def make(env_key, params={}):
         """
         mission_file = env_key
         params["mission_xml"] = open(mission_file).read()
-        env = gym.make("RawXMLEnv-v0")
+        env = gym.make("MarLo-RawXMLEnv-v0")
     else:
         env = gym.make(env_key)
     join_tokens = env.init(params, dry_run=True)
@@ -77,7 +77,7 @@ def init(join_token, params={}):
             base64.b64decode(join_token).decode('utf8')
         )
 
-    env = gym.make("RawXMLEnv-v0")
+    env = gym.make("MarLo-RawXMLEnv-v0")
     game_params = join_token["game_params"]
     game_params["role"] = join_token["role"]
     game_params["mission_xml"] = join_token["mission_xml"]

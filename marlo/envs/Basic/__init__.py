@@ -8,7 +8,7 @@ def _register():
     # Version 0 of env 
     ##########################################
     gym.envs.registration.register(
-        id='Basic-v0',
+        id='MarLo-Basic-v0',
         entry_point=MarloEnvBuilder,
         kwargs={
             "extra_params": {

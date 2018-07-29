@@ -8,7 +8,7 @@ def _register():
     # Version 0 of env 
     ##########################################
     gym.envs.registration.register(
-        id='MazeRunner-v0',
+        id='MarLo-MazeRunner-v0',
         entry_point=MarloEnvBuilder,
         kwargs={
             "extra_params" : {
