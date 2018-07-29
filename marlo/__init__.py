@@ -56,6 +56,26 @@ register_environments(MARLO_ENV_PATHS)
 
 
 def make(env_key, params={}):
+    """Builds a MarLo environment and returns the `join_tokens` for all the 
+    agents in the environment.
+
+    :param env_key: a unique identifier for an environment *or* the path 
+        to a mission.xml file
+    :type env_key: str
+    :param params: a game params dictionary
+    :type params: dict
+
+
+    :returns:  A `list` of `str`, containing `join_tokens` for all the individual agents involved in the game
+
+    >>> import marlo
+    >>> client_pool = [('127.0.0.1', 10000)]
+    >>> join_tokens = marlo.make("MarLo-MazeRunner-v0", 
+    ...                           params=dict(
+    ...                              client_pool = client_pool,
+    ...                              videoResolution = [800, 600]
+    ...                           ))
+    """
     if Path(env_key).is_file():
         """
             If a real mission file is passed instead
@@ -72,6 +92,26 @@ def make(env_key, params={}):
 
 
 def init(join_token, params={}):
+    """
+    Use the provided `join_token` to instantiate a MarLo environment for a single 
+    agent.
+    
+    :param join_token: a token to connect to a marlo game as an agent
+    :type join_token: str
+    :param params: a game params dictionary
+    :type params: dict
+    
+    >>> import marlo
+    >>> client_pool = [('127.0.0.1', 10000)]
+    >>> join_tokens = marlo.make("MarLo-MazeRunner-v0", 
+    ...                           params=dict(
+    ...                              client_pool = client_pool,
+    ...                              videoResolution = [800, 600]
+    ...                           ))
+    >>>
+    >>> env = marlo.init(join_tokens[0])
+    >>> frame = env.reset()
+    """
     join_token = json.loads(
             base64.b64decode(join_token).decode('utf8')
         )

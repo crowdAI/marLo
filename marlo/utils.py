@@ -48,6 +48,24 @@ def find_free_port():
         return s.getsockname()[1]
 
 def launch_clients(number_of_clients, replaceable=False):
+    """Launches a series of Minecraft Client which can be used by 
+    MarLo environments.
+
+    :param number_of_clients: Number of Minecraft Clients to launch
+    :type number_of_clients: int
+    :param replaceable: `replaceable` argument from `launchClient.sh` (TODO: Check with @Andre)
+    :type replaceable: bool
+
+    **Note** This is still in experimental phase, as this does not yet clean up 
+    the processes after the code exits.
+    
+    :returns:  A valid `client_pool` object
+
+    >>> import marlo
+    >>> client_pool = marlo.launch_clients(number_of_client=2)
+    >>> print(client_pool)
+    >>> [('127.0.0.1', 27655), ('127.0.0.1', 15438)]
+    """    
     ports = [find_free_port() for _ in range(number_of_clients)]
     MINECRAFT_ROOT = os.getenv("MALMO_MINECRAFT_ROOT")
     if not MINECRAFT_ROOT:
