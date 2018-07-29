@@ -31,6 +31,15 @@ class MarloEnvBuilder(MarloEnvBuilderBase):
         )
         return _default_params
 
+    def render_mission_spec(self):
+        """
+        TODO: Randomize  location of food items
+        """
+        template = self.jinj2_env.get_template("mission.xml")
+        return template.render(
+            params=self.params
+        )
+
 
 if __name__ == "__main__":
     env_builder =  MarloEnvBuilder()
