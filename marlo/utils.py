@@ -41,7 +41,7 @@ def register_environments(MARLO_ENV_PATHS):
             :class:`marlo.base_env_builder.MarloEnvBuilderBase`.
             """
             if os.path.isdir(os.path.join(env_path, _marlo_env_dir)) and \
-                    not _marlo_env_dir.startswith("__"):
+                    not str(_marlo_env_dir).startswith("__"):
                 module = importlib.import_module(_marlo_env_dir)
                 module._register()
                 logger.debug("Creating envs from : {}".format(_marlo_env_dir))
