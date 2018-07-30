@@ -14,7 +14,7 @@ Using Anaconda_ (Only for `linux` and `osx`)
 
   # Test installation by :
   python -c "import marlo"
-  python -c "import marlo.MalmoPython"
+  python -c "from marlo import MalmoPython"
 
 .. Note::
   **Help Wanted** : The conda recipes used to build this conda package can be found here_ . We do not yet have a Windows build, and hence pull requests adding a windows build are very welcome.
@@ -31,8 +31,8 @@ On  Windows
   pip3 install -U malmo
   pip3 install -U marlo
   # Test installation by :
-  python -c "import marlo"
-  python -c "import marlo.MalmoPython"
+  python3 -c "import marlo"
+  python3 -c "from marlo import MalmoPython"
 
 
 .. Note::
