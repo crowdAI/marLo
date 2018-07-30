@@ -10,6 +10,6 @@ setup(name='marlo',
       packages=find_packages(),
       package_data={'': ['assets/*.xml']},
       zip_safe=False,
-      install_requires=['gym', 'jinja2', 'malmo'],
+      install_requires=['gym', 'jinja2'],
       dependency_links=[]
 )
