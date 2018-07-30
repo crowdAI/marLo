@@ -12,11 +12,11 @@ API to run both single agent and multi agent reinforcement learning tasks on Min
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Contents
    
    installation
    usage
-   marlo
+   modules
 
 Indices and tables
 ==================

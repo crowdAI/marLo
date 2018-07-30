@@ -50,6 +50,8 @@ The code above should automatically start two Minecraft clients.
 
 |
 
+.. warning::
+  **The Minecraft Client processes created by this approach are not automatically cleaned up.**
+
 .. note::
-  - **The Minecraft Client processes created by this approach are not automatically cleaned up.**
   - Both the approaches above expect the ``MALMO_MINECRAFT_ROOT`` environment variable to point to the absolute path of the Minecraft folder containing the ``launchClient`` scripts.
