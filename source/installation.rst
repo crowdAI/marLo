@@ -16,7 +16,12 @@ Using Anaconda_ (Only for `linux` and `osx`)
   python -c "import marlo"
   python -c "import marlo.MalmoPython"
 
+.. Note::
+  **Help Wanted** : The conda recipes used to build this conda package can be found here_ . Pull requests adding a windows build are very welcome.
+
 .. _Anaconda: https://www.anaconda.com/download/
+.. _here: https://github.com/spMohanty/malmo-conda-recipe
+
 
 
 On  Windows

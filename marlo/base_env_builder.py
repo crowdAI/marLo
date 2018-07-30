@@ -54,9 +54,14 @@ class TurnState(object):
 
 
 class MarloEnvBuilderBase(gym.Env):
-    """
-    Base class for all Marlo environment builders
-    """
+    """Base class for all Marlo environment builders
+        
+    All the individual ``MarloEnvBuilder`` classes 
+    (for example: :class:`marlo.envs.DefaultWorld.main.MarloEnvBuilder`) 
+    derive from this class.
+    This class provides all the necessary functions for the 
+    lifecycle management of a MarLo environment.
+    """     
     metadata = {'render.modes': ['human', 'rgb_array']}
 
     def __init__(self, templates_folder):
@@ -73,10 +78,23 @@ class MarloEnvBuilderBase(gym.Env):
         self._turn = None
 
     def setup_templating(self):
+        """
+            Sets up the basic ``jinja2`` templating fileloader and 
+            environments.
+            The ``MarloEnvBuilder`` classes, expect the following variables 
+            to be available to them for rendering the ``MissionSpec``s.
+            - ``self.jinja2_fileloader``
+            - ``self.jinj2_env``
+        """
         self.jinja2_fileloader = jinja2FileSystemLoader(self.templates_folder)
         self.jinj2_env = jinja2Environment(loader=self.jinja2_fileloader)
 
     def render_mission_spec(self):
+        """
+            This function looks for a ``mission.xml`` template inside the 
+            ``templates`` specified folder, and renders it using ``jinja2``.
+            This can very well be overriden by ``MarloEnvBuilder`` if required.
+        """
         template = self.jinj2_env.get_template("mission.xml")
         return template.render(
             params=self.params
@@ -84,24 +102,119 @@ class MarloEnvBuilderBase(gym.Env):
 
     @property
     def white_listed_join_params(self):
-        return [
-            "videoResolution",
-            "client_pool",
-            "allowContinuousMovement",
-            "continuous_to_discrete"
-            "recordMP4"
-        ]
+        """
+            This returns a list of whitelisted game parameters which can be
+            modified when joining a game by using :meth:`marlo.join`.
+        """
+        return marlo.JOIN_WHITELISTED_PARAMS
 
     @property
     def default_base_params(self):
+        """
+            The **default game parametes** for all MarLo environments. These can be 
+            modified by either overriding this class in 
+            :class:`marlo.envs.DefaultWorld.main.MarloEnvBuilder` or implementing 
+            a `_default_params` function in the derived class.
+            
+            The default parameters are as follows :
+
+            :param seed: Seed for the random number generator (Default : ``random``). (**Note** This is not properly integrated yet.)
+            :type seed: int
+            
+            :param tick_length: length of a single in-game tick (in milliseconds) (Default : ``50``)
+            :type tick_length: int 
+            
+            :param role: Game Role with which the current agent should join. (Default : ``0``)
+            :type role: int
+            
+            :param experiment_id: A unique alphanumeric id for a single game. This is used to validate the session that an agent is joining. (Default : ``random_experiment_id``). 
+            :type experiment_id: str
+            
+            :param client_pool: A `list` of `tuples` representing the Minecraft client_pool the current agent can try to join. (Default : ``[('127.0.0.1', 10000)]``)
+            :type client_pool: list
+            
+            :param max_retries: Maximum Number of retries when trying to connect to a client_pool to start a mission. (Default : ``30``)
+            :type max_retries: int
+            
+            :param retry_sleep: Time (in seconds) that the execution should sleep between retries for starting a mission. (Default: ``3``)
+            :type retry_sleep: float
+            
+            :param step_sleep: Time (in seconds) to sleep when trying to obtain the latest world state. (Default: ``0.001``)
+            :type step_sleep: float
+            
+            :param skip_steps: Number of observation steps to skip everytime we attempt to the latest world_state. (Default: ``0``) 
+            :type skip_steps: int
+            
+            :param videoResolution: Resolution of the frame that is expected as the RGB observation. (Default: ``[800, 600]``)
+            :type videoResolution: list
+            
+            :param videoWithDepth: If the depth channel should also be added to the observation. (Default: ``False`` )
+            :type videoWithDepth: bool
+            
+            :param observeRecentCommands: If the Recent Commands should be included in the auxillary observation available through ``info['observation']``. (Default: ``False``)
+            :type observeRecentCommands: bool
+
+            :param observeHotBar: If the HotBar information should be included in the auxillary observation available through ``info['observation']``. (Default: ``False``)
+            :type observeHotBar: bool
+            
+            :param observeFullInventory: If the FullInventory information should be included in the auxillary observation available through ``info['observation']``. (Default: ``False``)
+            :type observeFullInventory: bool
+
+            :param observeGrid: Asks for observations of the block types within a cuboid relative to the agent's position in the auxillary observation available through ``info['observation']``. (Default: ``False``)
+            :type observeGrid: bool, list
+            
+            :param observeDistance: Asks for the Euclidean distance to a location to be included in the auxillary observation available through ``info['observation']``. (Default: ``False``)
+            :type observeDistance: bool, list
+
+            :param observeChat: If the Chat information should be included in the auxillary observation available through ``info['observation']``. (Default: ``False``)
+            :type observeChat: bool
+            
+            :param continuous_to_discrete: Converts continuous actions to discrete. when allowed continuous actions are 'move' and 'turn', then discrete action space contains 4 actions: move -1, move 1, turn -1, turn 1. (Default : ``True``)
+            :type continuous_to_discrete: bool
+            
+            :param allowContinuousMovement: If all continuous movement commands should be allowed. (Default : ``True``)
+            :type allowContinuousMovement: bool
+            
+            :param allowDiscreteMovement: If all discrete movement commands should be allowed. (Default : ``True``)
+            :type allowDiscreteMovement: bool
+            
+            :param allowAbsoluteMovement: If all absolute movement commands should be allowed. (Default : ``False``) (**Not Implemented**)
+            :type allowAbsoluteMovement: bool
+            
+            :param add_noop_command: If a ``noop`` (``move 0\\nturn 0``) command should be added to the actions. (Default : ``True``) 
+            :type add_noop_command: bool
+            
+            :param recordDestination: Destination where Mission Records should be stored. (Default : ``None``)
+            :type recordDestination: str
+            
+            :param recordObservations: If Observations should be recorded in the ``MissionRecord``s. (Default : ``None``)
+            :type recordObservations: bool
+            
+            :param recordRewards: If Rewards should be recorded in the ``MissionRecord``s. (Default : ``None``)
+            :type recordRewards: bool
+            
+            :param recordCommands: If Commands (actions) should be recorded in the ``MissionRecord``s. (Default : ``None``)
+            :type recordCommands: bool
+
+            :param recordMP4: If a MP4 should be recorded in the ``MissionRecord``s, and if so, the specifications as : ``[frame_rate, bit_rate]``.  (Default : ``None``)
+            :type recordMP4: list 
+            
+            :param gameMode: The Minecraft gameMode for this particular game. One of ``['spectator', 'creative', 'survival']``. (Default: ``survival``)
+            :type gameMode: str
+            
+            :param forceWorldReset: Force world reset on every reset. Makes sense only in case of environments with inherent stochasticity (Default: ``False``)
+            :type forceWorldReset: bool
+            
+            :param turn_based: Specifies if the current game is a turn based game. (Default : ``False``)
+            :type turn_based: bool
+        """
         if not self._default_base_params:
             self._default_base_params = dotdict(
                  seed="random",
                  tick_length=50,
                  role=0,
-                 experiment_id="something",
-                 client_pool = None,
-                 add_noop_command=True,
+                 experiment_id="random_experiment_id",
+                 client_pool = [('127.0.0.1', 10000)],
                  max_retries=30,
                  retry_sleep=3,
                  step_sleep=0.001,
@@ -118,13 +231,14 @@ class MarloEnvBuilderBase(gym.Env):
                  allowContinuousMovement=True,
                  allowDiscreteMovement=True,
                  allowAbsoluteMovement=False,
+                 add_noop_command=True,                 
                  recordDestination=None,
                  recordObservations=None,
                  recordRewards=None,
                  recordCommands=None,
                  recordMP4=None,
-                 gameMode=None,
-                 forceWorldReset=True,
+                 gameMode="survival",
+                 forceWorldReset=False,
                  turn_based=False,
             )
         return self._default_base_params
