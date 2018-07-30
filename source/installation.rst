@@ -40,3 +40,5 @@ On  Windows
   to set the ``MALMO_MINECRAFT_ROOT`` environment variable to the absolute path of your 
   Minecraft folder. The ``launchClient.sh`` or ``launchClient.bat`` scripts should be 
   inside this folder.
+  You will also have to manually set the ``MALMO_XSD_PATH`` environment variable to 
+  the location of your ``Minecraft Schemas`` folder.
