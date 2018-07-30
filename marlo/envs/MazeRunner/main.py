@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+1#!/usr/bin/env python
 import marlo
 from marlo import MarloEnvBuilderBase
 from marlo import MalmoPython
