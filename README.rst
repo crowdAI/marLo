@@ -74,14 +74,14 @@ The framework is written as an extension to `OpenAI's Gym framework <https://git
     - 
 
 
-Contents
---------
-
+Installation
+----------------
 - Installation 
 - Usage
 - Game Variables
 - Available Environments
 - Submission Instructions
+- Development
 
 Authors
 ========
