@@ -76,12 +76,11 @@ The framework is written as an extension to `OpenAI's Gym framework <https://git
 
 Installation
 ----------------
-- Installation 
-- Usage
-- Game Variables
-- Available Environments
-- Submission Instructions
-- Development
+- `Installation <https://marlo.readthedocs.io/en/latest/installation/>`_
+- `Usage <https://marlo.readthedocs.io/en/latest/usage/>`_
+- `Available Environments <https://marlo.readthedocs.io/en/latest/available_envs/>`_
+- `Submission Instructions <https://marlo.readthedocs.io/en/latest/submit/>`_
+- `Development <https://marlo.readthedocs.io/en/latest/development/>`_
 
 Authors
 ========
