@@ -3,7 +3,7 @@ Installation
 
 Using Anaconda_ (Only for `linux` and `osx`)
 ---------------------------------------------
-  This section assumes that you are only on ``linux`` or ``osx`` and have Anaconda_ installed.
+  This section assumes that you are on ``linux`` or ``osx`` and have Anaconda_ installed.
 
 .. code-block:: bash
  
@@ -17,7 +17,7 @@ Using Anaconda_ (Only for `linux` and `osx`)
   python -c "import marlo.MalmoPython"
 
 .. Note::
-  **Help Wanted** : The conda recipes used to build this conda package can be found here_ . Pull requests adding a windows build are very welcome.
+  **Help Wanted** : The conda recipes used to build this conda package can be found here_ . We do not yet have a Windows build, and hence pull requests adding a windows build are very welcome.
 
 .. _Anaconda: https://www.anaconda.com/download/
 .. _here: https://github.com/spMohanty/malmo-conda-recipe
