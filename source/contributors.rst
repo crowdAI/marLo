@@ -1,9 +1,12 @@
+Authors & Contributors
+===========================
+
 Authors
-=========
+--------
 - `Sharada Mohanty <https://twitter.com/MeMohanty>`_
 
 Contributors
-==================
+-------------
 An alphabetically ordered list of contributors to this project : 
 
 - ABC
