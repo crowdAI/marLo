@@ -20,7 +20,7 @@ sys.path.insert(0, os.path.abspath('marlo/envs'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'MarLo'
+project = 'MarLÖ'
 copyright = '2018, S.P. Mohanty'
 author = 'S.P. Mohanty'
 
