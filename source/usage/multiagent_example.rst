@@ -15,7 +15,8 @@ join the game as separate agents.
   $MALMO_MINECRAFT_ROOT/launchClient.sh -port 10000
   $MALMO_MINECRAFT_ROOT/launchClient.sh -port 10001
 
-**Note** : In case of ``Windows``, you can use ``%%MALMO_MINECRAFT_ROOT%%`` instead.
+.. Note:: 
+  In case of ``Windows``, you can use ``%%MALMO_MINECRAFT_ROOT%%`` instead.
   
 
 - **Create Game**
@@ -37,7 +38,11 @@ join the game as separate agents.
   # As this is a two-agent scenario, 
   # there will just two join tokens
   assert len(join_tokens) == 2
-  
+
+.. Note:: 
+  For the curious, the ``params`` object provided to the ``marlo.make`` and ``marlo.init`` can have the values described in :meth:`marlo.base_env_builder.MarloEnvBuilderBase.default_base_params`
+
+
 - **Define a function for running a single Agent**
 
 .. code-block:: python
@@ -57,8 +62,8 @@ join the game as separate agents.
           print("info", info)
       env.close()
 
-**Note** : Notice the ``@marlo.threaded`` decorator, which jus runs the given 
-function in a separate thread.
+.. Note:: 
+  Notice the ``@marlo.threaded`` decorator, which just runs the given function in a separate thread.
 
 - **Run both the Agents**
 

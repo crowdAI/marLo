@@ -82,7 +82,8 @@ class MarloEnvBuilderBase(gym.Env):
             Sets up the basic ``jinja2`` templating fileloader and 
             environments.
             The ``MarloEnvBuilder`` classes, expect the following variables 
-            to be available to them for rendering the ``MissionSpec``s.
+            to be available to them for rendering the ``MissionSpec``
+            
             - ``self.jinja2_fileloader``
             - ``self.jinj2_env``
         """
@@ -92,7 +93,7 @@ class MarloEnvBuilderBase(gym.Env):
     def render_mission_spec(self):
         """
             This function looks for a ``mission.xml`` template inside the 
-            ``templates`` specified folder, and renders it using ``jinja2``.
+            ``templates`` folder, and renders it using ``jinja2``.
             This can very well be overriden by ``MarloEnvBuilder`` if required.
         """
         template = self.jinj2_env.get_template("mission.xml")
@@ -104,7 +105,7 @@ class MarloEnvBuilderBase(gym.Env):
     def white_listed_join_params(self):
         """
             This returns a list of whitelisted game parameters which can be
-            modified when joining a game by using :meth:`marlo.join`.
+            modified when joining a game by using :meth:`marlo.init`.
         """
         return marlo.JOIN_WHITELISTED_PARAMS
 
@@ -131,6 +132,9 @@ class MarloEnvBuilderBase(gym.Env):
             :type experiment_id: str
             
             :param client_pool: A `list` of `tuples` representing the Minecraft client_pool the current agent can try to join. (Default : ``[('127.0.0.1', 10000)]``)
+            :type client_pool: list
+
+            :param agent_names: A `list` of names for the agents that are expected to join the game. This is used by the templating system to add an appropriate number of agents. (Default : ``["MarLo-Agent-0"]``)
             :type client_pool: list
             
             :param max_retries: Maximum Number of retries when trying to connect to a client_pool to start a mission. (Default : ``30``)
@@ -196,7 +200,7 @@ class MarloEnvBuilderBase(gym.Env):
             :param recordCommands: If Commands (actions) should be recorded in the ``MissionRecord``s. (Default : ``None``)
             :type recordCommands: bool
 
-            :param recordMP4: If a MP4 should be recorded in the ``MissionRecord``s, and if so, the specifications as : ``[frame_rate, bit_rate]``.  (Default : ``None``)
+            :param recordMP4: If a MP4 should be recorded in the ``MissionRecord``, and if so, the specifications as : ``[frame_rate, bit_rate]``.  (Default : ``None``)
             :type recordMP4: list 
             
             :param gameMode: The Minecraft gameMode for this particular game. One of ``['spectator', 'creative', 'survival']``. (Default: ``survival``)
@@ -215,6 +219,7 @@ class MarloEnvBuilderBase(gym.Env):
                  role=0,
                  experiment_id="random_experiment_id",
                  client_pool = [('127.0.0.1', 10000)],
+                 agent_names = ["MarLo-Agent-0"],
                  max_retries=30,
                  retry_sleep=3,
                  step_sleep=0.001,
@@ -245,6 +250,12 @@ class MarloEnvBuilderBase(gym.Env):
 
 
     def setup_video(self, params):
+        """
+            Setups up the Video Requests for an environment.
+            
+            :param params: Marlo Game Parameters as described in :meth:`default_base_params`
+            :type params: dict
+        """
         ############################################################
         # Setup Video
         ############################################################
@@ -257,6 +268,12 @@ class MarloEnvBuilderBase(gym.Env):
                 self.mission_spec.requestVideo(*params.videoResolution)
 
     def setup_observe_params(self, params):
+        """
+            Setups up the Auxillary Observation Requests for an environment.
+            
+            :param params: Marlo Game Parameters as described in :meth:`default_base_params`
+            :type params: dict
+        """
         ############################################################
         # Setup observe<>*
         ############################################################
@@ -276,6 +293,12 @@ class MarloEnvBuilderBase(gym.Env):
             self.mission_spec.observeChat()
 
     def setup_action_commands(self, params):
+        """
+            Setups up the Action Commands for the current agent interacting with the environment.
+            
+            :param params: Marlo Game Parameters as described in :meth:`default_base_params`
+            :type params: dict
+        """        
         ############################################################
         # Setup Action Commands
         ############################################################
@@ -306,6 +329,12 @@ class MarloEnvBuilderBase(gym.Env):
                 self.mission_spec.allowAllDiscreteMovementCommands()
 
     def setup_observation_space(self, params):
+        """
+            Setups up the Observation Space for an environment.
+            
+            :param params: Marlo Game Parameters as described in :meth:`default_base_params`
+            :type params: dict
+        """        
         ############################################################
         # Setup Observation Space
         ############################################################
@@ -324,6 +353,12 @@ class MarloEnvBuilderBase(gym.Env):
             )
 
     def setup_action_space(self, params):
+        """
+            Setups up the action space for the current agent interacting with the environment.
+            
+            :param params: Marlo Game Parameters as described in :meth:`default_base_params`
+            :type params: dict
+        """                
         ############################################################
         # Setup Action Space
         ############################################################
@@ -407,6 +442,12 @@ class MarloEnvBuilderBase(gym.Env):
             self.action_space = gym.spaces.Tuple(self.action_space)
 
     def setup_client_pool(self, params):
+        """
+            Setups up the ``client_pool`` for the current environment.
+            
+            :param params: Marlo Game Parameters as described in :meth:`default_base_params`
+            :type params: dict
+        """
         ############################################################
         # Setup Client Pool
         ############################################################
@@ -426,6 +467,12 @@ class MarloEnvBuilderBase(gym.Env):
             
 
     def setup_mission_record(self, params):
+        """
+            Setups up the ``mission_record`` for the current environment.
+            
+            :param params: Marlo Game Parameters as described in :meth:`default_base_params`
+            :type params: dict
+        """        
         ############################################################
         # Setup Mission Record
         ############################################################
@@ -446,6 +493,12 @@ class MarloEnvBuilderBase(gym.Env):
                                 "provided without specifyin recordDestination")
 
     def setup_game_mode(self, params):
+        """
+            Setups up the ``gameMode`` for the current environment.
+            
+            :param params: Marlo Game Parameters as described in :meth:`default_base_params`
+            :type params: dict
+        """                
         ############################################################
         # Setup Game Mode
         ############################################################
@@ -462,6 +515,12 @@ class MarloEnvBuilderBase(gym.Env):
                 ))
 
     def setup_mission_spec(self, params):
+        """
+            Generates and setups the first MissionSpec as generated by :meth:`render_mission_spec`.
+            
+            :param params: Marlo Game Parameters as described in :meth:`default_base_params`
+            :type params: dict
+        """                
         ############################################################
         # Instantiate Mission Spec
         ############################################################
@@ -469,10 +528,27 @@ class MarloEnvBuilderBase(gym.Env):
         self.mission_spec = MalmoPython.MissionSpec(mission_xml, True)
 
     def setup_turn_based_games(self, params):
+        """
+            Setups up a ``turn_based`` game.
+            
+            :param params: Marlo Game Parameters as described in :meth:`default_base_params`
+            :type params: dict
+        """                        
         if params.turn_based:
             self._turn = TurnState()
 
     def init(self, params, dry_run=False):
+        """
+            Generates the join tokens for all the agents in a game based on the provided game params.
+            
+            :param params: Marlo Game Parameters as described in :meth:`default_base_params`
+            :type params: dict
+            :param dry_run: If the current execution is a ``dry_run``
+            :type dry_run: bool
+            
+            :returns: List of join_tokens, one join_token for every agent in the game.
+            :rtype: list
+        """                                
         self.params.update(params)
         self.dry_run = dry_run
         self.build_env(self.params)

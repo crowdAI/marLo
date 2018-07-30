@@ -9,6 +9,9 @@ from pathlib import Path
 
 
 class MarloEnvBuilder(MarloEnvBuilderBase):
+    """
+    TODO: Add Env Description Here
+    """
     def __init__(self, extra_params={}):
         super(MarloEnvBuilder, self).__init__(
                 templates_folder = os.path.join(
@@ -19,6 +22,8 @@ class MarloEnvBuilder(MarloEnvBuilderBase):
         self.params = self._default_params()
         # You can do something with the extra_params if you wish
         self.params.update(extra_params)
+        print(self.params["maze_height"])
+        print(extra_params)
 
     def _default_params(self):
         _default_params = super(MarloEnvBuilder, self).default_base_params

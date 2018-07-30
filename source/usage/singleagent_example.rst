@@ -14,7 +14,8 @@ In the simplest of the use cases, we will start a single agent
 
   $MALMO_MINECRAFT_ROOT/launchClient.sh -port 10000
 
-**Note** : In case of ``Windows``, you can use ``%%MALMO_MINECRAFT_ROOT%%`` instead.
+.. Note:: 
+  In case of ``Windows``, you can use ``%%MALMO_MINECRAFT_ROOT%%`` instead.
 
 
 - **Make and Instantiate Environment**
@@ -34,6 +35,9 @@ In the simplest of the use cases, we will start a single agent
   join_token = join_tokens[0]
   
   env = marlo.init(join_token)
+  
+.. Note:: 
+  For the curious, the ``params`` object provided to the ``marlo.make`` and ``marlo.init`` can have the values described in :meth:`marlo.base_env_builder.MarloEnvBuilderBase.default_base_params`
 
 - **Get first Observation**
 

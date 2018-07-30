@@ -35,10 +35,8 @@ On  Windows
   python -c "import marlo.MalmoPython"
 
 
-|
-|
-
-**Note :** If you **did not** install ``marlo`` by using the Anaconda_ package, then you will have 
-to set the ``MALMO_MINECRAFT_ROOT`` environment variable to the absolute path of your 
-Minecraft folder. The ``launchClient.sh`` or ``launchClient.bat`` scripts should be 
-inside this folder.
+.. Note::
+  If you **did not** install ``marlo`` by using the Anaconda_ package, then you will have 
+  to set the ``MALMO_MINECRAFT_ROOT`` environment variable to the absolute path of your 
+  Minecraft folder. The ``launchClient.sh`` or ``launchClient.bat`` scripts should be 
+  inside this folder.

@@ -3,16 +3,15 @@ import time
 import json
 import base64
 
-client_pool = [('127.0.0.1', 10000), ('127.0.0.1', 10001)]
-join_tokens = marlo.make('MarLo-MazeRunner-v0',
+client_pool = [('127.0.0.1', 10000)]
+join_tokens = marlo.make('MarLo-Vertical-v0',
                  params={
                     "videoResolution" : [800, 600],
                     "client_pool" : client_pool,
-                    "agent_names" : ["MarLo-Agent0", "MarLo-Agent1"],
+                    "agent_names" : ["MarLo-Agent0"],
                     "allowContinuousMovement" : ["move", "turn"],
                  })
 
-@marlo.threaded
 def run_agent(join_token):
     env = marlo.init(join_token)
     frame = env.reset()

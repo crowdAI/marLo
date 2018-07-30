@@ -16,6 +16,7 @@ API to run both single agent and multi agent reinforcement learning tasks on Min
    
    installation
    usage
+   available_envs
    modules
 
 Indices and tables

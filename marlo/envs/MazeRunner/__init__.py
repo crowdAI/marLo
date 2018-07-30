@@ -16,16 +16,3 @@ def _register():
             }
         },
     )
-
-    ##########################################
-    # Version 1 of env
-    ##########################################
-    gym.envs.registration.register(
-        id='MazeRunner-v1',
-        entry_point=MarloEnvBuilder,
-        kwargs={
-            "extra_params" : {
-                "maze_height":"3"
-            }
-        },
-    )
