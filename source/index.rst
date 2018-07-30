@@ -19,6 +19,7 @@ API to run both single agent and multi agent reinforcement learning tasks on Min
    available_envs
    submit
    modules
+   development
 
 Indices and tables
 ==================
