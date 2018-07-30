@@ -20,43 +20,58 @@ The framework is written as an extension to `OpenAI's Gym framework <https://git
         .. figure:: https://i.imgur.com/XpiVIoD.png
           :align: center
           :width: 300    
+          
     - ``MarLo-CliffWalking-v0``
         .. figure:: https://i.imgur.com/cI1CgEQ.png
           :align: center
           :width: 300    
-
+          
     - ``MarLo-CatchTheMob-v0``
         .. figure:: https://i.imgur.com/FtfKOzs.png
           :align: center
           :width: 300    
 
-  * - ``MarLo-MazeRunner-v0``
-        .. figure:: https://i.imgur.com/XpiVIoD.png
+  * - ``MarLo-Basic-v0``
+        .. figure:: https://i.imgur.com/lpbQuty.png
           :align: center
           :width: 300    
-    - ``MarLo-CliffWalking-v0``
-        .. figure:: https://i.imgur.com/cI1CgEQ.png
-          :align: center
-          :width: 300    
-
-    - ``MarLo-CatchTheMob-v0``
-        .. figure:: https://i.imgur.com/FtfKOzs.png
+          
+    - ``MarLo-Attic-v0``
+        .. figure:: https://imgur.com/fQVuOHD.png
           :align: center
           :width: 300    
 
-  * - ``MarLo-MazeRunner-v0``
-        .. figure:: https://i.imgur.com/XpiVIoD.png
-          :align: center
-          :width: 300    
-    - ``MarLo-CliffWalking-v0``
-        .. figure:: https://i.imgur.com/cI1CgEQ.png
+    - ``MarLo-DefaultFlatWorld-v0``
+        .. figure:: https://i.imgur.com/XQ7UxHP.png
           :align: center
           :width: 300    
 
-    - ``MarLo-CatchTheMob-v0``
-        .. figure:: https://i.imgur.com/FtfKOzs.png
+  * - ``MarLo-DefaultWorld-v0``
+        .. figure:: https://i.imgur.com/bnpM9OX.png
           :align: center
           :width: 300    
+          
+    - ``MarLo-Eating-v0``
+        .. figure:: https://i.imgur.com/kM5Y4pk.png
+          :align: center
+          :width: 300    
+
+    - ``MarLo-Obstacles-v0``
+        .. figure:: https://i.imgur.com/L53AlWG.png
+          :align: center
+          :width: 300    
+
+  * - ``MarLo-TrickyArena-v0``
+        .. figure:: https://i.imgur.com/zfWeCnR.png
+          :align: center
+          :width: 300    
+          
+    - ``MarLo-Vertical-v0``
+        .. figure:: https://i.imgur.com/jZC7buV.png
+          :align: center
+          :width: 300    
+
+    - 
 
 
 Contents
