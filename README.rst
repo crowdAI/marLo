@@ -86,6 +86,7 @@ Contents
 Simple Example
 ----------------
 .. code-block:: python
+
   #!/usr/bin/env python
   # Please ensure that you have a Minecraft client running on port 10000
   # by doing : 
