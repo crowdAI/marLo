@@ -5,7 +5,6 @@ import gym
 import importlib
 from pathlib import Path
 import tempfile
-import atexit
 
 import logging
 logger = logging.getLogger(__name__)
