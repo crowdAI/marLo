@@ -213,18 +213,6 @@ class MarloEnvBuilderBase(gym.Env):
         ############################################################
         # Setup Action Space
         ############################################################
-        SINGLE_DIRECTION_DISCRETE_MOVEMENTS = \
-                    [
-                        "jumpeast", "jumpnorth", "jumpsouth", "jumpwest",
-                        "movenorth", "moveeast", "movesouth", "movewest",
-                        "jumpuse", "use", "attack", "jump"
-                    ]
-        MULTIPLE_DIRECTION_DISCRETE_MOVEMENTS = \
-                    [
-                        "move", "turn", "look", "strafe", "jumpmove", 
-                        "jumpstrafe"
-                    ]
-
         continuous_actions = []
         discrete_actions = []
         multidiscrete_actions = []
@@ -255,9 +243,9 @@ class MarloEnvBuilderBase(gym.Env):
                             "Unknown continuois action : {}".format(command)
                             )
                 elif command_handler == "DiscreteMovement":
-                    if command in SINGLE_DIRECTION_DISCRETE_MOVEMENTS:
+                    if command in marlo.SINGLE_DIRECTION_DISCRETE_MOVEMENTS:
                         discrete_actions.append(command + " 1")
-                    elif command in MULTIPLE_DIRECTION_DISCRETE_MOVEMENTS:
+                    elif command in marlo.MULTIPLE_DIRECTION_DISCRETE_MOVEMENTS:
                         discrete_actions.append(command + " 1")
                         discrete_actions.append(command + " -1")
                     else:

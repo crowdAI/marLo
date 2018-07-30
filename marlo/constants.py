@@ -7,3 +7,16 @@ JOIN_WHITELISTED_PARAMS = [
     "recordDestination",
     "seed"
 ]
+
+
+SINGLE_DIRECTION_DISCRETE_MOVEMENTS = \
+            [
+                "jumpeast", "jumpnorth", "jumpsouth", "jumpwest",
+                "movenorth", "moveeast", "movesouth", "movewest",
+                "jumpuse", "use", "attack", "jump"
+            ]
+MULTIPLE_DIRECTION_DISCRETE_MOVEMENTS = \
+            [
+                "move", "turn", "look", "strafe", "jumpmove", 
+                "jumpstrafe"
+            ]

@@ -4,14 +4,9 @@ marlo.envs.CliffWalking package
 Submodules
 ----------
 
-marlo.envs.CliffWalking.main module
------------------------------------
+.. toctree::
 
-.. automodule:: marlo.envs.CliffWalking.main
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
+   marlo.envs.CliffWalking.main
 
 Module contents
 ---------------

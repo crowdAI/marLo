@@ -4,14 +4,9 @@ marlo.envs.TrickyArena package
 Submodules
 ----------
 
-marlo.envs.TrickyArena.main module
-----------------------------------
+.. toctree::
 
-.. automodule:: marlo.envs.TrickyArena.main
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
+   marlo.envs.TrickyArena.main
 
 Module contents
 ---------------

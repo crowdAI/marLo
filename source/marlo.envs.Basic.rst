@@ -4,14 +4,9 @@ marlo.envs.Basic package
 Submodules
 ----------
 
-marlo.envs.Basic.main module
-----------------------------
+.. toctree::
 
-.. automodule:: marlo.envs.Basic.main
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
+   marlo.envs.Basic.main
 
 Module contents
 ---------------

@@ -16,13 +16,29 @@ from contextlib import closing
 from marlo.launch_minecraft_in_background import launch_minecraft_in_background
 
 def register_environments(MARLO_ENV_PATHS):
+    """Searches for Marlo Environments in the provided paths, and registers
+    them as valid MarLo environments to be used by `marlo.make`.
+
+    Expect that each env directory will have the relevant 
+    gym registrations implemented in ``__init__.py`` 
+    and a ``main.py`` will implement a derived class of 
+    :class:`marlo.base_env_builder.MarloEnvBuilderBase` with the necessary 
+    functions overriden.
+
+
+    :param MARLO_ENV_PATHS: Path to directory containing multiple MarLo envs
+    :type number_of_clients: str
+    
+    :rtype:  None
+    """        
     for env_path in MARLO_ENV_PATHS:
         sys.path.append(env_path)
         for _marlo_env_dir in os.listdir(env_path):
             """
             Expect that each env directory will have the relevant 
-            gym registrations in a "register_environments" functions 
-            implemented in __init__.py
+            gym registrations implemented in __init__.py 
+            and a `main.py` will implement a derived class of 
+            :class:`marlo.base_env_builder.MarloEnvBuilderBase`.
             """
             if os.path.isdir(os.path.join(env_path, _marlo_env_dir)) and \
                     not _marlo_env_dir.startswith("__"):
@@ -31,6 +47,26 @@ def register_environments(MARLO_ENV_PATHS):
                 logger.debug("Creating envs from : {}".format(_marlo_env_dir))
 
 def threaded(fn):
+    """Implements the @threaded decorator to help easily run functions in a 
+    separate thread. Useful in multiagent scenarios when we want to run 
+    multiple blocking agents across different threads.
+
+    .. code-block:: python
+    
+        import marlo
+
+        @marlo.threaded
+        def example_function(arbitrary_arguments):
+            print("Execution inside an arbitrary function")
+
+        # Run on thread-1
+        example_function(arbitrary_arguments_1)
+        # Run on thread-2
+        example_function(arbitrary_arguments_2)
+
+    :param fn: Function defitnion 
+    :type fn: func
+    """      
     def wrap(queue, *args, **kwargs):
         queue.put(fn(*args, **kwargs))
 
@@ -43,6 +79,11 @@ def threaded(fn):
     return call
 
 def find_free_port():
+    """Find a random free port where a Minecraft Client can possibly be launched.
+    
+    :rtype:  `int`
+    """    
+    
     with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as s:
         s.bind(('', 0))
         return s.getsockname()[1]
@@ -59,7 +100,7 @@ def launch_clients(number_of_clients, replaceable=False):
     **Note** This is still in experimental phase, as this does not yet clean up 
     the processes after the code exits.
     
-    :returns:  A valid `client_pool` object
+    :returns:  A valid `client_pool` object ( a `list` of `tuples`)
 
     >>> import marlo
     >>> client_pool = marlo.launch_clients(number_of_client=2)

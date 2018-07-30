@@ -4,14 +4,9 @@ marlo.envs.Eating package
 Submodules
 ----------
 
-marlo.envs.Eating.main module
------------------------------
+.. toctree::
 
-.. automodule:: marlo.envs.Eating.main
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
+   marlo.envs.Eating.main
 
 Module contents
 ---------------

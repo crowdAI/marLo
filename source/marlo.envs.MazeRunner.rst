@@ -4,14 +4,9 @@ marlo.envs.MazeRunner package
 Submodules
 ----------
 
-marlo.envs.MazeRunner.main module
----------------------------------
+.. toctree::
 
-.. automodule:: marlo.envs.MazeRunner.main
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
+   marlo.envs.MazeRunner.main
 
 Module contents
 ---------------

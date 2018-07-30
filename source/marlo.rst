@@ -11,38 +11,12 @@ Subpackages
 Submodules
 ----------
 
-marlo.base\_env\_builder module
--------------------------------
+.. toctree::
 
-.. automodule:: marlo.base_env_builder
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-marlo.constants module
-----------------------
-
-.. automodule:: marlo.constants
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-marlo.launch\_minecraft\_in\_background module
-----------------------------------------------
-
-.. automodule:: marlo.launch_minecraft_in_background
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-marlo.utils module
-------------------
-
-.. automodule:: marlo.utils
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
+   marlo.base_env_builder
+   marlo.constants
+   marlo.launch_minecraft_in_background
+   marlo.utils
 
 Module contents
 ---------------

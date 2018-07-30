@@ -4,14 +4,9 @@ marlo.envs.Obstacles package
 Submodules
 ----------
 
-marlo.envs.Obstacles.main module
---------------------------------
+.. toctree::
 
-.. automodule:: marlo.envs.Obstacles.main
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
+   marlo.envs.Obstacles.main
 
 Module contents
 ---------------

@@ -4,14 +4,9 @@ marlo.envs.CatchTheMob package
 Submodules
 ----------
 
-marlo.envs.CatchTheMob.main module
-----------------------------------
+.. toctree::
 
-.. automodule:: marlo.envs.CatchTheMob.main
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
+   marlo.envs.CatchTheMob.main
 
 Module contents
 ---------------

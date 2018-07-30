@@ -4,14 +4,9 @@ marlo.envs.Attic package
 Submodules
 ----------
 
-marlo.envs.Attic.main module
-----------------------------
+.. toctree::
 
-.. automodule:: marlo.envs.Attic.main
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
+   marlo.envs.Attic.main
 
 Module contents
 ---------------

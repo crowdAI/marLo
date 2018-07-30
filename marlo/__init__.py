@@ -28,7 +28,8 @@ except ImportError as e:
 from gym.envs.registration import register
 from marlo.base_env_builder import MarloEnvBuilderBase
 # Import Constants
-from .constants import JOIN_WHITELISTED_PARAMS
+from .constants import JOIN_WHITELISTED_PARAMS, \
+    SINGLE_DIRECTION_DISCRETE_MOVEMENTS, MULTIPLE_DIRECTION_DISCRETE_MOVEMENTS
 from .utils import register_environments
 from .utils import threaded
 from .utils import launch_clients

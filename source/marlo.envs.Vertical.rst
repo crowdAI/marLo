@@ -4,14 +4,9 @@ marlo.envs.Vertical package
 Submodules
 ----------
 
-marlo.envs.Vertical.main module
--------------------------------
+.. toctree::
 
-.. automodule:: marlo.envs.Vertical.main
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
+   marlo.envs.Vertical.main
 
 Module contents
 ---------------

@@ -4,14 +4,9 @@ marlo.envs.DefaultWorld package
 Submodules
 ----------
 
-marlo.envs.DefaultWorld.main module
------------------------------------
+.. toctree::
 
-.. automodule:: marlo.envs.DefaultWorld.main
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
+   marlo.envs.DefaultWorld.main
 
 Module contents
 ---------------

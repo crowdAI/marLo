@@ -4,14 +4,9 @@ marlo.envs.DefaultFlatWorld package
 Submodules
 ----------
 
-marlo.envs.DefaultFlatWorld.main module
----------------------------------------
+.. toctree::
 
-.. automodule:: marlo.envs.DefaultFlatWorld.main
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
+   marlo.envs.DefaultFlatWorld.main
 
 Module contents
 ---------------

@@ -4,14 +4,9 @@ marlo.envs.RawXMLEnv package
 Submodules
 ----------
 
-marlo.envs.RawXMLEnv.main module
---------------------------------
+.. toctree::
 
-.. automodule:: marlo.envs.RawXMLEnv.main
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
+   marlo.envs.RawXMLEnv.main
 
 Module contents
 ---------------
