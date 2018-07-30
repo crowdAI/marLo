@@ -83,5 +83,5 @@ Installation
 - `Development <https://marlo.readthedocs.io/en/latest/development/>`_
 
 Authors
-========
+----------------
 - `Sharada Mohanty <https://twitter.com/MeMohanty>`_
