@@ -42,7 +42,7 @@ from .utils import launch_clients
 ########################################################################
 MARLO_ENV_PATHS = [
         os.path.join(
-            os.path.abspath(Path(__file__).parent),
+            os.path.abspath(str(Path(__file__).parent)),
             "envs")
     ]
 if os.getenv("MARLO_ENVS_DIRECTORY") is not None:
