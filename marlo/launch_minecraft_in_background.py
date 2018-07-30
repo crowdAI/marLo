@@ -39,6 +39,9 @@ def _port_has_listener(port):
 
 
 def launch_minecraft_in_background(minecraft_path, ports=None, timeout=360, replaceable=False):
+    """
+    Module deprecated in favor of :meth:`marlo.utils.launch_clients`
+    """
     if ports is None:
         ports = []
     if len(ports) == 0:

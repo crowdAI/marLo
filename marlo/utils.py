@@ -47,7 +47,7 @@ def register_environments(MARLO_ENV_PATHS):
                 logger.debug("Creating envs from : {}".format(_marlo_env_dir))
 
 def threaded(fn):
-    """Implements the @threaded decorator to help easily run functions in a 
+    """Implements the ``@marlo.threaded`` decorator to help easily run functions in a 
     separate thread. Useful in multiagent scenarios when we want to run 
     multiple blocking agents across different threads.
 
