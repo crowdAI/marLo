@@ -112,8 +112,8 @@ class MarloEnvBuilderBase(gym.Env):
     @property
     def default_base_params(self):
         """
-            The **default game parametes** for all MarLo environments. These can be 
-            modified by either overriding this class in 
+            The **default game parameters** for all MarLo environments. 
+            These can be modified by either overriding this class in 
             :class:`marlo.envs.DefaultWorld.main.MarloEnvBuilder` or implementing 
             a `_default_params` function in the derived class.
             
