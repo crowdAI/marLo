@@ -6,16 +6,14 @@ from chainerrl import q_functions
 from chainerrl import replay_buffer
 from chainer import optimizers
 import chainerrl
-import chainer
-
 import logging
 import sys, os
-import argparse
+
+import chainer
 
 import gym
 gym.undo_logger_setup()  # NOQA
 from gym import spaces
-from gym.envs.registration import register
 import gym.wrappers
 
 import numpy as np
@@ -30,7 +28,7 @@ start_epsilon = 1.0
 end_epsilon = 0.1
 final_exploration_steps = 10 ** 4
 outdir = 'results'
-gpu = 0
+gpu = -1
 gamma = 0.99
 replay_start_size = 1000
 target_update_interval = 10 ** 2
@@ -38,44 +36,21 @@ update_interval = 1
 target_update_method = 'hard'
 soft_update_tau = 1e-2
 rbuf_capacity = 5 * 10 ** 5
-steps = 10 ** 5
+steps = 10 ** 4
 eval_n_runs = 100
 eval_interval = 10 ** 4
 
 def phi(obs):
     return obs.astype(np.float32)
 
-parser = argparse.ArgumentParser(description='Multi-agent chainerrl DQN example')
-# Example missions: 'pig_chase.xml' or 'bb_mission_1.xml' or 'th_mission_1.xml'
-parser.add_argument('--rollouts', type=int, default=1, help='number of rollouts')
-parser.add_argument('--mission_file', type=str, default="basic.xml", help='the mission xml')
-parser.add_argument('--turn_based', action='store_true')
-args = parser.parse_args()	
-
-turn_based = args.turn_based
-number_of_rollouts = args.rollouts
-	
 # Ensure that you have a minecraft-client running with : marlo-server --port 10000
-env_name = 'debug-v0'
+join_tokens = marlo.make('MinecraftCliffWalking1-v0', 
+                params=dict(
+                    allowContinuousMovement=["move", "turn"],
+                    videoResolution=[800, 600]
+                ))
+env = marlo.init(join_tokens[0])
 
-register(
-    id=env_name,
-    entry_point='marlo.envs:MinecraftEnv',
-    # Make sure mission xml is in the marlo/assets directory.
-    kwargs={'mission_file': args.mission_file}
-)
-
-env = gym.make(env_name)
-
-resolution = [84, 84]  # [800, 600]
-config = {'allowDiscreteMovement': ["move", "turn"], 'videoResolution': resolution, "turn_based": turn_based}
-
-env.init(**config)
-
-#env.init(
-#    allowContinuousMovement=["move", "turn"],
-#    videoResolution=[800, 600]
-#    )
 
 obs = env.reset()
 env.render(mode="rgb_array")
@@ -144,7 +119,7 @@ agent = DQN(
 		target_update_method=target_update_method,
 		soft_update_tau=soft_update_tau,
 		episodic_update_len=16
-	)	
+	)
 	
 # Start training
 experiments.train_agent_with_evaluation(

@@ -69,12 +69,13 @@ def phi(obs):
     return obs.astype(np.float32)
 
 # Ensure that you have a minecraft-client running with : marlo-server --port 10000
-env = gym.make('MinecraftCliffWalking1-v0')
+join_tokens = marlo.make('MinecraftCliffWalking1-v0', 
+                params=dict(
+                    allowContinuousMovement=["move", "turn"],
+                    videoResolution=[800, 600]
+                ))
+env = marlo.init(join_tokens[0])
 
-env.init(
-    allowContinuousMovement=["move", "turn"],
-    videoResolution=[800, 600]
-    )
 
 obs = env.reset()
 env.render(mode="rgb_array")

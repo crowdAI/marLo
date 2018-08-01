@@ -67,13 +67,14 @@ def train_agent(agent, env, steps, outdir, max_episode_len=None,
             episode_r += r
             episode_len += 1
 
-            testLog.write("reward for step " + str(t) + " = " + str(r) + "\n")
+            testLog.write(str(r) + " ")
             
             for hook in step_hooks:
                 hook(env, agent, t)
 
             if done or episode_len == max_episode_len or t == steps:
                 writer.add_scalar('last reward in episode', r, t)
+                testLog.write("\n")
                 agent.stop_episode_and_train(obs, episode_r, done=done)
                 logger.info('outdir:%s step:%s episode:%s R:%s',
                             outdir, t, episode_idx, episode_r)

@@ -1,0 +1,27 @@
+marlo package
+=============
+
+Subpackages
+-----------
+
+.. toctree::
+
+    marlo.envs
+
+Submodules
+----------
+
+.. toctree::
+
+   marlo.base_env_builder
+   marlo.constants
+   marlo.launch_minecraft_in_background
+   marlo.utils
+
+Module contents
+---------------
+
+.. automodule:: marlo
+    :members:
+    :undoc-members:
+    :show-inheritance:

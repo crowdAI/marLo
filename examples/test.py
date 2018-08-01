@@ -1,29 +1,30 @@
-import gym
 import marlo
 import time
+import json
+import base64
 
-# Ensure that you have a minecraft-client running with : marlo-server --port 10000
-env = gym.make('MinecraftBasic-v0')
+client_pool = [('127.0.0.1', 10000)]
+join_tokens = marlo.make('MarLo-MazeRunner-v0',
+                 params={
+                    "videoResolution" : [800, 600],
+                    "client_pool" : client_pool,
+                    "agent_names" : ["MarLo-Agent0"],
+                    "allowContinuousMovement" : ["move", "turn"],
+                 })
 
-env.init(
-    videoResolution=[800, 600]
-    )
-# List of all available options at : https://github.com/spMohanty/marLo/blob/dev/docs/init.md
-
-for _ in range(10):
-    t = time.time()
-    env.reset()
-    t2 = time.time()
-    print("Startup time:", t2 - t)
+def run_agent(join_token):
+    env = marlo.init(join_token)
+    frame = env.reset()
     done = False
-    s = 0
+    count = 0
     while not done:
-        obs, reward, done, info = env.step(env.action_space.sample())
-        env.render()
-        #print("obs:", obs.shape)
-        #print("reward:", reward)
-        #print("done:", done)
-        #print("info", info)
-        s += 1
-    t3 = time.time()
-    print((t3 - t2), "seconds total,", s, "steps total,", s / (t3 - t2), "steps/second")
+        _action = env.action_space.sample()
+        # obs, reward, done, info = env.step(_action)
+        time.sleep(0.5)
+        # print("reward:", reward)
+        # print("done:", done)
+        # print("info", info)
+    env.close()
+
+for _join_token in join_tokens:
+    run_agent(_join_token)
