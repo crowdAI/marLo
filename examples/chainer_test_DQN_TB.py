@@ -10,6 +10,8 @@ import chainerrl
 import logging
 import sys, os
 
+askjdhajskhdsa
+
 import gym
 gym.undo_logger_setup()  # NOQA
 from gym import spaces
@@ -23,28 +25,28 @@ from tb_chainer import name_scope, within_name_scope
 
 class QFunction(chainer.Chain):
 
-    def __init__(self, obs_size, n_actions, n_hidden_channels=50):
-        super().__init__()
-        with self.init_scope():
-            self.l0 = L.Linear(obs_size, n_hidden_channels)
-            self.l1 = L.Linear(n_hidden_channels, n_hidden_channels)
-            self.l2 = L.Linear(n_hidden_channels, n_actions)
+	def __init__(self, obs_size, n_actions, n_hidden_channels=50):
+		super().__init__()
+		with self.init_scope():
+			self.l0 = L.Linear(obs_size, n_hidden_channels)
+			self.l1 = L.Linear(n_hidden_channels, n_hidden_channels)
+			self.l2 = L.Linear(n_hidden_channels, n_actions)
 
 	@within_name_scope('MLP')
-    def __call__(self, x, test=False):
-        """
-        Args:
-            x (ndarray or chainer.Variable): An observation
-            test (bool): a flag indicating whether it is in test mode
-        """
+	def __call__(self, x, test=False):
+		"""
+		Args:
+			x (ndarray or chainer.Variable): An observation
+			test (bool): a flag indicating whether it is in test mode
+		"""
 		with name_scope('linear1', self.l0.params()):
 			h1 = F.tanh(self.l0(x))
 		with name_scope('linear2', self.l1.params()):
 			h2 = F.tanh(self.l1(h1))
 		with name_scope('linear3', self.l2.params()):
-            o = self.l2(h2)
+			o = self.l2(h2)
 			
-        return chainerrl.action_value.DiscreteActionValue(o)
+		return chainerrl.action_value.DiscreteActionValue(o)
 
 # Tweakable parameters
 n_hidden_channels = 100
@@ -66,14 +68,14 @@ eval_n_runs = 100
 eval_interval = 10 ** 4
 
 def phi(obs):
-    return obs.astype(np.float32)
+	return obs.astype(np.float32)
 
 # Ensure that you have a minecraft-client running with : marlo-server --port 10000
 join_tokens = marlo.make('MinecraftCliffWalking1-v0', 
-                params=dict(
-                    allowContinuousMovement=["move", "turn"],
-                    videoResolution=[800, 600]
-                ))
+				params=dict(
+					allowContinuousMovement=["move", "turn"],
+					videoResolution=[800, 600]
+				))
 env = marlo.init(join_tokens[0])
 
 

@@ -243,7 +243,7 @@ class MarloEnvBuilderBase(gym.Env):
                  recordCommands=None,
                  recordMP4=None,
                  gameMode="survival",
-                 forceWorldReset=False,
+                 forceWorldReset=True,
                  turn_based=False,
             )
         return self._default_base_params
@@ -676,7 +676,7 @@ class MarloEnvBuilderBase(gym.Env):
         else:
             return None
 
-    def _send_command(self, command):
+    def send_command(self, command):
         if self._turn:
             self.agent_host.sendCommand(command, self._turn.key)
             self._turn.has_payed = True
@@ -700,17 +700,17 @@ class MarloEnvBuilderBase(gym.Env):
             if isinstance(_spaces, gym.spaces.Discrete):
                 logger.debug(_commands[_actions])
                 # print("cmd " + cmds[acts])
-                self._send_command(_commands[_actions])
+                self.send_command(_commands[_actions])
             elif isinstance(_spaces, gym.spaces.Box):
                 for command, value in zip(_commands, _actions):
                     _command = "{}-{}".format(command, value)
                     logger.debug(_command)
-                    self._send_command(_command)
+                    self.send_command(_command)
             elif isinstance(_spaces, gym.spaces.MultiDiscrete):
                 for command, value in zip(_commands, _actions):
                     _command = "{}-{}".format(command, value)
                     logger.debug(_command)
-                    self._send_command(_command)
+                    self.send_command(_command)
             else:
                 logger.warn("Ignoring unknown action space for {}".format(
                     _commands
