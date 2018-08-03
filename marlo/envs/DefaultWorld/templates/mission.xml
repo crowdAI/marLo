@@ -24,6 +24,7 @@
             </AgentStart>
             <AgentHandlers>
                 <ContinuousMovementCommands/>
+                <MissionQuitCommands/>
                 <ObservationFromFullStats/>
                 <VideoProducer want_depth="false">
                    <Width>480</Width>

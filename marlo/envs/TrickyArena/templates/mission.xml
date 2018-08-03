@@ -157,6 +157,7 @@
             <command>attack</command>
           </ModifierList>
         </ContinuousMovementCommands>
+        <MissionQuitCommands/>
         <AgentQuitFromTouchingBlockType>
           <Block description="out_of_arena" type="stained_glass"/>
           <Block description="drowned" type="water"/>

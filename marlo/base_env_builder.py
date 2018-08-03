@@ -305,7 +305,7 @@ class MarloEnvBuilderBase(gym.Env):
         if params.allowContinuousMovement or params.allowAbsoluteMovement or \
                 params.allowDiscreteMovement:
             # Remove all command handlers
-            self.mission_spec.removeAllCommandHandlers()
+            # self.mission_spec.removeAllCommandHandlers()
 
             # ContinousMovement commands
             if isinstance(params.allowContinuousMovement, list):
@@ -389,7 +389,7 @@ class MarloEnvBuilderBase(gym.Env):
                             multidiscrete_action_ranges.append([0, 1])
                     else:
                         raise ValueError(
-                            "Unknown continuois action : {}".format(command)
+                            "Unknown continuous action : {}".format(command)
                             )
                 elif command_handler == "DiscreteMovement":
                     if command in marlo.SINGLE_DIRECTION_DISCRETE_MOVEMENTS:
@@ -404,6 +404,12 @@ class MarloEnvBuilderBase(gym.Env):
                 elif command_handler in ["AbsoluteMovement", "Inventory"]:
                     logger.warn(
                         "Command Handler `{}` Not Implemented".format(
+                            command_handler
+                        )
+                    )
+                elif command_handler in ["MissionQuit"]:
+                    logger.debug(
+                        "Command Handler `{}`".format(
                             command_handler
                         )
                     )
@@ -586,6 +592,10 @@ class MarloEnvBuilderBase(gym.Env):
     # Env interaction functions
     ########################################################################
     def reset(self):
+        # If a mission is already running, try to quit it
+        # Note : This assumes that <MissionQuitCommands/> is an allowed
+        # command handler in the mission spec.
+        self.send_command("quit")
         if self.params.forceWorldReset:
             # Force a World Reset on each reset
             self.mission_spec.forceWorldReset()

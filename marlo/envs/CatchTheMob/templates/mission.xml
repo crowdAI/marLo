@@ -135,6 +135,7 @@
             <command>attack</command>
           </ModifierList>
       </DiscreteMovementCommands>
+      <MissionQuitCommands/>
       <ObservationFromNearbyEntities>
         <Range name="entities" xrange="8" yrange="2" zrange="6"/>
       </ObservationFromNearbyEntities>
