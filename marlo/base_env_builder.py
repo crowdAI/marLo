@@ -595,7 +595,9 @@ class MarloEnvBuilderBase(gym.Env):
         # If a mission is already running, try to quit it
         # Note : This assumes that <MissionQuitCommands/> is an allowed
         # command handler in the mission spec.
-        self.send_command("quit")
+        if not self._turn or self._turn.can_play:
+            self.send_command("quit")
+
         if self.params.forceWorldReset:
             # Force a World Reset on each reset
             self.mission_spec.forceWorldReset()
