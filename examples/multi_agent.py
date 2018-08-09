@@ -34,6 +34,12 @@ def run_agent(join_token):
     env.close()
 
 # Run agent-0
-run_agent(join_tokens[0])
+thread_handler_0, _ = run_agent(join_tokens[0])
 # Run agent-1
-run_agent(join_tokens[1])
+thread_handler_1, _ = run_agent(join_tokens[1])
+
+# Wait until Both the threads complete execution
+thread_handler_0.join()
+thread_handler_1.join()
+
+print("Episode Run complete")

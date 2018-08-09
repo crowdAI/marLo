@@ -96,6 +96,10 @@ class MarloEnvBuilderBase(gym.Env):
             ``templates`` folder, and renders it using ``jinja2``.
             This can very well be overriden by ``MarloEnvBuilder`` if required.
         """
+        # Ensure turn_based is true in case of Multi Agent scenarios
+        if len(self.params["agent_names"]) > 1:
+            self.params["turn_based"] = True
+
         template = self.jinj2_env.get_template("mission.xml")
         return template.render(
             params=self.params
