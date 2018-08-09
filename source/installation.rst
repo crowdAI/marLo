@@ -8,6 +8,7 @@ Using Anaconda_ (Only for `linux` and `osx`)
 .. code-block:: bash
  
   conda create python=3.6 --name marlo
+  conda config --add channels conda-forge
   conda install -c crowdai malmo
   conda activate marlo # or `source activate marlo` depending on your conda version
   pip install -U marlo
