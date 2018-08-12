@@ -68,17 +68,18 @@
         </ModifierList>
       </ContinuousMovementCommands>
       <MissionQuitCommands/>
-      <RewardForSendingCommand reward="-1" />
-      <RewardForMissionEnd rewardForDeath="-10000">
-        <Reward description="found_goal" reward="1000" />
-        <Reward description="out_of_time" reward="-1000" />
+      <RewardForSendingCommand reward="-0.01" />
+      <RewardForMissionEnd rewardForDeath="-1">
+        <Reward description="found_goal" reward="0.5" />
+        <Reward description="out_of_time" reward="-0.1" />
       </RewardForMissionEnd>
       <RewardForTouchingBlockType>
-        <Block type="gold_ore diamond_ore redstone_ore" reward="20" />
+        <Block type="gold_ore diamond_ore redstone_ore" reward="0.5" />
       </RewardForTouchingBlockType>
       <AgentQuitFromTouchingBlockType>
         <Block type="gold_block diamond_block redstone_block" description="found_goal" />
       </AgentQuitFromTouchingBlockType>
+      <AgentQuitFromReachingCommandQuota description="command_quota_reached" total="100"/>
     </AgentHandlers>
   </AgentSection>
 </Mission>
