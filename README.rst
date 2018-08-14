@@ -32,7 +32,7 @@ The framework is written as an extension to `OpenAI's Gym framework <https://git
           :align: center
           :width: 300    
 
-  * - ``MarLo-Basic-v0``
+  * - ``MarLo-FindTheGoal-v0``
         .. figure:: https://i.imgur.com/lpbQuty.png
           :align: center
           :width: 300    
