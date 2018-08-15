@@ -1,15 +1,16 @@
 Installation 
 ============
 
-Using Anaconda_ (Only for `linux` and `osx`)
----------------------------------------------
-  This section assumes that you are on ``linux`` or ``osx`` and have Anaconda_ installed.
+Using Anaconda
+--------------
+  This section assumes that you have Anaconda installed.
 
 .. code-block:: bash
  
   conda create python=3.6 --name marlo
-  conda install -c crowdai malmo
-  conda activate malmo
+  conda config --add channels conda-forge
+  conda activate marlo # or `source activate marlo` depending on your conda version
+  conda install -c crowdai malmo  
   pip install -U marlo
 
   # Test installation by :

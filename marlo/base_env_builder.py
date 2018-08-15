@@ -96,6 +96,10 @@ class MarloEnvBuilderBase(gym.Env):
             ``templates`` folder, and renders it using ``jinja2``.
             This can very well be overriden by ``MarloEnvBuilder`` if required.
         """
+        # Ensure turn_based is true in case of Multi Agent scenarios
+        if len(self.params["agent_names"]) > 1:
+            self.params["turn_based"] = True
+
         template = self.jinj2_env.get_template("mission.xml")
         return template.render(
             params=self.params
@@ -243,7 +247,7 @@ class MarloEnvBuilderBase(gym.Env):
                  recordCommands=None,
                  recordMP4=None,
                  gameMode="survival",
-                 forceWorldReset=False,
+                 forceWorldReset=True,
                  turn_based=False,
             )
         return self._default_base_params
@@ -305,7 +309,7 @@ class MarloEnvBuilderBase(gym.Env):
         if params.allowContinuousMovement or params.allowAbsoluteMovement or \
                 params.allowDiscreteMovement:
             # Remove all command handlers
-            self.mission_spec.removeAllCommandHandlers()
+            # self.mission_spec.removeAllCommandHandlers()
 
             # ContinousMovement commands
             if isinstance(params.allowContinuousMovement, list):
@@ -389,7 +393,7 @@ class MarloEnvBuilderBase(gym.Env):
                             multidiscrete_action_ranges.append([0, 1])
                     else:
                         raise ValueError(
-                            "Unknown continuois action : {}".format(command)
+                            "Unknown continuous action : {}".format(command)
                             )
                 elif command_handler == "DiscreteMovement":
                     if command in marlo.SINGLE_DIRECTION_DISCRETE_MOVEMENTS:
@@ -404,6 +408,12 @@ class MarloEnvBuilderBase(gym.Env):
                 elif command_handler in ["AbsoluteMovement", "Inventory"]:
                     logger.warn(
                         "Command Handler `{}` Not Implemented".format(
+                            command_handler
+                        )
+                    )
+                elif command_handler in ["MissionQuit"]:
+                    logger.debug(
+                        "Command Handler `{}`".format(
                             command_handler
                         )
                     )
@@ -586,6 +596,12 @@ class MarloEnvBuilderBase(gym.Env):
     # Env interaction functions
     ########################################################################
     def reset(self):
+        # If a mission is already running, try to quit it
+        # Note : This assumes that <MissionQuitCommands/> is an allowed
+        # command handler in the mission spec.
+        if not self._turn or self._turn.can_play:
+            self.send_command("quit")
+
         if self.params.forceWorldReset:
             # Force a World Reset on each reset
             self.mission_spec.forceWorldReset()
@@ -676,7 +692,7 @@ class MarloEnvBuilderBase(gym.Env):
         else:
             return None
 
-    def _send_command(self, command):
+    def send_command(self, command):
         if self._turn:
             self.agent_host.sendCommand(command, self._turn.key)
             self._turn.has_payed = True
@@ -700,17 +716,17 @@ class MarloEnvBuilderBase(gym.Env):
             if isinstance(_spaces, gym.spaces.Discrete):
                 logger.debug(_commands[_actions])
                 # print("cmd " + cmds[acts])
-                self._send_command(_commands[_actions])
+                self.send_command(_commands[_actions])
             elif isinstance(_spaces, gym.spaces.Box):
                 for command, value in zip(_commands, _actions):
                     _command = "{}-{}".format(command, value)
                     logger.debug(_command)
-                    self._send_command(_command)
+                    self.send_command(_command)
             elif isinstance(_spaces, gym.spaces.MultiDiscrete):
                 for command, value in zip(_commands, _actions):
                     _command = "{}-{}".format(command, value)
                     logger.debug(_command)
-                    self._send_command(_command)
+                    self.send_command(_command)
             else:
                 logger.warn("Ignoring unknown action space for {}".format(
                     _commands

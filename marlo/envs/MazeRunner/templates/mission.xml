@@ -31,6 +31,7 @@
                     <command>strafe</command>
                 </ModifierList>
             </ContinuousMovementCommands>
+            <MissionQuitCommands/>
             </AgentHandlers>
     </AgentSection>
     {% endfor %}    

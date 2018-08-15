@@ -32,7 +32,7 @@ The framework is written as an extension to `OpenAI's Gym framework <https://git
           :align: center
           :width: 300    
 
-  * - ``MarLo-Basic-v0``
+  * - ``MarLo-FindTheGoal-v0``
         .. figure:: https://i.imgur.com/lpbQuty.png
           :align: center
           :width: 300    
@@ -77,11 +77,11 @@ The framework is written as an extension to `OpenAI's Gym framework <https://git
 
 Contents
 ----------------
-- `Installation <https://marlo.readthedocs.io/en/latest/installation/>`_
-- `Usage <https://marlo.readthedocs.io/en/latest/usage/>`_
-- `Available Environments <https://marlo.readthedocs.io/en/latest/available_envs/>`_
-- `Submission Instructions <https://marlo.readthedocs.io/en/latest/submit/>`_
-- `Development <https://marlo.readthedocs.io/en/latest/development/>`_
+- `Installation <https://marlo.readthedocs.io/en/latest/installation.html>`_
+- `Usage <https://marlo.readthedocs.io/en/latest/usage.html>`_
+- `Available Environments <https://marlo.readthedocs.io/en/latest/available_envs.html>`_
+- `Submission Instructions <https://marlo.readthedocs.io/en/latest/submit.html>`_
+- `Development <https://marlo.readthedocs.io/en/latest/development.html>`_
 
 Simple Example
 ----------------

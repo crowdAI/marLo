@@ -63,6 +63,7 @@
     </AgentStart>
     <AgentHandlers>
       <ContinuousMovementCommands turnSpeedDegs="180"/>
+      <MissionQuitCommands/>
       <ObservationFromFullStats/>
       <VideoProducer want_depth="false">
         <Width>320</Width>

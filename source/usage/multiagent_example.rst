@@ -71,10 +71,15 @@ join the game as separate agents.
   :lineno-start: 28
 
   # Run agent-0
-  run_agent(join_tokens[0])
+  thread_handler_0, _ = run_agent(join_tokens[0])
   # Run agent-1
-  run_agent(join_tokens[1])
-  
+  thread_handler_1, _ = run_agent(join_tokens[1])
+
+  # Wait for both the threads to complete execution
+  thread_handler_0.join()
+  thread_handler_1.join()
+
+  print("Episode Run Complete")
 
 Example Code
 -------------
@@ -114,8 +119,14 @@ Example Code
           print("done:", done)
           print("info", info)
       env.close()
-      
+  
   # Run agent-0
-  run_agent(join_tokens[0])
+  thread_handler_0, _ = run_agent(join_tokens[0])
   # Run agent-1
-  run_agent(join_tokens[1])          
+  thread_handler_1, _ = run_agent(join_tokens[1])
+  
+  # Wait for both the threads to complete execution
+  thread_handler_0.join()
+  thread_handler_1.join()
+  
+  print("Episode Run Complete")

@@ -51,6 +51,7 @@
             <command>attack</command>
           </ModifierList>
       </DiscreteMovementCommands>
+      <MissionQuitCommands/>
       <RewardForTouchingBlockType>
         <Block reward="-100.0" type="lava" behaviour="onceOnly"/>
         <Block reward="100.0" type="lapis_block" behaviour="onceOnly"/>

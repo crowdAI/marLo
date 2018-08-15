@@ -41,7 +41,7 @@ Available Environments
         More Information : :meth:`marlo.envs.CatchTheMob.main`
 
         
-  * - ``MarLo-Basic-v0``
+  * - ``MarLo-FindTheGoal-v0``
         .. figure:: https://i.imgur.com/lpbQuty.png
           :align: center
     - **Find the goal!**

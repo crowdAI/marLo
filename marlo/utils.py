@@ -52,21 +52,27 @@ def threaded(fn):
     multiple blocking agents across different threads.
 
     .. code-block:: python
-    
+
         import marlo
 
         @marlo.threaded
-        def example_function(arbitrary_arguments):
-            print("Execution inside an arbitrary function")
+        def example_function(agent_id):
+            print("Agent-id : {}; sleeping for two seconds".format(agent_id))
+            time.sleep(2)
+            print("Exiting : {} ".format(agent_id))
 
-        # Run on thread-1
-        example_function(arbitrary_arguments_1)
-        # Run on thread-2
-        example_function(arbitrary_arguments_2)
+        thread_handler_1, _ = example_function(1)
+        thread_handler_2, _ = example_function(2)
+
+        thread_handler_1.join()
+        thread_handler_2.join()
+        print("Code Exit")
 
     :param fn: Function defitnion 
     :type fn: func
-    """      
+    
+    :returns thread_handler to join the threads if required
+    """
     def wrap(queue, *args, **kwargs):
         queue.put(fn(*args, **kwargs))
 
@@ -74,7 +80,7 @@ def threaded(fn):
         queue = Queue()
         job = Thread(target=wrap, args=(queue,) + args, kwargs=kwargs)
         job.start()
-        return queue
+        return job, queue
 
     return call
 
