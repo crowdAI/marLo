@@ -1,9 +1,9 @@
 Installation 
 ============
 
-Using Anaconda (**Recommended**)
---------------
-  This section assumes that you have Anaconda installed.
+Using Anaconda_ (**Recommended**)
+----------------------------------
+  This section assumes that you have Anaconda_ installed.
 
 .. code-block:: bash
  
