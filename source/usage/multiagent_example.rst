@@ -16,7 +16,7 @@ join the game as separate agents.
   $MALMO_MINECRAFT_ROOT/launchClient.sh -port 10001
 
 .. Note:: 
-  In case of ``Windows``, you can use ``%%MALMO_MINECRAFT_ROOT%%`` instead.
+In case of ``Windows``, you can use ``cd %MALMO_MINECRAFT_ROOT%; launchClient.bat -port <port_number>`` instead.
   
 
 - **Create Game**
