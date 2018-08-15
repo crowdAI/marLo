@@ -1,7 +1,7 @@
 Installation 
 ============
 
-Using Anaconda
+Using Anaconda (**Recommended**)
 --------------
   This section assumes that you have Anaconda installed.
 
@@ -16,9 +16,6 @@ Using Anaconda
   # Test installation by :
   python -c "import marlo"
   python -c "from marlo import MalmoPython"
-
-.. Note::
-  **Help Wanted** : The conda recipes used to build this conda package can be found here_ . We do not yet have a Windows build, and hence pull requests adding a windows build are very welcome.
 
 .. _Anaconda: https://www.anaconda.com/download/
 .. _here: https://github.com/spMohanty/malmo-conda-recipe
