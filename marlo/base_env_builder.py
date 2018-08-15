@@ -761,7 +761,6 @@ class MarloEnvBuilderBase(gym.Env):
         # Compute Rewards
         reward = 0
         for _reward in world_state.rewards:
-            print(_reward)
             reward += _reward.getValue()
 
         # Get observation
