@@ -1,9 +1,9 @@
 Installation 
 ============
 
-Using Anaconda_ (Only for `linux` and `osx`)
----------------------------------------------
-  This section assumes that you are on ``linux`` or ``osx`` and have Anaconda_ installed.
+Using Anaconda
+--------------
+  This section assumes that you have Anaconda installed.
 
 .. code-block:: bash
  
