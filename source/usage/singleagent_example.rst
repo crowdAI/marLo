@@ -15,8 +15,9 @@ In the simplest of the use cases, we will start a single agent
   $MALMO_MINECRAFT_ROOT/launchClient.sh -port 10000
 
 .. Note:: 
-  In case of ``Windows``, you can use ``cd %MALMO_MINECRAFT_ROOT%; launchClient.bat`` instead.
-
+    In case of ``Windows``, you can instead use |
+    ``cd %MALMO_MINECRAFT_ROOT`` |
+    ``launchClient.bat`` |
 
 - **Make and Instantiate Environment**
 
