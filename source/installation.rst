@@ -22,7 +22,7 @@ Using Anaconda_ (**Recommended**)
 
 
 
-On  Windows
+Alternate Approach
 ---------------------------------------------
 .. code-block:: bash
 
