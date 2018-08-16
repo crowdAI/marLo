@@ -16,7 +16,7 @@ In the simplest of the use cases, we will start a single agent
 
 .. Note:: 
     In case of ``Windows``, you can instead use |
-    ``cd %MALMO_MINECRAFT_ROOT`` |
+    ``cd %MALMO_MINECRAFT_ROOT%`` |
     ``launchClient.bat`` |
 
 - **Make and Instantiate Environment**
