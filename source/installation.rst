@@ -20,6 +20,8 @@ Using Anaconda_ (**Recommended**)
 .. _Anaconda: https://www.anaconda.com/download/
 .. _here: https://github.com/spMohanty/malmo-conda-recipe
 
+.. Note::
+  We support only Anaconda version ``> 4.5.0``. If you have an older anaconda version, please update your conda before proceeding with the installation.
 
 
 Alternate Approach
