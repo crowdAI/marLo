@@ -5,6 +5,7 @@ import gym
 import numpy as np
 import marlo
 from marlo import MalmoPython
+import marlo.commands
 import uuid
 import hashlib
 import base64
@@ -180,10 +181,10 @@ class MarloEnvBuilderBase(gym.Env):
             :param continuous_to_discrete: Converts continuous actions to discrete. when allowed continuous actions are 'move' and 'turn', then discrete action space contains 4 actions: move -1, move 1, turn -1, turn 1. (Default : ``True``)
             :type continuous_to_discrete: bool
             
-            :param allowContinuousMovement: If all continuous movement commands should be allowed. (Default : ``True``)
+            :param allowContinuousMovement: If all continuous movement commands should be allowed. (Default : ``False``)
             :type allowContinuousMovement: bool
             
-            :param allowDiscreteMovement: If all discrete movement commands should be allowed. (Default : ``True``)
+            :param allowDiscreteMovement: If all discrete movement commands should be allowed. (Default : ``False``)
             :type allowDiscreteMovement: bool
             
             :param allowAbsoluteMovement: If all absolute movement commands should be allowed. (Default : ``False``) (**Not Implemented**)
@@ -215,6 +216,9 @@ class MarloEnvBuilderBase(gym.Env):
             
             :param turn_based: Specifies if the current game is a turn based game. (Default : ``False``)
             :type turn_based: bool
+
+            :param comp_all_commands: Specifies the superset of allowed commands in Marlo competition. (Default : ``None``)
+            :type comp_all_commands: list of strings
         """
         if not self._default_base_params:
             self._default_base_params = dotdict(
@@ -237,8 +241,8 @@ class MarloEnvBuilderBase(gym.Env):
                  observeDistance=None,
                  observeChat=None,
                  continuous_to_discrete=True,
-                 allowContinuousMovement=True,
-                 allowDiscreteMovement=True,
+                 allowContinuousMovement=False,
+                 allowDiscreteMovement=False,
                  allowAbsoluteMovement=False,
                  add_noop_command=True,                 
                  recordDestination=None,
@@ -249,6 +253,7 @@ class MarloEnvBuilderBase(gym.Env):
                  gameMode="survival",
                  forceWorldReset=True,
                  turn_based=False,
+                 comp_all_commands=None  # Override to specify the full set of allowed competition commands.
             )
         return self._default_base_params
 
@@ -372,57 +377,65 @@ class MarloEnvBuilderBase(gym.Env):
         multidiscrete_action_ranges = []
         if params.add_noop_command:
             discrete_actions.append("move 0\nturn 0")
-        command_handlers = self.mission_spec.getListOfCommandHandlers(0)
-        for command_handler in command_handlers:
-            commands = self.mission_spec.getAllowedCommands(0, command_handler)
-            for command in commands:
-                logger.debug("Command : {}".format(command))
-                if command_handler == "ContinuousMovement":
-                    if command in ["move", "strafe", "pitch", "turn"]:
-                        if params.continuous_to_discrete:
-                            discrete_actions.append(command + " 1")
-                            discrete_actions.append(command + " -1")
-                        else:
-                            continuous_actions.append(command)
-                    elif command in ["crouch", "jump", "attack", "use"]:
-                        if params.continuous_to_discrete:
-                            discrete_actions.append(command + " 1")
-                            discrete_actions.append(command + " 0")
-                        else:
-                            multidiscrete_actions.append(command)
-                            multidiscrete_action_ranges.append([0, 1])
-                    else:
-                        raise ValueError(
-                            "Unknown continuous action : {}".format(command)
-                            )
-                elif command_handler == "DiscreteMovement":
-                    if command in marlo.SINGLE_DIRECTION_DISCRETE_MOVEMENTS:
-                        discrete_actions.append(command + " 1")
-                    elif command in marlo.MULTIPLE_DIRECTION_DISCRETE_MOVEMENTS:
+
+        mission_xml = str(self.mission_spec)
+        i = mission_xml.index("<Mission")
+        mission_xml = mission_xml[i:]
+        # print(mission_xml)
+        parser = marlo.commands.CommandParser(params.comp_all_commands)
+        commands = parser.get_commands(mission_xml, params.role)
+
+        for (command_handler, turnbased, command) in commands:
+            logger.debug("CommandHandler: {} turn based: {} command: {} ".format(command_handler, turnbased, command))
+            if turnbased and not self.params.turn_based:
+                logger.warning("Turn based command not expected in mission XML.")
+
+            if command_handler == "ContinuousMovement":
+                if command in ["move", "strafe", "pitch", "turn"]:
+                    if params.continuous_to_discrete:
                         discrete_actions.append(command + " 1")
                         discrete_actions.append(command + " -1")
                     else:
-                        raise ValueError(
-                            "Unknown discrete action : {}".format(command)
-                        )
-                elif command_handler in ["AbsoluteMovement", "Inventory"]:
-                    logger.warn(
-                        "Command Handler `{}` Not Implemented".format(
-                            command_handler
-                        )
-                    )
-                elif command_handler in ["MissionQuit"]:
-                    logger.debug(
-                        "Command Handler `{}`".format(
-                            command_handler
-                        )
-                    )
+                        continuous_actions.append(command)
+                elif command in ["crouch", "jump", "attack", "use"]:
+                    if params.continuous_to_discrete:
+                        discrete_actions.append(command + " 1")
+                        discrete_actions.append(command + " 0")
+                    else:
+                        multidiscrete_actions.append(command)
+                        multidiscrete_action_ranges.append([0, 1])
                 else:
                     raise ValueError(
-                        "Unknown Command Handler : `{}`".format(
-                            command_handler
-                            )
+                        "Unknown continuous action : {}".format(command)
                     )
+            elif command_handler == "DiscreteMovement":
+                if command in marlo.SINGLE_DIRECTION_DISCRETE_MOVEMENTS:
+                    discrete_actions.append(command + " 1")
+                elif command in marlo.MULTIPLE_DIRECTION_DISCRETE_MOVEMENTS:
+                    discrete_actions.append(command + " 1")
+                    discrete_actions.append(command + " -1")
+                else:
+                    raise ValueError(
+                        "Unknown discrete action : {}".format(command)
+                    )
+            elif command_handler in ["AbsoluteMovement", "Inventory"]:
+                logger.warn(
+                    "Command Handler `{}` Not Implemented".format(
+                        command_handler
+                    )
+                )
+            elif command_handler in ["MissionQuit"]:
+                logger.debug(
+                    "Command Handler `{}`".format(
+                        command_handler
+                    )
+                )
+            else:
+                raise ValueError(
+                    "Unknown Command Handler : `{}`".format(
+                        command_handler
+                    )
+                )
         # Convert lists into proper gym action spaces
         self.action_names = []
         self.action_spaces = []
@@ -675,7 +688,7 @@ class MarloEnvBuilderBase(gym.Env):
 
             image = np.frombuffer(frame.pixels, dtype=np.uint8)
             image = image.reshape((frame.height, frame.width, frame.channels))
-            print("Frame Receieved : ".format(image.shape))
+            # print("Frame Received : ".format(image.shape))
             self.last_image = image
         else:
             # can happen only when mission ends before we get frame
