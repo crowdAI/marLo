@@ -77,6 +77,7 @@ class MarloEnvBuilderBase(gym.Env):
         self.experiment_id = None
         
         self._turn = None
+        self._rounds = 0
 
     def setup_templating(self):
         """
@@ -219,6 +220,9 @@ class MarloEnvBuilderBase(gym.Env):
 
             :param comp_all_commands: Specifies the superset of allowed commands in Marlo competition. (Default : ``None``)
             :type comp_all_commands: list of strings
+
+            :param kill_clients_after_num_rounds: Call kill client on reset after given number of resets. (Default : ``None``)
+            :type kill_clients_after_num_rounds: int
         """
         if not self._default_base_params:
             self._default_base_params = dotdict(
@@ -253,7 +257,8 @@ class MarloEnvBuilderBase(gym.Env):
                  gameMode="survival",
                  forceWorldReset=True,
                  turn_based=False,
-                 comp_all_commands=None  # Override to specify the full set of allowed competition commands.
+                 comp_all_commands=None,  # Override to specify the full set of allowed competition commands.
+                 kill_clients_after_num_rounds=None
             )
         return self._default_base_params
 
@@ -609,6 +614,25 @@ class MarloEnvBuilderBase(gym.Env):
     # Env interaction functions
     ########################################################################
     def reset(self):
+        self._rounds += 1
+        # Kill clients after configured number of rounds.
+        if (self.params.kill_clients_after_num_rounds and
+                self._rounds > self.params.kill_clients_after_num_rounds):
+            if self.params.role == 0:
+                print("Kill clients " + self.params.experiment_id)
+                for client in self.client_pool.clients:
+                    for _ in range(3):
+                        try:
+                            print("Kill " + str(client))
+                            self.agent_host.killClient(client)
+                            break
+                        except MalmoPython.MissionException:
+                            time.sleep(2)
+
+            print("Pause for restarts")
+            time.sleep(60 * len(self.client_pool.clients))
+            self._rounds = 0
+
         # If a mission is already running, try to quit it
         # Note : This assumes that <MissionQuitCommands/> is an allowed
         # command handler in the mission spec.
