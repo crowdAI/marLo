@@ -619,19 +619,19 @@ class MarloEnvBuilderBase(gym.Env):
         if (self.params.kill_clients_after_num_rounds and
                 self._rounds > self.params.kill_clients_after_num_rounds):
             if self.params.role == 0:
-                print("Kill clients " + self.params.experiment_id)
+                print("Restart Malmo clients " + self.params.experiment_id)
                 for client in self.client_pool.clients:
                     for _ in range(3):
                         try:
-                            print("Kill " + str(client))
+                            print("Stopping " + str(client))
                             self.agent_host.killClient(client)
                             break
                         except MalmoPython.MissionException:
                             time.sleep(2)
 
-            print("Pause for restarts")
-            time.sleep(60 * len(self.client_pool.clients))
-            self._rounds = 0
+            print("Pause for restarts ....")
+            time.sleep(90 + 30 * len(self.client_pool.clients))
+            self._rounds = 1
 
         # If a mission is already running, try to quit it
         # Note : This assumes that <MissionQuitCommands/> is an allowed
