@@ -10,7 +10,22 @@ from pathlib import Path
 
 class MarloEnvBuilder(MarloEnvBuilderBase):
     """
-    TODO: Add Env Description Here
+    Description:
+		The goal of this mission is for the agent to eat commestible food
+		and avoid to eat dangerous items.
+
+	Actions available:
+		Move forward/backward
+		Jump
+		Turn
+		Strafe
+		Crouch
+		Use
+
+	Rewards: 
+		either + 1 or +2 when collecting food
+		-2 when collecting dangerous items
+
     """    
     def __init__(self, extra_params={}):
         super(MarloEnvBuilder, self).__init__(
