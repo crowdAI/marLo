@@ -11,6 +11,18 @@ from pathlib import Path
 class MarloEnvBuilder(MarloEnvBuilderBase):
     """
     TODO: Add Env Description Here
+
+	Actions available:
+		move
+		jumpmove
+		strafe
+		turn
+		movenorth, moveeast, movesouth, movewest
+		jumpnorth, jumpeast, jumpsouth, jumpwest
+		jump
+		look
+		use
+		jumpuse
     """    
     def __init__(self, extra_params={}):
         super(MarloEnvBuilder, self).__init__(
