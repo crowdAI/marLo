@@ -18,9 +18,13 @@ class MarloEnvBuilder(MarloEnvBuilderBase):
         or a redstone block.
         
     Actions available:
-        Forward/Backward
-        Turning
-        Attacking is blocked
+        Jump 
+		Move 
+		Pitch 
+		Strafe
+		Turn 
+		Crouch 
+		Use 
         
     Rewards:
         -1000 points for running out of time

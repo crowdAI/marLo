@@ -17,8 +17,16 @@ class MarloEnvBuilder(MarloEnvBuilderBase):
         depending on the map's layout.
         
     Actions available:
-        Forward/Backward
-        Turning
+        Move
+		Jumpmove
+		Strafe
+		Turn
+		Movenorth, Moveeast, Movesouth, Movewest
+		Jumpnorth, Jumpeast, Jumpsouth, Jumpwest
+		Jump
+		Look
+		Use
+		Jumpuse
         
     Rewards:
         -0.02 for each step taken (maximum 50 steps per episode)

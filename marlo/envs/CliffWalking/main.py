@@ -17,8 +17,16 @@ class MarloEnvBuilder(MarloEnvBuilderBase):
         through.
         
     Actions available:
-        Forward/Backward
-        Turning
+        Move
+		Jumpmove
+		Strafe
+		Turn
+		Movenorth, Moveeast, Movesouth, Movewest
+		Jumpnorth, Jumpeast, Jumpsouth, Jumpeast
+		Jump
+		Look
+		Use
+		Jumpuse
         
     Rewards:
         -100 points for falling in lava

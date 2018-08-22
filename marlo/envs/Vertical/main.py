@@ -16,10 +16,13 @@ class MarloEnvBuilder(MarloEnvBuilderBase):
 		by climbing the stairs/ladders suitably.
 		
 	Actions available:
-		Forward/Backward
-		Pitch camera
 		Jump
-		Turning
+		Move
+		Pitch
+		Strafe
+		Turn
+		Crouch
+		Use
 		
 	Rewards:
 		8000 points for finding the goal

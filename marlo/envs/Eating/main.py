@@ -16,8 +16,12 @@ class MarloEnvBuilder(MarloEnvBuilderBase):
 		prefer certains items over others.
 		
 	Actions available:
-		Forward/Backward
-		Turning
+		Move forward/backward
+		Jump
+		Turn
+		Strafe
+		Crouch
+		Use
 		
 	Rewards:
 		2 points for picking up: fish, porkchop, beef, chicken, rabbit, mutton

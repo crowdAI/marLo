@@ -17,8 +17,13 @@ class MarloEnvBuilder(MarloEnvBuilderBase):
 		block in one of the rooms.
 		
 	Actions available:
-		Forward/Backward
-		Turning
+		Jump
+		Move
+		Pitch
+		Strafe
+		Turn
+		Crouch
+		Use
 		
 	Rewards:
 		2000 points for finding the goal
