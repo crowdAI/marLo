@@ -28,8 +28,7 @@ class MarloEnvBuilder(MarloEnvBuilderBase):
 		2 points for picking up: fish, porkchop, beef, chicken, rabbit, mutton
         1 point for picking up: potato, egg, carrot
         -1 points for picking up: apple, melon
-        -2 points for picking up: sugar, cake, cookie, pumpkin pieThe goal of this mission is for the agent to eat commestible food
-		and avoid to eat dangerous items.
+        -2 points for picking up: sugar, cake, cookie, pumpkin pie
     """
     
     def __init__(self, extra_params={}):
