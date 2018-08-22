@@ -17,7 +17,7 @@ class MarloEnvBuilder(MarloEnvBuilderBase):
 		depending on the map's layout.
 		
 	Actions available:
-		move
+		move forward/backward
 		jumpmove
 		strafe
 		turn

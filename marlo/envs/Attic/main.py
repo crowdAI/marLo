@@ -9,18 +9,30 @@ from pathlib import Path
 
 
 class MarloEnvBuilder(MarloEnvBuilderBase):
-    """
-    TODO: Add Env Description Here
-	
-	Actions available:
+	"""
+    Description: 
+        The goal of this mission is for one agent to find the goal which is typically hidden within
+        the attic of a mansion, which represents the full extent of the map. There are various obstacles
+        such as stairs, bookshelves and indeed holes filled with lava that the agent must learn to
+        navigate on their path to finding the goal, which is represented by a gold block, a diamond block
+        or a redstone block.
+        
+    Actions available:
 		jump
-		move
+		move forward/backward
 		pitch
 		strafe
 		turn
 		crouch
 		use
-    """    
+        Attacking is blocked
+        
+    Rewards:
+        -1000 points for running out of time
+        1000 points for finding the goal
+        20 points for finding a gold, diamond or redstone ore
+    """   
+
     def __init__(self, extra_params={}):
         super(MarloEnvBuilder, self).__init__(
                 templates_folder = os.path.join(

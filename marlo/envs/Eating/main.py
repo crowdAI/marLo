@@ -25,8 +25,8 @@ class MarloEnvBuilder(MarloEnvBuilderBase):
 	Rewards: 
 		either + 1 or +2 when collecting food
 		-2 when collecting dangerous items
-
-    """    
+    """
+    
     def __init__(self, extra_params={}):
         super(MarloEnvBuilder, self).__init__(
                 templates_folder = os.path.join(
