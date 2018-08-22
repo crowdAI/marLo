@@ -10,8 +10,27 @@ from pathlib import Path
 
 class MarloEnvBuilder(MarloEnvBuilderBase):
     """
-    TODO: Add Env Description Here
-    """    
+    Description: 
+		The layout of this mission is that of a flat map littered with
+		redstone, obsidian and ice blocks, as well as water and lava holes.
+		The goal of the agent is to step on as many obsidian blocks
+		as possible before heading towards a redstone block, at which
+		point the mission ends.
+		
+	Actions available:
+		Forward/Backward
+		Turning
+		
+	Rewards:
+		100 points with a 1 second delay for each obsidian block touched
+		-1000 points upon death
+		-900 points for running out of time
+		100 points for leaving the arena (touching stained glass)
+		-800 points for falling in a water hole
+		400 points for finding a redstone block
+		
+    """
+	   
     def __init__(self, extra_params={}):
         super(MarloEnvBuilder, self).__init__(
                 templates_folder = os.path.join(
