@@ -18,20 +18,21 @@ class MarloEnvBuilder(MarloEnvBuilderBase):
         or a redstone block.
         
     Actions available:
-        Jump 
 		Move 
 		Pitch 
 		Strafe
 		Turn 
 		Crouch 
-		Use 
+		Use
+        Attacking is blocked
+
         
     Rewards:
         -1000 points for running out of time
         1000 points for finding the goal
         20 points for finding a gold, diamond or redstone ore
-    """
-   
+    """   
+
     def __init__(self, extra_params={}):
         super(MarloEnvBuilder, self).__init__(
                 templates_folder = os.path.join(

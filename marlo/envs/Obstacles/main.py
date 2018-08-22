@@ -30,7 +30,7 @@ class MarloEnvBuilder(MarloEnvBuilderBase):
 		-1000 points for running out of time
 		20 points for finding a gold/diamond/redstone ore
     """
-	   
+    
     def __init__(self, extra_params={}):
         super(MarloEnvBuilder, self).__init__(
                 templates_folder = os.path.join(

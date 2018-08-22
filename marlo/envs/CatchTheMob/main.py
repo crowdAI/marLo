@@ -9,7 +9,7 @@ from pathlib import Path
 
 
 class MarloEnvBuilder(MarloEnvBuilderBase):
-    """
+    """  
     Description: 
         The goal of this mission is for one or two agents (depending on the playmode)
         to catch the given target monster by cornering it such that it can no longer escape
@@ -33,7 +33,7 @@ class MarloEnvBuilder(MarloEnvBuilderBase):
         0.2 points for exiting the current map
         1 points for catching the mob
     """
-       
+    
     def __init__(self, extra_params={}):
         super(MarloEnvBuilder, self).__init__(
                 templates_folder = os.path.join(

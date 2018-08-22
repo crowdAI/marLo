@@ -8,8 +8,8 @@ import os
 from pathlib import Path
 
 
-class MarloEnvBuilder(MarloEnvBuilderBase):
-    """
+class MarloEnvBuilder(MarloEnvBuilderBase):	
+    """    
     Description: 
 		The layout of this mission is that of a flat map littered with
 		redstone, obsidian and ice blocks, as well as water and lava holes.
@@ -35,7 +35,7 @@ class MarloEnvBuilder(MarloEnvBuilderBase):
 		400 points for finding a redstone block
 		
     """
-	   
+    
     def __init__(self, extra_params={}):
         super(MarloEnvBuilder, self).__init__(
                 templates_folder = os.path.join(
