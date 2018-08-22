@@ -10,8 +10,12 @@ from pathlib import Path
 
 class MarloEnvBuilder(MarloEnvBuilderBase):
     """
-    TODO: Add Env Description Here
-
+    Description: 
+		The goal of this mission is for the agent to reach the end of the cliff maze
+		and to pick up the diamond item laying at the end of it. The walking cliff
+		is surrounded by lava and the walking terrain itself has holes to fall
+		through.
+		
 	Actions available:
 		move
 		jumpmove
@@ -23,8 +27,13 @@ class MarloEnvBuilder(MarloEnvBuilderBase):
 		look
 		use
 		jumpuse
-
+		
+	Rewards:
+		-100 points for falling in lava
+		100 points for reaching the end goal
+		-1 points for every step taken
     """
+	
     def __init__(self, extra_params={}):
         super(MarloEnvBuilder, self).__init__(
                 templates_folder = os.path.join(
