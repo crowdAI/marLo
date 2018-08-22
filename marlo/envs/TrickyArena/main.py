@@ -18,13 +18,13 @@ class MarloEnvBuilder(MarloEnvBuilderBase):
 		point the mission ends.
 		
 	Actions available:
-		move forward/backward
-		jump
-		pitch
-		strafe
-		turn
-		crouch
-		use
+		Jump
+		Move
+		Pitch
+		Strafe
+		Turn
+		Crouch
+		Use
 		
 	Rewards:
 		100 points with a 1 second delay for each obsidian block touched

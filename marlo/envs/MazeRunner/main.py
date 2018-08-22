@@ -18,13 +18,13 @@ class MarloEnvBuilder(MarloEnvBuilderBase):
 		A depth map is provided for the agent to use, which trivializes this task.
 		
 	Actions available:
-		jump
-		move forward/backward
-		pitch
-		turn
-		crouch
-		attack
-		use
+		Jump
+		Move
+		Pitch
+		Turn
+		Crouch
+		Attack
+		Use
 		
 	Rewards:
 		nil
