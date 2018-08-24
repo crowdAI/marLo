@@ -223,6 +223,9 @@ class MarloEnvBuilderBase(gym.Env):
 
             :param kill_clients_after_num_rounds: Call kill client on reset after given number of resets. (Default : ``None``)
             :type kill_clients_after_num_rounds: int
+
+            :param kill_clients_retry: Call kill client on mission start failure and retry N times. (Default : ``0``)
+            :type kill_clients_retry: int
         """
         if not self._default_base_params:
             self._default_base_params = dotdict(
@@ -258,7 +261,8 @@ class MarloEnvBuilderBase(gym.Env):
                  forceWorldReset=True,
                  turn_based=False,
                  comp_all_commands=None,  # Override to specify the full set of allowed competition commands.
-                 kill_clients_after_num_rounds=None
+                 kill_clients_after_num_rounds=None,
+                 kill_clients_retry=0
             )
         return self._default_base_params
 
@@ -610,27 +614,39 @@ class MarloEnvBuilderBase(gym.Env):
         self.setup_mission_record(params)
         self.setup_game_mode(params)
 
+    def _kill_clients(self, all):
+        if self.params.role == 0 or all:
+            print("Restart Malmo Minecraft clients for experiment " + self.params.experiment_id)
+            for client in self.client_pool.clients:
+                for _ in range(3):
+                    try:
+                        print("Stopping " + str(client) + " ...")
+                        self.agent_host.killClient(client)
+                        break
+                    except MalmoPython.MissionException:
+                        time.sleep(2)
+
+        print("Pause for restarts ....")
+        time.sleep(90 + 30 * len(self.client_pool.clients))
+
     ########################################################################
     # Env interaction functions
     ########################################################################
+
     def reset(self):
+        for _ in range(self.params.kill_clients_retry + 1):
+            try:
+                self._reset()
+                break
+            except MalmoPython.MissionException:
+                self._kill_clients(True)
+
+    def _reset(self):
         self._rounds += 1
         # Kill clients after configured number of rounds.
         if (self.params.kill_clients_after_num_rounds and
                 self._rounds > self.params.kill_clients_after_num_rounds):
-            if self.params.role == 0:
-                print("Restart Malmo clients " + self.params.experiment_id)
-                for client in self.client_pool.clients:
-                    for _ in range(3):
-                        try:
-                            print("Stopping " + str(client))
-                            self.agent_host.killClient(client)
-                            break
-                        except MalmoPython.MissionException:
-                            time.sleep(2)
-
-            print("Pause for restarts ....")
-            time.sleep(90 + 30 * len(self.client_pool.clients))
+            self._kill_clients(False)
             self._rounds = 1
 
         # If a mission is already running, try to quit it
@@ -667,8 +683,23 @@ class MarloEnvBuilderBase(gym.Env):
                     self.params.role,
                     self.experiment_id
                 )
-                break #Break out of the try-to-connect loop
-            except RuntimeError as e:
+
+                logger.info("Waiting for mission to start...")
+                world_state = self.agent_host.getWorldState()
+                while not world_state.has_mission_begun:
+                    time.sleep(0.1)
+                    world_state = self.agent_host.getWorldState()
+                    for error in world_state.errors:
+                        logger.error("Error", error)
+                        logger.warn(error.text)
+                    if any(world_state.errors):
+                        raise MalmoPython.MissionException("Error while waiting for mission to start",
+                                                           world_state.errors[0])
+                logger.info("Mission Running")
+                frame = self._get_video_frame(world_state)
+                return frame
+
+            except Exception as e:
                 traceback.format_exc()
                 if retry == self.params.max_retries:
                     logger.error("Error Starting Mission : {}".format(
@@ -682,26 +713,13 @@ class MarloEnvBuilderBase(gym.Env):
                                 .format(self.params.retry_sleep))
                     time.sleep(self.params.retry_sleep)
 
-        logger.info("Waiting for mission to start...")
-        world_state = self.agent_host.getWorldState()
-        while not world_state.has_mission_begun:
-            time.sleep(0.1)
-            world_state = self.agent_host.getWorldState()
-            for error in world_state.errors:
-                logger.error("Error", error)
-                logger.warn(error.text)
-
-        logger.info("Mission Running")
-        frame = self._get_video_frame(world_state)
-        return frame
-
     def _get_world_state(self):
         # patiently wait till we get the next observation
         while True:
             time.sleep(self.params.step_sleep)
             world_state = self.agent_host.peekWorldState()
             if world_state.number_of_observations_since_last_state > \
-                    self.params.skip_steps or not world_state.is_mission_running:
+                    self.params.skip_steps or not world_state.is_mission_running or any(world_state.errors):
                 break
         return self.agent_host.getWorldState()
 
@@ -806,7 +824,7 @@ class MarloEnvBuilderBase(gym.Env):
         image = self._get_video_frame(world_state)
 
         # detect if done ?
-        done = not world_state.is_mission_running
+        done = not world_state.is_mission_running or any(world_state.errors)
 
         # gather info
         info = {}
