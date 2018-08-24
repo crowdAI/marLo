@@ -10,8 +10,27 @@ from pathlib import Path
 
 class MarloEnvBuilder(MarloEnvBuilderBase):
     """
-    TODO: Add Env Description Here
-    """    
+    Description: 
+		The layout of this mission is that of a series of interconnected rooms made out of
+		stone bricks. Various obstacles are placed in and between these rooms, and doors
+		actioned by levers separate them. The agent's goal is to find the gold/diamond/redstone
+		block in one of the rooms.
+		
+	Actions available:
+		Jump
+		Move
+		Pitch
+		Strafe
+		Turn
+		Crouch
+		Use
+		
+	Rewards:
+		2000 points for finding the goal
+		-1000 points for running out of time
+		20 points for finding a gold/diamond/redstone ore
+    """
+	   
     def __init__(self, extra_params={}):
         super(MarloEnvBuilder, self).__init__(
                 templates_folder = os.path.join(

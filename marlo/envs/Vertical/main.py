@@ -10,8 +10,26 @@ from pathlib import Path
 
 class MarloEnvBuilder(MarloEnvBuilderBase):
     """
-    TODO: Add Env Description Here
-    """    
+    Description: 
+		This is a map with many vertical emplacements such as stairs or ladders.
+		The agent's task is to find the gold/diamond/redstone block at the top of the tower
+		by climbing the stairs/ladders suitably.
+		
+	Actions available:
+		Jump
+		Move
+		Pitch
+		Strafe
+		Turn
+		Crouch
+		Use
+		
+	Rewards:
+		8000 points for finding the goal
+		-1000 points for running out of time
+		20 points for finding a gold/diamond/redstone ore
+    """
+	   
     def __init__(self, extra_params={}):
         super(MarloEnvBuilder, self).__init__(
                 templates_folder = os.path.join(

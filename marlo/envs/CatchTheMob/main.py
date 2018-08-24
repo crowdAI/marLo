@@ -10,8 +10,30 @@ from pathlib import Path
 
 class MarloEnvBuilder(MarloEnvBuilderBase):
     """
-    TODO: Add Env Description Here
-    """    
+    Description: 
+        The goal of this mission is for one or two agents (depending on the playmode)
+        to catch the given target monster by cornering it such that it can no longer escape
+        the block that it is currently in. This can be done via cornering in various angles
+        depending on the map's layout.
+        
+    Actions available:
+        Move
+		Jumpmove
+		Strafe
+		Turn
+		Movenorth, Moveeast, Movesouth, Movewest
+		Jumpnorth, Jumpeast, Jumpsouth, Jumpwest
+		Jump
+		Look
+		Use
+		Jumpuse
+        
+    Rewards:
+        -0.02 for each step taken (maximum 50 steps per episode)
+        0.2 points for exiting the current map
+        1 points for catching the mob
+    """
+       
     def __init__(self, extra_params={}):
         super(MarloEnvBuilder, self).__init__(
                 templates_folder = os.path.join(

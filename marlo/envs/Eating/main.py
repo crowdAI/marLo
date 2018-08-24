@@ -10,10 +10,11 @@ from pathlib import Path
 
 class MarloEnvBuilder(MarloEnvBuilderBase):
     """
-    Description:
-		The goal of this mission is for the agent to eat commestible food
-		and avoid to eat dangerous items.
-
+    Description: 
+		This environment is a flat map littered with lots of food items which the agent can
+		pick up. The goal is to pick up only healthy foods - the agent is thus prompted to
+		prefer certains items over others.
+		
 	Actions available:
 		Move forward/backward
 		Jump
@@ -21,12 +22,14 @@ class MarloEnvBuilder(MarloEnvBuilderBase):
 		Strafe
 		Crouch
 		Use
-
-	Rewards: 
-		either + 1 or +2 when collecting food
-		-2 when collecting dangerous items
-
-    """    
+		
+	Rewards:
+		2 points for picking up: fish, porkchop, beef, chicken, rabbit, mutton
+        1 point for picking up: potato, egg, carrot
+        -1 points for picking up: apple, melon
+        -2 points for picking up: sugar, cake, cookie, pumpkin pie
+    """
+	   
     def __init__(self, extra_params={}):
         super(MarloEnvBuilder, self).__init__(
                 templates_folder = os.path.join(
