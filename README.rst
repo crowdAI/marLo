@@ -18,7 +18,7 @@ The framework is written as an extension to `OpenAI's Gym framework <https://git
   :align: center
   
   * - ``MarLo-MazeRunner-v0``
-        .. image:: https://i.imgur.com/7LypU8L.gif
+        .. image:: https://media.giphy.com/media/X7rQC4iIV2jM9ti7wb/giphy.gif
           :align: center
           :width: 300    
           
