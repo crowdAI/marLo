@@ -18,57 +18,57 @@ The framework is written as an extension to `OpenAI's Gym framework <https://git
   :align: center
   
   * - ``MarLo-MazeRunner-v0``
-        .. image:: https://media.giphy.com/media/33HmdZKXyOz0NCbqLW/giphy.gif
+        .. image:: https://media.giphy.com/media/u45fNQxG59wfnRpzwJ/giphy.gif
           :align: center
           :width: 300    
           
     - ``MarLo-CliffWalking-v0``
-        .. image:: https://media.giphy.com/media/4ahHkEvQ5gdpg5y3gq/giphy.gif
+        .. image:: https://media.giphy.com/media/ef4lPGNqaLlKr45rWB/giphy.gif
           :align: center
           :width: 300    
           
     - ``MarLo-CatchTheMob-v0``
-        .. image:: https://media.giphy.com/media/8FiMcxgnZhpt9u1ZD2/giphy.gif
+        .. image:: https://media.giphy.com/media/9A1gHZrWcaS4AYzcIU/giphy.gif
           :align: center
           :width: 300    
 
   * - ``MarLo-FindTheGoal-v0``
-        .. image:: https://media.giphy.com/media/azHZmMl2fl2xBKPqAB/giphy.gif
+        .. image:: https://media.giphy.com/media/1gWkQbDsHOfo4kZXZv/giphy.gif
           :align: center
           :width: 300    
           
     - ``MarLo-Attic-v0``
-        .. image:: https://media.giphy.com/media/2Y9MXD4knMrBGnXASL/giphy.gif
+        .. image:: https://media.giphy.com/media/47C7AYB3FA6kgrMiQ3/giphy.gif
           :align: center
           :width: 300    
 
     - ``MarLo-DefaultFlatWorld-v0``
-        .. image:: https://media.giphy.com/media/t6Kf1RcIqr3UxEmNRz/giphy.gif
+        .. image:: https://media.giphy.com/media/L0s9QXuR6vIJh6A0dq/giphy.gif
           :align: center
           :width: 300    
 
   * - ``MarLo-DefaultWorld-v0``
-        .. image:: https://media.giphy.com/media/wHencJtdUw9sBCcKxs/giphy.gif
+        .. image:: https://media.giphy.com/media/4Nx7gYiM9NDrMrMao7/giphy.gif
           :align: center
           :width: 300    
           
     - ``MarLo-Eating-v0``
-        .. image:: https://media.giphy.com/media/3q0wQ72sd54VaEc0AI/giphy.gif
+        .. image:: https://media.giphy.com/media/pObNMjjfcGI5tVhmX6/giphy.gif
           :align: center
           :width: 300    
 
     - ``MarLo-Obstacles-v0``
-        .. image:: https://media.giphy.com/media/F14vxiNDfTjF8wyJfH/giphy.gif
+        .. image:: https://media.giphy.com/media/5sYmFFkq7aEMKTbKP4/giphy.gif
           :align: center
           :width: 300    
 
   * - ``MarLo-TrickyArena-v0``
-        .. image:: https://media.giphy.com/media/7zuPK2Fu5uyslCCGjY/giphy.gif
+        .. image:: https://media.giphy.com/media/1g1bxw2nD3G9fz2WVV/giphy.gif
           :align: center
           :width: 300    
           
     - ``MarLo-Vertical-v0``
-        .. image:: https://media.giphy.com/media/2Y9MXD4knMrBGnXASL/giphy.gif
+        .. image:: https://media.giphy.com/media/ZcaMeSnzLrMY1NWM7f/giphy.gif
           :align: center
           :width: 300    
 
