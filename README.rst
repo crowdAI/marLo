@@ -1,9 +1,9 @@
-.. figure:: https://raw.githubusercontent.com/crowdAI/crowdai/master/app/assets/images/misc/crowdai-logo-smile.svg?sanitize=true
+.. image:: https://raw.githubusercontent.com/crowdAI/crowdai/master/app/assets/images/misc/crowdai-logo-smile.svg?sanitize=true
   :align: center
 
 MarLÖ : Reinforcement Learning + Minecraft = Awesomeness
 ============================================================
-.. figure:: https://readthedocs.org/projects/marlo/badge/
+.. image:: https://readthedocs.org/projects/marlo/badge/
 
 **MarLÖ** (short for Multi-Agent Reinforcement Learning in MalmÖ) is a high level API built on top of `Project MalmÖ <https://github.com/Microsoft/malmo>`_ to facilitate Reinforcement Learning experiments with a great degree of generalizability, capable of solving problems in pseudo-random, procedurally changing single and multi agent environments withing the world of the mediatic phenomenon game `Minecraft <https://en.wikipedia.org/wiki/Minecraft>`_ .
 
@@ -18,57 +18,57 @@ The framework is written as an extension to `OpenAI's Gym framework <https://git
   :align: center
   
   * - ``MarLo-MazeRunner-v0``
-        .. figure:: https://i.imgur.com/XpiVIoD.png
+        .. image:: https://media.giphy.com/media/33HmdZKXyOz0NCbqLW/giphy.gif
           :align: center
           :width: 300    
           
     - ``MarLo-CliffWalking-v0``
-        .. figure:: https://i.imgur.com/cI1CgEQ.png
+        .. image:: https://media.giphy.com/media/4ahHkEvQ5gdpg5y3gq/giphy.gif
           :align: center
           :width: 300    
           
     - ``MarLo-CatchTheMob-v0``
-        .. figure:: https://i.imgur.com/FtfKOzs.png
+        .. image:: https://media.giphy.com/media/8FiMcxgnZhpt9u1ZD2/giphy.gif
           :align: center
           :width: 300    
 
   * - ``MarLo-FindTheGoal-v0``
-        .. figure:: https://i.imgur.com/lpbQuty.png
+        .. image:: https://media.giphy.com/media/azHZmMl2fl2xBKPqAB/giphy.gif
           :align: center
           :width: 300    
           
     - ``MarLo-Attic-v0``
-        .. figure:: https://imgur.com/fQVuOHD.png
+        .. image:: https://media.giphy.com/media/2Y9MXD4knMrBGnXASL/giphy.gif
           :align: center
           :width: 300    
 
     - ``MarLo-DefaultFlatWorld-v0``
-        .. figure:: https://i.imgur.com/XQ7UxHP.png
+        .. image:: https://media.giphy.com/media/t6Kf1RcIqr3UxEmNRz/giphy.gif
           :align: center
           :width: 300    
 
   * - ``MarLo-DefaultWorld-v0``
-        .. figure:: https://i.imgur.com/bnpM9OX.png
+        .. image:: https://media.giphy.com/media/wHencJtdUw9sBCcKxs/giphy.gif
           :align: center
           :width: 300    
           
     - ``MarLo-Eating-v0``
-        .. figure:: https://i.imgur.com/kM5Y4pk.png
+        .. image:: https://media.giphy.com/media/3q0wQ72sd54VaEc0AI/giphy.gif
           :align: center
           :width: 300    
 
     - ``MarLo-Obstacles-v0``
-        .. figure:: https://i.imgur.com/L53AlWG.png
+        .. image:: https://media.giphy.com/media/F14vxiNDfTjF8wyJfH/giphy.gif
           :align: center
           :width: 300    
 
   * - ``MarLo-TrickyArena-v0``
-        .. figure:: https://i.imgur.com/zfWeCnR.png
+        .. image:: https://media.giphy.com/media/7zuPK2Fu5uyslCCGjY/giphy.gif
           :align: center
           :width: 300    
           
     - ``MarLo-Vertical-v0``
-        .. figure:: https://i.imgur.com/jZC7buV.png
+        .. image:: https://media.giphy.com/media/2Y9MXD4knMrBGnXASL/giphy.gif
           :align: center
           :width: 300    
 
