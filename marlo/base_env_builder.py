@@ -690,8 +690,7 @@ class MarloEnvBuilderBase(gym.Env):
                     time.sleep(0.1)
                     world_state = self.agent_host.getWorldState()
                     for error in world_state.errors:
-                        logger.error("Error", error)
-                        logger.warn(error.text)
+                        logger.error("Mission start error: " + error.text)
                     if any(world_state.errors):
                         raise MalmoPython.MissionException("Error while waiting for mission to start",
                                                            world_state.errors[0])
