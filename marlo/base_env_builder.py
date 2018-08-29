@@ -686,6 +686,7 @@ class MarloEnvBuilderBase(gym.Env):
 
                 logger.info("Waiting for mission to start...")
                 world_state = self.agent_host.getWorldState()
+                start_time = time.time()
                 while not world_state.has_mission_begun:
                     time.sleep(0.1)
                     world_state = self.agent_host.getWorldState()
@@ -694,6 +695,9 @@ class MarloEnvBuilderBase(gym.Env):
                     if any(world_state.errors):
                         raise MalmoPython.MissionException("Error while waiting for mission to start",
                                                            world_state.errors[0])
+                    if time.time() - start_time > 60:
+                        raise MalmoPython.MissionException("Giving up on mission starting up")
+
                 logger.info("Mission Running")
                 frame = self._get_video_frame(world_state)
                 return frame
