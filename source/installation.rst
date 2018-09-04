@@ -26,13 +26,36 @@ Using Anaconda_ (**Recommended**)
 
 Alternate Approach
 ---------------------------------------------
-.. code-block:: bash
+  The following section requires you to install the Malmo mod separately via either the PyPi wheel or the latest docker image.
+  In order to install Malmo using PyPi, you should:
+  
+  Download Malmo into a “MalmoPlatform” directory/folder in your current directory/folder (uses Git)
+    .. code-block:: bash
 
-  pip3 install -U malmo
-  pip3 install -U marlo
-  # Test installation by :
-  python3 -c "import marlo"
-  python3 -c "from marlo import MalmoPython"
+      python3 -c 'import malmo.minecraftbootstrap; malmo.minecraftbootstrap.download()'
+ 
+  Launch one Minecraft instance:
+    .. code-block:: bash
+
+      python3 -c 'import malmo.minecraftbootstrap; malmo.minecraftbootstrap.launch_minecraft()'
+ 
+  To set your path from within python assuming that python is running where Malmo was downloaded:
+    .. code-block:: bash
+
+      import malmo.minecraftbootstrap; malmo.minecraftbootstrap.set_malmo_xsd_path()
+
+  Following this, you may install the Python binaries for Malmo and the Marlo pack as usual:
+  
+  .. code-block:: bash
+
+    pip3 install -U malmo
+    pip3 install -U marlo
+    # Test installation by :
+    python3 -c "import marlo"
+    python3 -c "from marlo import MalmoPython"
+  
+  More information can be found under the Marlo documentation:
+    https://github.com/Microsoft/malmo/blob/master/scripts/python-wheel/README.md
 
 
 .. Note::
@@ -41,4 +64,5 @@ Alternate Approach
   Minecraft folder. The ``launchClient.sh`` or ``launchClient.bat`` scripts should be 
   inside this folder.
   You will also have to manually set the ``MALMO_XSD_PATH`` environment variable to 
-  the location of your ``Minecraft Schemas`` folder.
+  the location of your ``Minecraft Schemas`` folder, unless you have done so using the
+  bootstrap function provided in the "Alternate Approach" section.
