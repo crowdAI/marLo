@@ -33,7 +33,7 @@ class MarloEnvBuilder(MarloEnvBuilderBase):
     def __init__(self, extra_params={}):
         super(MarloEnvBuilder, self).__init__(
                 templates_folder = os.path.join(
-                            Path(__file__).parent,
+                            str(Path(__file__).parent),
                             "templates"
                 )
         )
