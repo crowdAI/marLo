@@ -161,6 +161,9 @@ class MarloEnvBuilderBase(gym.Env):
             :param videoWithDepth: If the depth channel should also be added to the observation. (Default: ``False`` )
             :type videoWithDepth: bool
             
+            :param prioritise_offscreen_rendering: Prioritise Off Screen Rendering. Can be useful for better render speeds during training. And should be set as False when debugging. (Default: True)
+            :type prioritise_offscreen_rendering: bool
+            
             :param observeRecentCommands: If the Recent Commands should be included in the auxillary observation available through ``info['observation']``. (Default: ``False``)
             :type observeRecentCommands: bool
 
@@ -241,6 +244,7 @@ class MarloEnvBuilderBase(gym.Env):
                  skip_steps=0,
                  videoResolution=[800, 600],
                  videoWithDepth=None,
+                 prioritise_offscreen_rendering=True,
                  observeRecentCommands=None,
                  observeHotBar=None,
                  observeFullInventory=None,

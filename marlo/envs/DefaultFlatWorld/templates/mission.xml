@@ -8,7 +8,9 @@
 
   <ModSettings>
       <MsPerTick>{{ params.tick_length }}</MsPerTick>
-      <PrioritiseOffscreenRendering>true</PrioritiseOffscreenRendering>
+      {% if params.prioritise_offscreen_rendering %}
+        <PrioritiseOffscreenRendering>params.prioritise_offscreen_rendering</PrioritiseOffscreenRendering>
+      {% end if %}
   </ModSettings>
 
   <ServerSection>
