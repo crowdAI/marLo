@@ -640,8 +640,7 @@ class MarloEnvBuilderBase(gym.Env):
     def reset(self):
         for _ in range(self.params.kill_clients_retry + 1):
             try:
-                self._reset()
-                break
+                return self._reset()
             except MalmoPython.MissionException:
                 self._kill_clients(True)
 
