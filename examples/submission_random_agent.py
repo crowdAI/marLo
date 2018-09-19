@@ -19,18 +19,16 @@ def get_join_tokens():
             $MALMO_MINECRAFT_ROOT/launchClient.sh -port 10000
         """
         client_pool = [('127.0.0.1', 10000)]
-        join_tokens = marlo.make('MarLo-MazeRunner-v0',
+        join_tokens = marlo.make('MarLo-FindTheGoal-v0',
                                  params={
                                     "client_pool": client_pool
                                  })
         return join_tokens
 
 
-while True:
+def run_episode():
     """
-    Obtain join tokens either from the local launch client, or from the
-    evaluator; and at the end of an episode, request for more join_tokens
-    as long as the evaluator keeps sending join_tokens.
+    Single episode run
     """
     join_tokens = get_join_tokens()
     
@@ -48,11 +46,25 @@ while True:
     done = False
     while not done:
         _action = env.action_space.sample()
-        obs, reward, done, info = env.step(_action)
-        print("observation : ", obs)
+        observation, reward, done, info = env.step(_action)
         print("reward:", reward)
         print("done:", done)
         print("info", info)
 
     # It is important to do this env.close()
     env.close()
+
+
+if __name__ == "__main__":
+    """
+        In case of debugging locally, run the episode just once
+        and in case of when the agent is being evaluated, continue 
+        running episodes for as long as the evaluator keeps supplying
+        join_tokens.
+    """
+    if not marlo.is_grading():
+        print("Running single episode...")
+        run_episode()
+    else:
+        while True:
+            run_episode()
