@@ -211,10 +211,10 @@ class MarloEnvBuilderBase(gym.Env):
 
             :param recordMP4: If a MP4 should be recorded in the ``MissionRecord``, and if so, the specifications as : ``[frame_rate, bit_rate]``.  (Default : ``None``)
             :type recordMP4: list 
-            
+
             :param gameMode: The Minecraft gameMode for this particular game. One of ``['spectator', 'creative', 'survival']``. (Default: ``survival``)
             :type gameMode: str
-            
+
             :param forceWorldReset: Force world reset on every reset. Makes sense only in case of environments with inherent stochasticity (Default: ``False``)
             :type forceWorldReset: bool
             
@@ -223,6 +223,9 @@ class MarloEnvBuilderBase(gym.Env):
 
             :param comp_all_commands: Specifies the superset of allowed commands in Marlo competition. (Default : ``['move', "turn", "use", "attack"]``)
             :type comp_all_commands: list of strings
+
+            :param suppress_info: Supresses extra game params in the info response. The grader will always have this as ``True``. (Default: ``True``)
+            :type suppress_info: bool
 
             :param kill_clients_after_num_rounds: Call kill client on reset after given number of resets. (Default : ``250``)
             :type kill_clients_after_num_rounds: int
@@ -265,6 +268,7 @@ class MarloEnvBuilderBase(gym.Env):
                  forceWorldReset=True,
                  turn_based=False,
                  comp_all_commands=['move', "turn", "use", "attack"],  # Override to specify the full set of allowed competition commands.
+                 suppress_info=True,
                  kill_clients_after_num_rounds=250,
                  kill_clients_retry=0
             )
@@ -846,9 +850,9 @@ class MarloEnvBuilderBase(gym.Env):
         info['mission_control_messages'] = [msg.text for msg in world_state.mission_control_messages] # noqa: E501
         info['observation'] = self._get_observation(world_state)
 
-        if marlo.is_grading():
+        if self.params.suppress_info:
             """
-            Clear info variable when grading
+            Clear info variable to not leak in game variables
             """
             info = {}
 
