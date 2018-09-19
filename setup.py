@@ -12,6 +12,6 @@ setup(name='marlo',
         '':['envs/*/templates/*.xml']
       },
       zip_safe=False,
-      install_requires=['gym', 'jinja2', 'lxml'],
+      install_requires=['gym', 'jinja2', 'lxml', 'crowdai_api'],
       dependency_links=[]
 )

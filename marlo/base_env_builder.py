@@ -221,10 +221,10 @@ class MarloEnvBuilderBase(gym.Env):
             :param turn_based: Specifies if the current game is a turn based game. (Default : ``False``)
             :type turn_based: bool
 
-            :param comp_all_commands: Specifies the superset of allowed commands in Marlo competition. (Default : ``None``)
+            :param comp_all_commands: Specifies the superset of allowed commands in Marlo competition. (Default : ``['move', "turn", "use", "attack"]``)
             :type comp_all_commands: list of strings
 
-            :param kill_clients_after_num_rounds: Call kill client on reset after given number of resets. (Default : ``None``)
+            :param kill_clients_after_num_rounds: Call kill client on reset after given number of resets. (Default : ``250``)
             :type kill_clients_after_num_rounds: int
 
             :param kill_clients_retry: Call kill client on mission start failure and retry N times. (Default : ``0``)
@@ -264,8 +264,8 @@ class MarloEnvBuilderBase(gym.Env):
                  gameMode="survival",
                  forceWorldReset=True,
                  turn_based=False,
-                 comp_all_commands=None,  # Override to specify the full set of allowed competition commands.
-                 kill_clients_after_num_rounds=None,
+                 comp_all_commands=['move', "turn", "use", "attack"],  # Override to specify the full set of allowed competition commands.
+                 kill_clients_after_num_rounds=250,
                  kill_clients_retry=0
             )
         return self._default_base_params
