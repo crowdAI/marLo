@@ -643,7 +643,7 @@ class MarloEnvBuilderBase(gym.Env):
                 return self._reset()
             except MalmoPython.MissionException:
                 self._kill_clients(True)
-
+        
     def _reset(self):
         self._rounds += 1
         # Kill clients after configured number of rounds.
@@ -703,6 +703,10 @@ class MarloEnvBuilderBase(gym.Env):
 
                 logger.info("Mission Running")
                 frame = self._get_video_frame(world_state)
+
+                # Notify Evaluation System, if applicable
+                marlo.CrowdAiNotifier._env_reset()
+                
                 return frame
 
             except Exception as e:
@@ -841,6 +845,16 @@ class MarloEnvBuilderBase(gym.Env):
         info['number_of_observations_since_last_state'] = world_state.number_of_observations_since_last_state # noqa: E501
         info['mission_control_messages'] = [msg.text for msg in world_state.mission_control_messages] # noqa: E501
         info['observation'] = self._get_observation(world_state)
+
+        if marlo.is_grading():
+            """
+            Clear info variable when grading
+            """
+            info = {}
+
+        # Notify evaluation system, if applicable
+        marlo.CrowdAiNotifier._env_action(action)
+        marlo.CrowdAiNotifier._step_reward(reward)
 
         return image, reward, done, info
 
