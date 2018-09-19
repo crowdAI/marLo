@@ -518,6 +518,10 @@ class MarloEnvBuilderBase(gym.Env):
         ############################################################
         self.mission_record_spec = MalmoPython.MissionRecordSpec() # empty
         if params.recordDestination:
+            if not params.recordDestination.endswith(".tgz"):
+                raise Exception("Invalid recordDestination provided"
+                                "recordDestination should be a valid path ending"
+                                " with .tgz ")
             self.mission_record_spec.setDestination(params.recordDestination)
             if params.recordRewards:
                 self.mission_record_spec.recordRewards()
