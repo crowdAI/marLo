@@ -37,6 +37,7 @@ from .utils import launch_clients
 from .crowdai_helpers import is_grading
 from .crowdai_helpers import evaluator_join_token
 from .crowdai_helpers import CrowdAiNotifier
+from .crowdai_helpers import CrowdAIMarloEvents
 
 ########################################################################
 # Runtime Variables

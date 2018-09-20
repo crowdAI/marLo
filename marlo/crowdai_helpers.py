@@ -2,6 +2,10 @@
 import os
 import crowdai_api
 
+########################################################################
+# Instatiate Event Notifier
+########################################################################
+crowdai_events = crowdai_api.events.CrowdAIEvents()
 
 class CrowdAIMarloEvents:
     REQUEST_ENV_JOIN_TOKENS="marlo.events.REQUEST_JOIN_TOKENS"
@@ -12,6 +16,11 @@ class CrowdAIMarloEvents:
     ENV_RESET="marlo.events.ENV_RESET"
     ENV_ACTION="marlo.events.ENV_ACTION"
     STEP_REWARD="marlo.events.STEP_REWARD"
+    
+    EPISODE_PENDING="marlo.events.EPISODE_PENDING"
+    EPISODE_RUNNING="marlo.events.EPISODE_RUNNING"
+    EPISODE_COMPLETED="marlo.events.EPISODE_COMPLETED"
+    EPISODE_ERROR="marlo.events.EPISODE_ERROR"
     
 def is_grading():
     """Returns if the code is being executed inside the crowdAI evaluation 
@@ -71,32 +80,42 @@ class CrowdAiNotifier():
     @staticmethod
     def _game_init():
         CrowdAiNotifier._send_notification(
-            event_type=CrowdAIMarloEvents.GAME_INIT,
-            message={},
-            payload={},
+            event_type=crowdai_events.CROWDAI_EVENT_INFO,
+            message="Game Initialized",
+            payload={
+                "event_type" : CrowdAIMarloEvents.GAME_INIT
+            },
             blocking=False)
 
     @staticmethod
     def _env_reset():
         CrowdAiNotifier._send_notification(
-            event_type=CrowdAIMarloEvents.ENV_RESET,
-            message={},
-            payload={},
+            event_type=crowdai_events.CROWDAI_EVENT_INFO,
+            message="Environment Reset",
+            payload={
+                "event_type" : CrowdAIMarloEvents.ENV_RESET
+            },
             blocking=False)
 
     @staticmethod
     def _env_action(action):
         CrowdAiNotifier._send_notification(
-            event_type=CrowdAIMarloEvents.ENV_ACTION,
-            message={},
-            payload={"action": action},
+            event_type=crowdai_events.CROWDAI_EVENT_INFO,
+            message="",
+            payload={
+                "event_type" : CrowdAIMarloEvents.ENV_ACTION,
+                "action": action
+            },
             blocking=False)
 
 
     @staticmethod
     def _step_reward(reward):
         CrowdAiNotifier._send_notification(
-            event_type=CrowdAIMarloEvents.STEP_REWARD,
-            message={},
-            payload={"r":reward},
+            event_type=crowdai_events.CROWDAI_EVENT_INFO,
+            message="",
+            payload={
+                    "event_type" : CrowdAIMarloEvents.STEP_REWARD,
+                    "r":reward
+                },
             blocking=False)
