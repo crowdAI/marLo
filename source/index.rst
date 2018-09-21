@@ -18,7 +18,6 @@ Read More
    submit
    modules
    development
-   open_bounty
    contributors
    
 
