@@ -10,12 +10,30 @@ from pathlib import Path
 
 class MarloEnvBuilder(MarloEnvBuilderBase):
     """
-    TODO: Add Env Description Here
+    Description: 
+		The layout of this map is that of a maze; the goal of the mission is to reach
+		the redstone pillar at the end of the maze.
+		
+	Observations:
+		A depth map is provided for the agent to use, which trivializes this task.
+		
+	Actions available:
+		Jump
+		Move
+		Pitch
+		Turn
+		Crouch
+		Attack
+		Use
+		
+	Rewards:
+		nil
     """
+	
     def __init__(self, extra_params={}):
         super(MarloEnvBuilder, self).__init__(
                 templates_folder = os.path.join(
-                            Path(__file__).parent,
+                            str(Path(__file__).parent),
                             "templates"
                 )
         )

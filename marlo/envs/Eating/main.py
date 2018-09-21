@@ -10,12 +10,31 @@ from pathlib import Path
 
 class MarloEnvBuilder(MarloEnvBuilderBase):
     """
-    TODO: Add Env Description Here
-    """    
+    Description: 
+		This environment is a flat map littered with lots of food items which the agent can
+		pick up. The goal is to pick up only healthy foods - the agent is thus prompted to
+		prefer certains items over others.
+		
+	Actions available:
+		Move forward/backward
+		Jump
+		Turn
+		Strafe
+		Crouch
+		Use
+		
+	Rewards:
+		2 points for picking up: fish, porkchop, beef, chicken, rabbit, mutton
+        1 point for picking up: potato, egg, carrot
+        -1 points for picking up: apple, melon
+        -2 points for picking up: sugar, cake, cookie, pumpkin pie
+    
+    """
+	   
     def __init__(self, extra_params={}):
         super(MarloEnvBuilder, self).__init__(
                 templates_folder = os.path.join(
-                            Path(__file__).parent,
+                            str(Path(__file__).parent),
                             "templates"
                 )
         )

@@ -33,6 +33,12 @@ from .utils import register_environments
 from .utils import threaded
 from .utils import launch_clients
 
+
+from .crowdai_helpers import is_grading
+from .crowdai_helpers import evaluator_join_token
+from .crowdai_helpers import CrowdAiNotifier
+from .crowdai_helpers import CrowdAIMarloEvents
+
 ########################################################################
 # Runtime Variables
 ########################################################################
@@ -123,4 +129,7 @@ def init(join_token, params={}):
     game_params["experiment_id"] = join_token["experiment_id"]
     game_params.update(params)
     env.init(game_params)
+
+    # Notify Evaluation System, if applicable
+    CrowdAiNotifier._game_init()
     return env

@@ -15,8 +15,9 @@ In the simplest of the use cases, we will start a single agent
   $MALMO_MINECRAFT_ROOT/launchClient.sh -port 10000
 
 .. Note:: 
-  In case of ``Windows``, you can use ``%%MALMO_MINECRAFT_ROOT%%`` instead.
-
+    In case of ``Windows``, you can instead use |
+    ``cd %MALMO_MINECRAFT_ROOT%`` |
+    ``launchClient.bat`` |
 
 - **Make and Instantiate Environment**
 
@@ -25,7 +26,7 @@ In the simplest of the use cases, we will start a single agent
   
   import marlo
   client_pool = [('127.0.0.1', 10000)]
-  join_tokens = marlo.make('MarLo-MazeRunner-v0', 
+  join_tokens = marlo.make('MarLo-FindTheGoal-v0', 
                             params={
                               "client_pool": client_pool
                             })
@@ -67,12 +68,11 @@ Example Code
   :linenos:
   
   #!/usr/bin/env python
-  # $MALMO_MINECRAFT_ROOT/launchClient.sh -port 10000
-  
+  # $MALMO_MINECRAFT_ROOT/launchClient.sh -port 10000  
   
   import marlo
   client_pool = [('127.0.0.1', 10000)]
-  join_tokens = marlo.make('MarLo-MazeRunner-v0', 
+  join_tokens = marlo.make('MarLo-FindTheGoal-v0', 
                             params={
                               "client_pool": client_pool
                             })

@@ -5,6 +5,7 @@ import gym
 import numpy as np
 import marlo
 from marlo import MalmoPython
+import marlo.commands
 import uuid
 import hashlib
 import base64
@@ -76,6 +77,7 @@ class MarloEnvBuilderBase(gym.Env):
         self.experiment_id = None
         
         self._turn = None
+        self._rounds = 0
 
     def setup_templating(self):
         """
@@ -159,6 +161,9 @@ class MarloEnvBuilderBase(gym.Env):
             :param videoWithDepth: If the depth channel should also be added to the observation. (Default: ``False`` )
             :type videoWithDepth: bool
             
+            :param prioritise_offscreen_rendering: Prioritise Off Screen Rendering. Can be useful for better render speeds during training. And should be set as False when debugging. (Default: True)
+            :type prioritise_offscreen_rendering: bool
+            
             :param observeRecentCommands: If the Recent Commands should be included in the auxillary observation available through ``info['observation']``. (Default: ``False``)
             :type observeRecentCommands: bool
 
@@ -180,10 +185,10 @@ class MarloEnvBuilderBase(gym.Env):
             :param continuous_to_discrete: Converts continuous actions to discrete. when allowed continuous actions are 'move' and 'turn', then discrete action space contains 4 actions: move -1, move 1, turn -1, turn 1. (Default : ``True``)
             :type continuous_to_discrete: bool
             
-            :param allowContinuousMovement: If all continuous movement commands should be allowed. (Default : ``True``)
+            :param allowContinuousMovement: If all continuous movement commands should be allowed. (Default : ``False``)
             :type allowContinuousMovement: bool
             
-            :param allowDiscreteMovement: If all discrete movement commands should be allowed. (Default : ``True``)
+            :param allowDiscreteMovement: If all discrete movement commands should be allowed. (Default : ``False``)
             :type allowDiscreteMovement: bool
             
             :param allowAbsoluteMovement: If all absolute movement commands should be allowed. (Default : ``False``) (**Not Implemented**)
@@ -206,15 +211,27 @@ class MarloEnvBuilderBase(gym.Env):
 
             :param recordMP4: If a MP4 should be recorded in the ``MissionRecord``, and if so, the specifications as : ``[frame_rate, bit_rate]``.  (Default : ``None``)
             :type recordMP4: list 
-            
+
             :param gameMode: The Minecraft gameMode for this particular game. One of ``['spectator', 'creative', 'survival']``. (Default: ``survival``)
             :type gameMode: str
-            
+
             :param forceWorldReset: Force world reset on every reset. Makes sense only in case of environments with inherent stochasticity (Default: ``False``)
             :type forceWorldReset: bool
             
             :param turn_based: Specifies if the current game is a turn based game. (Default : ``False``)
             :type turn_based: bool
+
+            :param comp_all_commands: Specifies the superset of allowed commands in Marlo competition. (Default : ``['move', "turn", "use", "attack"]``)
+            :type comp_all_commands: list of strings
+
+            :param suppress_info: Supresses extra game params in the info response. The grader will always have this as ``True``. (Default: ``True``)
+            :type suppress_info: bool
+
+            :param kill_clients_after_num_rounds: Call kill client on reset after given number of resets. (Default : ``250``)
+            :type kill_clients_after_num_rounds: int
+
+            :param kill_clients_retry: Call kill client on mission start failure and retry N times. (Default : ``0``)
+            :type kill_clients_retry: int
         """
         if not self._default_base_params:
             self._default_base_params = dotdict(
@@ -230,6 +247,7 @@ class MarloEnvBuilderBase(gym.Env):
                  skip_steps=0,
                  videoResolution=[800, 600],
                  videoWithDepth=None,
+                 prioritise_offscreen_rendering=True,
                  observeRecentCommands=None,
                  observeHotBar=None,
                  observeFullInventory=None,
@@ -237,8 +255,8 @@ class MarloEnvBuilderBase(gym.Env):
                  observeDistance=None,
                  observeChat=None,
                  continuous_to_discrete=True,
-                 allowContinuousMovement=True,
-                 allowDiscreteMovement=True,
+                 allowContinuousMovement=False,
+                 allowDiscreteMovement=False,
                  allowAbsoluteMovement=False,
                  add_noop_command=True,                 
                  recordDestination=None,
@@ -249,6 +267,10 @@ class MarloEnvBuilderBase(gym.Env):
                  gameMode="survival",
                  forceWorldReset=True,
                  turn_based=False,
+                 comp_all_commands=['move', "turn", "use", "attack"],  # Override to specify the full set of allowed competition commands.
+                 suppress_info=True,
+                 kill_clients_after_num_rounds=250,
+                 kill_clients_retry=0
             )
         return self._default_base_params
 
@@ -372,57 +394,65 @@ class MarloEnvBuilderBase(gym.Env):
         multidiscrete_action_ranges = []
         if params.add_noop_command:
             discrete_actions.append("move 0\nturn 0")
-        command_handlers = self.mission_spec.getListOfCommandHandlers(0)
-        for command_handler in command_handlers:
-            commands = self.mission_spec.getAllowedCommands(0, command_handler)
-            for command in commands:
-                logger.debug("Command : {}".format(command))
-                if command_handler == "ContinuousMovement":
-                    if command in ["move", "strafe", "pitch", "turn"]:
-                        if params.continuous_to_discrete:
-                            discrete_actions.append(command + " 1")
-                            discrete_actions.append(command + " -1")
-                        else:
-                            continuous_actions.append(command)
-                    elif command in ["crouch", "jump", "attack", "use"]:
-                        if params.continuous_to_discrete:
-                            discrete_actions.append(command + " 1")
-                            discrete_actions.append(command + " 0")
-                        else:
-                            multidiscrete_actions.append(command)
-                            multidiscrete_action_ranges.append([0, 1])
-                    else:
-                        raise ValueError(
-                            "Unknown continuous action : {}".format(command)
-                            )
-                elif command_handler == "DiscreteMovement":
-                    if command in marlo.SINGLE_DIRECTION_DISCRETE_MOVEMENTS:
-                        discrete_actions.append(command + " 1")
-                    elif command in marlo.MULTIPLE_DIRECTION_DISCRETE_MOVEMENTS:
+
+        mission_xml = str(self.mission_spec)
+        i = mission_xml.index("<Mission")
+        mission_xml = mission_xml[i:]
+        # print(mission_xml)
+        parser = marlo.commands.CommandParser(params.comp_all_commands)
+        commands = parser.get_commands(mission_xml, params.role)
+
+        for (command_handler, turnbased, command) in commands:
+            logger.debug("CommandHandler: {} turn based: {} command: {} ".format(command_handler, turnbased, command))
+            if turnbased and not self.params.turn_based:
+                logger.warning("Turn based command not expected in mission XML.")
+
+            if command_handler == "ContinuousMovement":
+                if command in ["move", "strafe", "pitch", "turn"]:
+                    if params.continuous_to_discrete:
                         discrete_actions.append(command + " 1")
                         discrete_actions.append(command + " -1")
                     else:
-                        raise ValueError(
-                            "Unknown discrete action : {}".format(command)
-                        )
-                elif command_handler in ["AbsoluteMovement", "Inventory"]:
-                    logger.warn(
-                        "Command Handler `{}` Not Implemented".format(
-                            command_handler
-                        )
-                    )
-                elif command_handler in ["MissionQuit"]:
-                    logger.debug(
-                        "Command Handler `{}`".format(
-                            command_handler
-                        )
-                    )
+                        continuous_actions.append(command)
+                elif command in ["crouch", "jump", "attack", "use"]:
+                    if params.continuous_to_discrete:
+                        discrete_actions.append(command + " 1")
+                        discrete_actions.append(command + " 0")
+                    else:
+                        multidiscrete_actions.append(command)
+                        multidiscrete_action_ranges.append([0, 1])
                 else:
                     raise ValueError(
-                        "Unknown Command Handler : `{}`".format(
-                            command_handler
-                            )
+                        "Unknown continuous action : {}".format(command)
                     )
+            elif command_handler == "DiscreteMovement":
+                if command in marlo.SINGLE_DIRECTION_DISCRETE_MOVEMENTS:
+                    discrete_actions.append(command + " 1")
+                elif command in marlo.MULTIPLE_DIRECTION_DISCRETE_MOVEMENTS:
+                    discrete_actions.append(command + " 1")
+                    discrete_actions.append(command + " -1")
+                else:
+                    raise ValueError(
+                        "Unknown discrete action : {}".format(command)
+                    )
+            elif command_handler in ["AbsoluteMovement", "Inventory"]:
+                logger.warn(
+                    "Command Handler `{}` Not Implemented".format(
+                        command_handler
+                    )
+                )
+            elif command_handler in ["MissionQuit"]:
+                logger.debug(
+                    "Command Handler `{}`".format(
+                        command_handler
+                    )
+                )
+            else:
+                raise ValueError(
+                    "Unknown Command Handler : `{}`".format(
+                        command_handler
+                    )
+                )
         # Convert lists into proper gym action spaces
         self.action_names = []
         self.action_spaces = []
@@ -488,6 +518,10 @@ class MarloEnvBuilderBase(gym.Env):
         ############################################################
         self.mission_record_spec = MalmoPython.MissionRecordSpec() # empty
         if params.recordDestination:
+            if not params.recordDestination.endswith(".tgz"):
+                raise Exception("Invalid recordDestination provided"
+                                "recordDestination should be a valid path ending"
+                                " with .tgz ")
             self.mission_record_spec.setDestination(params.recordDestination)
             if params.recordRewards:
                 self.mission_record_spec.recordRewards()
@@ -592,15 +626,47 @@ class MarloEnvBuilderBase(gym.Env):
         self.setup_mission_record(params)
         self.setup_game_mode(params)
 
+    def _kill_clients(self, all):
+        if self.params.role == 0 or all:
+            print("Restart Malmo Minecraft clients for experiment " + self.params.experiment_id)
+            for client in self.client_pool.clients:
+                for _ in range(3):
+                    try:
+                        print("Stopping " + str(client) + " ...")
+                        self.agent_host.killClient(client)
+                        break
+                    except MalmoPython.MissionException:
+                        time.sleep(2)
+
+        print("Pause for restarts ....")
+        time.sleep(90 + 30 * len(self.client_pool.clients))
+
     ########################################################################
     # Env interaction functions
     ########################################################################
+
     def reset(self):
+        for _ in range(self.params.kill_clients_retry + 1):
+            try:
+                return self._reset()
+            except MalmoPython.MissionException:
+                self._kill_clients(True)
+        
+    def _reset(self):
+        self._rounds += 1
+        # Kill clients after configured number of rounds.
+        if (self.params.kill_clients_after_num_rounds and
+                self._rounds > self.params.kill_clients_after_num_rounds):
+            self._kill_clients(False)
+            self._rounds = 1
+
         # If a mission is already running, try to quit it
         # Note : This assumes that <MissionQuitCommands/> is an allowed
         # command handler in the mission spec.
-        if not self._turn or self._turn.can_play:
-            self.send_command("quit")
+        world_state = self.agent_host.peekWorldState()
+        if world_state.is_mission_running:
+            if not self._turn or self._turn.can_play:
+                self.send_command("quit")
 
         if self.params.forceWorldReset:
             # Force a World Reset on each reset
@@ -628,8 +694,30 @@ class MarloEnvBuilderBase(gym.Env):
                     self.params.role,
                     self.experiment_id
                 )
-                break #Break out of the try-to-connect loop
-            except RuntimeError as e:
+
+                logger.info("Waiting for mission to start...")
+                world_state = self.agent_host.getWorldState()
+                start_time = time.time()
+                while not world_state.has_mission_begun:
+                    time.sleep(0.1)
+                    world_state = self.agent_host.getWorldState()
+                    for error in world_state.errors:
+                        logger.error("Mission start error: " + error.text)
+                    if any(world_state.errors):
+                        raise MalmoPython.MissionException("Error while waiting for mission to start",
+                                                           world_state.errors[0])
+                    if time.time() - start_time > 60:
+                        raise MalmoPython.MissionException("Giving up on mission starting up")
+
+                logger.info("Mission Running")
+                frame = self._get_video_frame(world_state)
+
+                # Notify Evaluation System, if applicable
+                marlo.CrowdAiNotifier._env_reset()
+                
+                return frame
+
+            except Exception as e:
                 traceback.format_exc()
                 if retry == self.params.max_retries:
                     logger.error("Error Starting Mission : {}".format(
@@ -643,26 +731,13 @@ class MarloEnvBuilderBase(gym.Env):
                                 .format(self.params.retry_sleep))
                     time.sleep(self.params.retry_sleep)
 
-        logger.info("Waiting for mission to start...")
-        world_state = self.agent_host.getWorldState()
-        while not world_state.has_mission_begun:
-            time.sleep(0.1)
-            world_state = self.agent_host.getWorldState()
-            for error in world_state.errors:
-                logger.error("Error", error)
-                logger.warn(error.text)
-
-        logger.info("Mission Running")
-        frame = self._get_video_frame(world_state)
-        return frame
-
     def _get_world_state(self):
         # patiently wait till we get the next observation
         while True:
             time.sleep(self.params.step_sleep)
             world_state = self.agent_host.peekWorldState()
             if world_state.number_of_observations_since_last_state > \
-                    self.params.skip_steps or not world_state.is_mission_running:
+                    self.params.skip_steps or not world_state.is_mission_running or any(world_state.errors):
                 break
         return self.agent_host.getWorldState()
 
@@ -673,7 +748,7 @@ class MarloEnvBuilderBase(gym.Env):
 
             image = np.frombuffer(frame.pixels, dtype=np.uint8)
             image = image.reshape((frame.height, frame.width, frame.channels))
-            print("Frame Receieved : ".format(image.shape))
+            # print("Frame Received : ".format(image.shape))
             self.last_image = image
         else:
             # can happen only when mission ends before we get frame
@@ -686,7 +761,7 @@ class MarloEnvBuilderBase(gym.Env):
             missed = world_state.number_of_observations_since_last_state \
                     - len(world_state.observations) - self.params.skip_steps
             if missed > 0:
-                logger.warn("Agent missed %d observation(s).", missed)
+                logger.info("Agent missed %d observation(s).", missed)
             assert len(world_state.observations) == 1
             return json.loads(world_state.observations[0].text)
         else:
@@ -732,7 +807,7 @@ class MarloEnvBuilderBase(gym.Env):
                     _commands
                     ))
 
-    def step(self, action):
+    def step_wrapper(self, action):
         world_state = self.agent_host.peekWorldState()
         if world_state.is_mission_running:
             self._take_action(action)
@@ -761,14 +836,13 @@ class MarloEnvBuilderBase(gym.Env):
         # Compute Rewards
         reward = 0
         for _reward in world_state.rewards:
-            print(_reward)
             reward += _reward.getValue()
 
         # Get observation
         image = self._get_video_frame(world_state)
 
         # detect if done ?
-        done = not world_state.is_mission_running
+        done = not world_state.is_mission_running or any(world_state.errors)
 
         # gather info
         info = {}
@@ -780,7 +854,27 @@ class MarloEnvBuilderBase(gym.Env):
         info['mission_control_messages'] = [msg.text for msg in world_state.mission_control_messages] # noqa: E501
         info['observation'] = self._get_observation(world_state)
 
+        if self.params.suppress_info:
+            """
+            Clear info variable to not leak in game variables
+            """
+            info = {}
+
+        # Notify evaluation system, if applicable
+        marlo.CrowdAiNotifier._env_action(action)
+        marlo.CrowdAiNotifier._step_reward(reward)
+
         return image, reward, done, info
+
+    def step(self, action):
+        """
+            Helps wrap the actual step function to catch relevant errors
+        """
+        try:
+            return self.step_wrapper(action)
+        except Exception as e:
+            marlo.CrowdAiNotifier._env_error(str(e))
+            raise e
 
     def render(self, mode='rgb_array', close=False):
         if mode == "rgb_array":

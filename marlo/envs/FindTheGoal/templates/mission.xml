@@ -6,7 +6,9 @@
 
   <ModSettings>
       <MsPerTick> {{params.tick_length}} </MsPerTick>
-      <PrioritiseOffscreenRendering>true</PrioritiseOffscreenRendering>
+      {% if params.prioritise_offscreen_rendering %}
+        <PrioritiseOffscreenRendering>true</PrioritiseOffscreenRendering>
+      {% endif %}
   </ModSettings>
 
   <ServerSection>
@@ -46,7 +48,7 @@
           <hintLikelihood>1</hintLikelihood>
         </specification>
       </ClassroomDecorator>
-      <ServerQuitFromTimeUp timeLimitMs="30000" description="out_of_time"/>
+      <ServerQuitFromTimeUp timeLimitMs="1200000" description="out_of_time"/>
       <ServerQuitWhenAnyAgentFinishes />
     </ServerHandlers>
   </ServerSection>
@@ -63,8 +65,9 @@
       </VideoProducer>
       <ObservationFromFullStats />
       <ContinuousMovementCommands turnSpeedDegs="180">
-        <ModifierList type="deny-list">
-          <command>attack</command>
+        <ModifierList type="allow-list">
+          <command>move</command>
+          <command>turn</command>
         </ModifierList>
       </ContinuousMovementCommands>
       <MissionQuitCommands/>
@@ -79,7 +82,7 @@
       <AgentQuitFromTouchingBlockType>
         <Block type="gold_block diamond_block redstone_block" description="found_goal" />
       </AgentQuitFromTouchingBlockType>
-      <AgentQuitFromReachingCommandQuota description="command_quota_reached" total="100"/>
+      <AgentQuitFromReachingCommandQuota description="command_quota_reached" total="1000"/>
     </AgentHandlers>
   </AgentSection>
 </Mission>

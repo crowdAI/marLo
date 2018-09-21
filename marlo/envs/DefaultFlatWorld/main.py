@@ -10,12 +10,23 @@ from pathlib import Path
 
 class MarloEnvBuilder(MarloEnvBuilderBase):
     """
-    TODO: Add Env Description Here
-    """    
+    Description: 
+		This is a simple, plain map, in which the sole goal is to reach a location nearby
+		the spawn of the agent. The weather is dark and snowy, but that aside there is not
+		much to describe in relation to this mission.
+		
+	Actions available:
+		Forward/Backward
+		Turning
+		
+	Rewards:
+		100 points for reaching the location
+    """
+	  
     def __init__(self, extra_params={}):
         super(MarloEnvBuilder, self).__init__(
                 templates_folder = os.path.join(
-                            Path(__file__).parent,
+                            str(Path(__file__).parent),
                             "templates"
                 )
         )

@@ -16,7 +16,7 @@ Available Environments
     - **Description**
 
   * - ``MarLo-MazeRunner-v0``
-        .. figure:: https://i.imgur.com/XpiVIoD.png
+        .. figure:: https://media.giphy.com/media/u45fNQxG59wfnRpzwJ/giphy.gif
           :align: center
     - **Run the maze!**
         Extra Parameters : 
@@ -26,7 +26,7 @@ Available Environments
     
 
   * - ``MarLo-CliffWalking-v0``
-        .. figure:: https://i.imgur.com/cI1CgEQ.png
+        .. figure:: https://media.giphy.com/media/ef4lPGNqaLlKr45rWB/giphy.gif
           :align: center
     - **Cliff walking mission based on Sutton and Barto**
         
@@ -34,7 +34,7 @@ Available Environments
 
 
   * - ``MarLo-CatchTheMob-v0``
-        .. figure:: https://i.imgur.com/FtfKOzs.png
+        .. figure:: https://media.giphy.com/media/9A1gHZrWcaS4AYzcIU/giphy.gif
           :align: center
     - **Catch the Mob**
         
@@ -42,15 +42,15 @@ Available Environments
 
         
   * - ``MarLo-FindTheGoal-v0``
-        .. figure:: https://i.imgur.com/lpbQuty.png
+        .. figure:: https://media.giphy.com/media/1gWkQbDsHOfo4kZXZv/giphy.gif
           :align: center
     - **Find the goal!**
         
-        More Information : :meth:`marlo.envs.Basic.main`
+        More Information : :meth:`marlo.envs.FindTheGoal.main`
 
 
   * - ``MarLo-Attic-v0``
-        .. figure:: https://imgur.com/fQVuOHD.png
+        .. figure:: https://media.giphy.com/media/47C7AYB3FA6kgrMiQ3/giphy.gif
           :align: center
     - **Find the goal! Have you looked in the attic?**
         
@@ -58,42 +58,42 @@ Available Environments
 
 
   * - ``MarLo-DefaultFlatWorld-v0``
-        .. figure:: https://i.imgur.com/XQ7UxHP.png
+        .. figure:: https://media.giphy.com/media/L0s9QXuR6vIJh6A0dq/giphy.gif
           :align: center
     - **A simple 10 second mission with a reward for reaching a location.**
         
         More Information : :meth:`marlo.envs.DefaultFlatWorld.main`
 
   * - ``MarLo-DefaultWorld-v0``
-        .. figure:: https://i.imgur.com/bnpM9OX.png
+        .. figure:: https://media.giphy.com/media/4Nx7gYiM9NDrMrMao7/giphy.gif
           :align: center
     - **Everyday Minecraft life: survival**
         
         More Information : :meth:`marlo.envs.DefaultWorld.main`
 
   * - ``MarLo-Eating-v0``
-        .. figure:: https://i.imgur.com/kM5Y4pk.png
+        .. figure:: https://media.giphy.com/media/pObNMjjfcGI5tVhmX6/giphy.gif
           :align: center
     - **Healthy diet. Eating right and wrong objects**
         
         More Information : :meth:`marlo.envs.Eating.main`
 
   * - ``MarLo-Obstacles-v0``
-        .. figure:: https://i.imgur.com/L53AlWG.png
+        .. figure:: https://media.giphy.com/media/5sYmFFkq7aEMKTbKP4/giphy.gif
           :align: center
     - **Find the goal! The apartment!**
         
         More Information : :meth:`marlo.envs.Obstacles.main`
 
   * - ``MarLo-TrickyArena-v0``
-        .. figure:: https://i.imgur.com/zfWeCnR.png
+        .. figure:: https://media.giphy.com/media/1g1bxw2nD3G9fz2WVV/giphy.gif
           :align: center
     - **Mind your step! Moving around an area to find a goal or get out of it!**
         
         More Information : :meth:`marlo.envs.TrickyArena.main`
 
   * - ``MarLo-Vertical-v0``
-        .. figure:: https://i.imgur.com/jZC7buV.png
+        .. figure:: https://media.giphy.com/media/ZcaMeSnzLrMY1NWM7f/giphy.gif
           :align: center
     - **Find the goal! Without a lift...**
         

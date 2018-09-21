@@ -10,12 +10,25 @@ from pathlib import Path
 
 class MarloEnvBuilder(MarloEnvBuilderBase):
     """
-    TODO: Add Env Description Here
-    """    
+    Description: 
+		This environment thrusts the agent into a normal, random Minecraft world. The seed is
+		generated randomly, therefore the location is not always the same. The goal is to find
+		a gold/diamond/redstone block in time. 
+		
+	Actions available:
+		Forward/Backward
+		Turning
+		
+	Rewards:
+		1000 points for finding the goal
+		-1000 points for running out of time
+		-10000 points for death
+    """
+	   
     def __init__(self, extra_params={}):
         super(MarloEnvBuilder, self).__init__(
                 templates_folder = os.path.join(
-                            Path(__file__).parent,
+                            str(Path(__file__).parent),
                             "templates"
                 )
         )
