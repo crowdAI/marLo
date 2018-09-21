@@ -94,7 +94,7 @@ Simple Example
 
   import marlo
   client_pool = [('127.0.0.1', 10000)]
-  join_tokens = marlo.make('MarLo-MazeRunner-v0',
+  join_tokens = marlo.make('MarLo-FindTheGoal-v0',
                             params={
                               "client_pool": client_pool
                             })

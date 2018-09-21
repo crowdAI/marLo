@@ -26,7 +26,7 @@ In the simplest of the use cases, we will start a single agent
   
   import marlo
   client_pool = [('127.0.0.1', 10000)]
-  join_tokens = marlo.make('MarLo-MazeRunner-v0', 
+  join_tokens = marlo.make('MarLo-FindTheGoal-v0', 
                             params={
                               "client_pool": client_pool
                             })
@@ -72,7 +72,7 @@ Example Code
   
   import marlo
   client_pool = [('127.0.0.1', 10000)]
-  join_tokens = marlo.make('MarLo-MazeRunner-v0', 
+  join_tokens = marlo.make('MarLo-FindTheGoal-v0', 
                             params={
                               "client_pool": client_pool
                             })
