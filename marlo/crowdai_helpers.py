@@ -60,7 +60,6 @@ def register_end_of_grading(crowdai_events):
 
     :param crowdai_events: a crowdai events object
     :type `crowdai_api.CrowdAIEvents` object
-
     """
     crowdai_events.register_event(
         event_type=CrowdAIMarloEvents.END_OF_GRADING,

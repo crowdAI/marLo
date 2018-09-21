@@ -1,5 +1,5 @@
 import Attic
-import Basic
+import FindTheGoal
 import CatchTheMob
 import CliffWalking
 import DefaultFlatWorld
