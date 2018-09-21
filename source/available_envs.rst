@@ -46,7 +46,7 @@ Available Environments
           :align: center
     - **Find the goal!**
         
-        More Information : :meth:`marlo.envs.Basic.main`
+        More Information : :meth:`marlo.envs.FindTheGoal.main`
 
 
   * - ``MarLo-Attic-v0``
