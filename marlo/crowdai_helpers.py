@@ -119,3 +119,14 @@ class CrowdAiNotifier():
                     "r":reward
                 },
             blocking=False)
+    
+    @staticmethod
+    def _env_error(error_message):
+        CrowdAiNotifier._send_notification(
+            event_type=crowdai_events.CROWDAI_EVENT_ERROR,
+            message="execution_error",
+            payload={
+                    "event_type" : CrowdAIMarloEvents.EPISODE_ERROR,
+                    "error_message":error_message
+                },
+            blocking=False)

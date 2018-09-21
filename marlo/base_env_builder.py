@@ -807,7 +807,7 @@ class MarloEnvBuilderBase(gym.Env):
                     _commands
                     ))
 
-    def step(self, action):
+    def step_wrapper(self, action):
         world_state = self.agent_host.peekWorldState()
         if world_state.is_mission_running:
             self._take_action(action)
@@ -865,6 +865,16 @@ class MarloEnvBuilderBase(gym.Env):
         marlo.CrowdAiNotifier._step_reward(reward)
 
         return image, reward, done, info
+
+    def step(self, action):
+        """
+            Helps wrap the actual step function to catch relevant errors
+        """
+        try:
+            return self.step_wrapper(action)
+        except Exception as e:
+            marlo.CrowdAiNotifier._env_error(str(e))
+            raise e
 
     def render(self, mode='rgb_array', close=False):
         if mode == "rgb_array":
