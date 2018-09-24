@@ -23,7 +23,7 @@ def get_join_tokens():
                                  params={
                                     "client_pool": client_pool
                                  })
-        return join_tokens
+    return join_tokens
 
 
 def run_episode():
@@ -31,12 +31,12 @@ def run_episode():
     Single episode run
     """
     join_tokens = get_join_tokens()
-    
+
     # As this is a single agent scenario,there will just be a single token
     assert len(join_tokens) == 1
     join_token = join_tokens[0]
-
-    # Initialize the environment
+    #
+    # # Initialize the environment
     env = marlo.init(join_token)
 
     # Get the first observation

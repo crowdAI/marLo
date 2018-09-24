@@ -384,7 +384,7 @@ class MarloEnvBuilderBase(gym.Env):
             
             :param params: Marlo Game Parameters as described in :meth:`default_base_params`
             :type params: dict
-        """                
+        """
         ############################################################
         # Setup Action Space
         ############################################################
@@ -861,8 +861,10 @@ class MarloEnvBuilderBase(gym.Env):
             info = {}
 
         # Notify evaluation system, if applicable
-        marlo.CrowdAiNotifier._env_action(action)
+        # marlo.CrowdAiNotifier._env_action(action)
         marlo.CrowdAiNotifier._step_reward(reward)
+        if done:
+            marlo.CrowdAiNotifier._episode_done()
 
         return image, reward, done, info
 

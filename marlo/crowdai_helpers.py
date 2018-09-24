@@ -9,7 +9,6 @@ crowdai_events = crowdai_api.events.CrowdAIEvents()
 
 class CrowdAIMarloEvents:
     REQUEST_ENV_JOIN_TOKENS="marlo.events.REQUEST_JOIN_TOKENS"
-    ENV_JOIN_TOKENS="marlo.events.JOIN_TOKENS"
     END_OF_GRADING="marlo.events.END_OF_GRADING"
 
     GAME_INIT="marlo.events.GAME_INIT"
@@ -18,9 +17,15 @@ class CrowdAIMarloEvents:
     STEP_REWARD="marlo.events.STEP_REWARD"
     
     EPISODE_PENDING="marlo.events.EPISODE_PENDING"
+    EPISODE_INITIATED="marlo.events.EPISODE_INITIATED"
     EPISODE_RUNNING="marlo.events.EPISODE_RUNNING"
-    EPISODE_COMPLETED="marlo.events.EPISODE_COMPLETED"
+    EPISODE_DONE="marlo.events.EPISODE_DONE" #Episode Complete
     EPISODE_ERROR="marlo.events.EPISODE_ERROR"
+    
+    EVALUATION_PENDING="marlo.events.EVALUATION_PENDING"
+    EVALUATION_RUNNING="marlo.events.EVALUATION_RUNNING"
+    EVALUATION_ERROR="marlo.events.EVALUATION_ERROR"
+    EVALUATION_COMPLETE="marlo.events.EVALUATION_COMPLETE"
 
 def is_grading():
     """Returns if the code is being executed inside the crowdAI evaluation 
@@ -44,9 +49,12 @@ def evaluator_join_token(params={}):
     crowdai_events = crowdai_api.CrowdAIEvents()
     # Request a list of JOIN_TOKENS
     response = crowdai_events.register_event(
-        event_type=CrowdAIMarloEvents.REQUEST_ENV_JOIN_TOKENS,
+        event_type=crowdai_events.CROWDAI_EVENT_INFO,
         message="",
-        payload={"params": params},
+        payload={
+            "event_type": CrowdAIMarloEvents.REQUEST_ENV_JOIN_TOKENS,
+            "params": params
+            },
         blocking=True
         )
     if not response:
@@ -120,6 +128,17 @@ class CrowdAiNotifier():
                     "r":reward
                 },
             blocking=False)
+
+    @staticmethod
+    def _episode_done():
+        CrowdAiNotifier._send_notification(
+            event_type=crowdai_events.CROWDAI_EVENT_INFO,
+            message="",
+            payload={
+                    "event_type" : CrowdAIMarloEvents.EPISODE_DONE,
+                },
+            blocking=False)
+
     
     @staticmethod
     def _env_error(error_message):
