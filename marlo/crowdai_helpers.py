@@ -26,7 +26,7 @@ def is_grading():
     """Returns if the code is being executed inside the crowdAI evaluation 
     system.
 
-    :returns: Boolean
+    :returns: bool
     """
     return os.getenv("CROWDAI_IS_GRADING", False)
 
@@ -62,9 +62,11 @@ def register_end_of_grading(crowdai_events):
     :type `crowdai_api.CrowdAIEvents` object
     """
     crowdai_events.register_event(
-        event_type=CrowdAIMarloEvents.END_OF_GRADING,
+        event_type=crowdai_events.CROWDAI_EVENT_INFO,
         message="",
-        payload={},
+        payload={
+            "event_type": CrowdAIMarloEvents.END_OF_GRADING
+        },
         blocking=True
         )
 
