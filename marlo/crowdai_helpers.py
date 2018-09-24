@@ -21,7 +21,7 @@ class CrowdAIMarloEvents:
     EPISODE_RUNNING="marlo.events.EPISODE_RUNNING"
     EPISODE_COMPLETED="marlo.events.EPISODE_COMPLETED"
     EPISODE_ERROR="marlo.events.EPISODE_ERROR"
-    
+
 def is_grading():
     """Returns if the code is being executed inside the crowdAI evaluation 
     system.
@@ -32,11 +32,11 @@ def is_grading():
 
 def evaluator_join_token(params={}):
     """Returns evaluator join tokens from the crowdAI evaluation system
-    
+
     :param params: a dictionary containing game params. Note that only a certain 
                 subset of params will be considered by the grader. TODO: Add list
     :type params: dict
-    
+
     :returns: a list of strings representing join tokens for all the agents 
               in a game; or marks the end of the evaluation
 
@@ -72,7 +72,7 @@ class CrowdAiNotifier():
     @staticmethod
     def _send_notification(event_type, message, payload={}, blocking=False):
         crowdai_events = crowdai_api.events.CrowdAIEvents()
-        default_payload = {"challenge_id": "NIPS18_AVC"}
+        default_payload = {"challenge_id": "MarLo"}
         default_payload.update(payload)
         crowdai_events.register_event(event_type, message, payload, blocking)
 
