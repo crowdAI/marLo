@@ -115,7 +115,12 @@ Simple Example
       print("done:", done)
       print("info", info)
   env.close()
-  
+ 
+Submission Instructions
+------------------------
+  Please follow the instructions in the Warm Up round starter kit : here_
+
+.. _here: https://github.com/crowdAI/marlo-single-agent-starter-kit/ 
 
 Authors
 ----------------
