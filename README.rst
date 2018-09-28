@@ -118,9 +118,9 @@ Simple Example
  
 Submission Instructions
 ------------------------
-  Please follow the instructions in the Warm Up round starter kit : here_
+  Please follow the instructions in the Warm Up round starter kit : `https://github.com/crowdAI/marlo-single-agent-starter-kit/`_
 
-.. _here: https://github.com/crowdAI/marlo-single-agent-starter-kit/ 
+.. _https://github.com/crowdAI/marlo-single-agent-starter-kit/: https://github.com/crowdAI/marlo-single-agent-starter-kit/ 
 
 Authors
 ----------------
