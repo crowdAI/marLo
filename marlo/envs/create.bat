@@ -1,0 +1,17 @@
+python make_env.py --name="MobchaseTrain1" --mission_file="C:\malmo\marlo\training\mobchase_missions_training\missions\1\mission_1.xml"
+python make_env.py --name="MobchaseTrain2" --mission_file="C:\malmo\marlo\training\mobchase_missions_training\missions\2\mission_2.xml"
+python make_env.py --name="MobchaseTrain3" --mission_file="C:\malmo\marlo\training\mobchase_missions_training\missions\3\mission_3.xml"
+python make_env.py --name="MobchaseTrain4" --mission_file="C:\malmo\marlo\training\mobchase_missions_training\missions\4\mission_4.xml"
+python make_env.py --name="MobchaseTrain5" --mission_file="C:\malmo\marlo\training\mobchase_missions_training\missions\5\mission_5.xml"
+
+python make_env.py --name="BuildbattleTrain1" --mission_file="C:\malmo\marlo\training\buildbattle_missions_training\buildbattle_missions\1\mission_1.xml"
+python make_env.py --name="BuildbattleTrain2" --mission_file="C:\malmo\marlo\training\buildbattle_missions_training\buildbattle_missions\2\mission_2.xml"
+python make_env.py --name="BuildbattleTrain3" --mission_file="C:\malmo\marlo\training\buildbattle_missions_training\buildbattle_missions\3\mission_3.xml"
+python make_env.py --name="BuildbattleTrain4" --mission_file="C:\malmo\marlo\training\buildbattle_missions_training\buildbattle_missions\4\mission_4.xml"
+python make_env.py --name="BuildbattleTrain5" --mission_file="C:\malmo\marlo\training\buildbattle_missions_training\buildbattle_missions\5\mission_5.xml"
+
+python make_env.py --name="TreasurehuntTrain1" --mission_file="C:\malmo\marlo\training\treasurehunt_missions_training\treasurehunt_missions\1\mission_1.xml"
+python make_env.py --name="TreasurehuntTrain2" --mission_file="C:\malmo\marlo\training\treasurehunt_missions_training\treasurehunt_missions\2\mission_2.xml"
+python make_env.py --name="TreasurehuntTrain3" --mission_file="C:\malmo\marlo\training\treasurehunt_missions_training\treasurehunt_missions\3\mission_3.xml"
+python make_env.py --name="TreasurehuntTrain4" --mission_file="C:\malmo\marlo\training\treasurehunt_missions_training\treasurehunt_missions\4\mission_4.xml"
+python make_env.py --name="TreasurehuntTrain5" --mission_file="C:\malmo\marlo\training\treasurehunt_missions_training\treasurehunt_missions\5\mission_5.xml"
