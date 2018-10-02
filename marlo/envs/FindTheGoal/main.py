@@ -10,8 +10,23 @@ from pathlib import Path
 
 class MarloEnvBuilder(MarloEnvBuilderBase):
     """
-    TODO: Add Env Description Here
-    """    
+    Description: 
+        The goal of this mission is for one or two agent(s) (depending on
+		the playmode) to find the gold/diamond/redstone block inside an 
+		otherwise empty room.
+        
+    Actions available:
+        Jump
+		Move
+		Turn
+        
+    Rewards:
+		-0.01 points for each command sent
+		-0.1 points for running out of time
+        -1 points for each death
+        0.5 points for finding the gold/diamond/redstone block
+    """
+	
     def __init__(self, extra_params={}):
         super(MarloEnvBuilder, self).__init__(
                 templates_folder = os.path.join(
