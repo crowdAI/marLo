@@ -2,6 +2,7 @@
 import time
 import json
 import gym
+import gym.spaces
 import numpy as np
 import marlo
 from marlo import MalmoPython
