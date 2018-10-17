@@ -8,7 +8,7 @@ parser = argparse.ArgumentParser(description='Make a Marlo Env')
 
 parser.add_argument('--name', type=str, required=True, help='the environment name')
 parser.add_argument('--mission_file', type=str, required=True, help='the mission file')
-parser.add_argument('--description', type=str, default="", help='a brief description of the env')
+parser.add_argument('--description', type=str, default=None, help='a brief description of the env')
 args = parser.parse_args()
 
 print("Make env " + args.name)
@@ -28,6 +28,14 @@ if not mission_file.exists():
 
 shutil.copy(args.mission_file, templates_dir + "\\mission.xml")
 
+if args.description is None:
+    description = ""
+else:
+    desciption_file = Path(args.description)
+    if not desciption_file.exists():
+        print("description file does not exist")
+        exit(-2)
+    description = desciption_file.read_text()
 
 init_py = """
 import gym
@@ -57,9 +65,11 @@ from pathlib import Path
 class MarloEnvBuilder(MarloEnvBuilderBase):
     %ENV_DESCRIPTION%
     
-    def __init__(self, extra_params={}):
+    def __init__(self, extra_params=None):
+        if extra_params is None:
+            extra_params={}
         super(MarloEnvBuilder, self).__init__(
-                templates_folder = os.path.join(
+                templates_folder=os.path.join(
                             str(Path(__file__).parent),
                             "templates"
                 )
@@ -71,13 +81,14 @@ class MarloEnvBuilder(MarloEnvBuilderBase):
         _default_params = super(MarloEnvBuilder, self).default_base_params
         return _default_params
 
+
 if __name__ == "__main__":
     env_builder = MarloEnvBuilder()
     mission_xml = env_builder.render_mission_spec()
     mission_spec = MalmoPython.MissionSpec(mission_xml, True)
     print(mission_spec.getSummary())
 
-""".replace('%ENV_DESCRIPTION%', '"""' + args.description + '"""')
+""".replace('%ENV_DESCRIPTION%', '"""' + description + '"""')
 
 main_file = env_dir + "/main.py"
 Path(main_file).write_text(main_py)

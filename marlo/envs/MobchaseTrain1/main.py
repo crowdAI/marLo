@@ -6,11 +6,14 @@ from pathlib import Path
 
 
 class MarloEnvBuilder(MarloEnvBuilderBase):
-    """"""
+    """Chase the Mobs
+"""
     
-    def __init__(self, extra_params={}):
+    def __init__(self, extra_params=None):
+        if extra_params is None:
+            extra_params={}
         super(MarloEnvBuilder, self).__init__(
-                templates_folder = os.path.join(
+                templates_folder=os.path.join(
                             str(Path(__file__).parent),
                             "templates"
                 )
@@ -21,6 +24,7 @@ class MarloEnvBuilder(MarloEnvBuilderBase):
     def _default_params(self):
         _default_params = super(MarloEnvBuilder, self).default_base_params
         return _default_params
+
 
 if __name__ == "__main__":
     env_builder = MarloEnvBuilder()
