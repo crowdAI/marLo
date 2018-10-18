@@ -29,20 +29,19 @@ The game is inspired by the variant of the _stag hunt_ presented in [Yoshida et 
 
 ## Parameters varied for tasks
 
-* Time
-* Weather
-* Number of players (2)
-* Number of mobs
-* Number of exits
-* Number of obstacles
-* Mob type
-* Exit block type
-* Edge block type (fences)
-* Ground block type
-* Size of play area
-* Number of maximum steps allowed
+* time = [0, 3000, 6000]
+* mob_types = ['Pig', 'Cow', 'Chicken']
+* exit_blocks = ['diamond_block', 'brick_block', 'purpur_block', 'bone_block', 'emerald_block']
+* edge_blocks = ['fence', 'spruce_fence', 'jungle_fence', 'dark_oak_fence']
+* edge_ground = ['sand', 'clay', 'water']
+* mob_count = [1, 2]
+* grid_size = [9, 11]
+* exit_block_counts = [2, 3, 4]
+* obstacle_counts = [2, 4, 6]
 
-Game space size: 1.94E+5
+Game design space size: 1.94E+4
+
+
 """
     
     def __init__(self, extra_params=None):
