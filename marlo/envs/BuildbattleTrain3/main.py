@@ -24,15 +24,15 @@ Collaborative/Competitive. Two teams of agents compete to build a given cuboid s
 
 ## Parameters varied for tasks
 
-* Number of players on each team.
-* Cuboid structure dimensions
-* Time limit (per block missing from player structure)
-* Structure block type
-* Room block type (walls, floor, ceiling)
-* Distance between player and target structures
-* Percentage built for player structure 
+* block_types = ['lapis_block', 'diamond_block', 'brick_block', 'coal_block', 'purpur_block', 'stone']
+* cuboid_dimension_x = [1, 2, 3]
+* cuboid_dimension_y = [1, 2, 3]
+* cuboid_dimension_z = [1, 2, 3]
+* distance_structures_x = [3, 4]
+* distance_structures_z = [0, 1, 2]
+* percent_structure_built = [20 - 80] (min. 1 built + 1 missing)
 
-Game space size: 2.30E+4
+Game design space size: 1.73E+4
 """
     
     def __init__(self, extra_params=None):

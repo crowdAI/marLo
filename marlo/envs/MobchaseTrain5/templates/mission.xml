@@ -346,6 +346,10 @@
                         
 			</RewardForTouchingBlockType>
 			
+			<RewardForCatchingMob>
+                <Mob type="Cow" reward="1" distribution="Agent0:1 Agent1:1" oneshot="true" global="true"/>
+            </RewardForCatchingMob>
+			
                         
 			<AgentQuitFromReachingCommandQuota description="command_quota_reached" total="50"/>
 			

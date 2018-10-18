@@ -7,7 +7,7 @@ from pathlib import Path
 
 class MarloEnvBuilder(MarloEnvBuilderBase):
     """
-# Treasure Hunt
+# Treasure Hunt (provisional)
 
 ## Overview of the game 
 
@@ -23,16 +23,19 @@ Collaborative/Competitive. In an underground dungeon crawling with dangerous ene
 
 ## Parameters varied for tasks
 
-* Number of enemy entities
-* Exit block type
-* Treasure & Obstacles (jumps and gaps) block type & count
-* Level of protection (armour) for protective players
-* Sword & Armour material
-* Size of play area
-* Number of rooms in dungeon & Distance between rooms
-* Time limit 
+* treasure_blocks = ['diamond', 'iron_ingot', 'golden_apple', 'emerald', 'quartz']
+* treasure_count = [1, 2]
+* sword_material = ['iron', 'golden', 'stone', 'diamond', 'wooden']
+* armour_material = ['leather', 'diamond', 'golden']
+* armour_pieces = ['helmet', 'chestplate', 'leggings', 'boots']
+* protection_level = [0, 1, 2, 3, 4]
+* exit_blocks = ['sand', 'dirt', 'coal_block', 'bone_block']
+* gap_blocks = ['water', 'lava', 'air']
+* width = [7, 8, 9]
+* length = [7, 8, 9]
+* mob_count = [0, 1]
 
-Game space size: 4.86E+7 
+Game design space size: 1.17E+7
 """
     
     def __init__(self, extra_params=None):
