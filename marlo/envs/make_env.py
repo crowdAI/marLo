@@ -88,7 +88,7 @@ if __name__ == "__main__":
     mission_spec = MalmoPython.MissionSpec(mission_xml, True)
     print(mission_spec.getSummary())
 
-""".replace('%ENV_DESCRIPTION%', '"""' + description + '"""')
+""".replace('%ENV_DESCRIPTION%', '"""\n' + description + '"""')
 
 main_file = env_dir + "/main.py"
 Path(main_file).write_text(main_py)

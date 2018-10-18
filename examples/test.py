@@ -5,9 +5,12 @@ import base64
 
 import argparse
 
+print("testing 123")
+
 parser = argparse.ArgumentParser(description='test marlo comp xml')
 parser.add_argument('--mission', type=str, required=True, help='the mission')
 args = parser.parse_args()
+
 
 client_pool = [('127.0.0.1', 10000),('127.0.0.1', 10001)]
 join_tokens = marlo.make('MarLo-' + args.mission + '-v0',
