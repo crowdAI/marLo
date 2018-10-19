@@ -30,25 +30,32 @@ all_join_tokens = [marlo.make('MarLo-' + mission + '-v0',
 
 
 @marlo.threaded
-def run_agent(token):
+def run_agent(token, agent_role):
     env = marlo.init(token)
     env.reset()
     done = False
     while not done:
-        _action = env.action_space.sample()
+        if agent_role == 0:
+            # TODO YOUR AGENT HERE
+            _action = env.action_space.sample()
+        else:
+            # TODO OTHER AGENT HERE
+            _action = env.action_space.sample()
         obs, reward, done, info = env.step(_action)
         time.sleep(0.05)
-        # print("reward:", reward)
-        # print("done:", done)
-        # print("info", info)
+        print("Agent " + str(agent_role) + " reward:", reward)
+        # print("Agent " + str(agent_role) + " obs:", str(obs))
+        # print("Agent " + str(agent_role) + " done:", done)
+        # print("Agent " + str(agent_role) + " info", info)
     env.close()
 
 
 episodes = 0
 while episodes < args.episodes:
     episodes += 1
+    print("run " + str(episodes))
     join_tokens = random.choice(all_join_tokens)
-    threads = [run_agent(join_token)[0] for join_token in join_tokens]
+    threads = [run_agent(join_token, i)[0] for i, join_token in enumerate(join_tokens)]
     [t.join() for t in threads]
 
 
