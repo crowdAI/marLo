@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='marlo',
-      version='0.0.1dev16',
+      version='0.0.1dev17',
       description='Marlo',
       url='https://github.com/crowdAI/marlo',
       author='S.P. Mohanty',
