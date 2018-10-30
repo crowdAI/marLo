@@ -118,6 +118,7 @@ Simple Example
  
 Submission Instructions
 ------------------------
+
   Please follow the instructions in the Warm Up round starter kit : `https://github.com/crowdAI/marlo-multi-agent-starter-kit`_
 
 .. _https://github.com/crowdAI/marlo-multi-agent-starter-kit: https://github.com/crowdAI/marlo-multi-agent-starter-kit

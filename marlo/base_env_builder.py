@@ -791,7 +791,7 @@ class MarloEnvBuilderBase(gym.Env):
 
             if isinstance(_spaces, gym.spaces.Discrete):
                 logger.debug(_commands[_actions])
-                # print("cmd " + cmds[acts])
+                _actions = _actions % len(_commands)
                 self.send_command(_commands[_actions])
             elif isinstance(_spaces, gym.spaces.Box):
                 for command, value in zip(_commands, _actions):
