@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='marlo',
-      version='0.0.1dev16',
+      version='0.0.1dev19',
       description='Marlo',
       url='https://github.com/crowdAI/marlo',
       author='S.P. Mohanty',
@@ -12,6 +12,6 @@ setup(name='marlo',
         '':['envs/*/templates/*.xml']
       },
       zip_safe=False,
-      install_requires=['gym', 'jinja2', 'lxml', 'crowdai_api'],
+      install_requires=['gym', 'jinja2', 'lxml', 'crowdai_api>=0.1.18'],
       dependency_links=[]
 )
