@@ -46,6 +46,12 @@ def register_environments(MARLO_ENV_PATHS):
                 module._register()
                 logger.debug("Creating envs from : {}".format(_marlo_env_dir))
 
+
+class ExceptionHolder:
+    def __init__(self, exn):
+        self.exception = exn
+
+
 def threaded(fn):
     """Implements the ``@marlo.threaded`` decorator to help easily run functions in a 
     separate thread. Useful in multiagent scenarios when we want to run 
@@ -74,7 +80,10 @@ def threaded(fn):
     :returns thread_handler to join the threads if required
     """
     def wrap(queue, *args, **kwargs):
-        queue.put(fn(*args, **kwargs))
+        try:
+            queue.put(fn(*args, **kwargs))
+        except Exception as e:
+            queue.put(ExceptionHolder(e))
 
     def call(*args, **kwargs):
         queue = Queue()
