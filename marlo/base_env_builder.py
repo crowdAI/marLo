@@ -222,7 +222,7 @@ class MarloEnvBuilderBase(gym.Env):
             :param turn_based: Specifies if the current game is a turn based game. (Default : ``False``)
             :type turn_based: bool
 
-            :param comp_all_commands: Specifies the superset of allowed commands in Marlo competition. (Default : ``['move', "turn", "use", "attack"]``)
+            :param comp_all_commands: Specifies the superset of allowed commands in Marlo competition. (Default : ``['move', "turn", "use", "attack", "look"]``)
             :type comp_all_commands: list of strings
 
             :param suppress_info: Supresses extra game params in the info response. The grader will always have this as ``True``. (Default: ``True``)
@@ -268,7 +268,7 @@ class MarloEnvBuilderBase(gym.Env):
                  gameMode="survival",
                  forceWorldReset=True,
                  turn_based=False,
-                 comp_all_commands=['move', "turn", "use", "attack"],  # Override to specify the full set of allowed competition commands.
+                 comp_all_commands=['move', "turn", "use", "attack", "look"],  # Override to specify the full set of allowed competition commands.
                  suppress_info=True,
                  kill_clients_after_num_rounds=250,
                  kill_clients_retry=0
@@ -402,7 +402,7 @@ class MarloEnvBuilderBase(gym.Env):
         # print(mission_xml)
         parser = marlo.commands.CommandParser(params.comp_all_commands)
         commands = parser.get_commands(mission_xml, params.role)
-
+        # print(commands)
         for (command_handler, turnbased, command) in commands:
             logger.debug("CommandHandler: {} turn based: {} command: {} ".format(command_handler, turnbased, command))
             if turnbased and not self.params.turn_based:
