@@ -46,6 +46,12 @@ def register_environments(MARLO_ENV_PATHS):
                 module._register()
                 logger.debug("Creating envs from : {}".format(_marlo_env_dir))
 
+
+class ExceptionHolder:
+    def __init__(self, exn):
+        self.exception = exn
+
+
 def threaded(fn):
     """Implements the ``@marlo.threaded`` decorator to help easily run functions in a 
     separate thread. Useful in multiagent scenarios when we want to run 
@@ -74,7 +80,11 @@ def threaded(fn):
     :returns thread_handler to join the threads if required
     """
     def wrap(queue, *args, **kwargs):
-        queue.put(fn(*args, **kwargs))
+        try:
+            queue.put(fn(*args, **kwargs))
+        except Exception as e:
+            print("Exception in threaded function: " + str(e))
+            queue.put(ExceptionHolder(e))
 
     def call(*args, **kwargs):
         queue = Queue()
@@ -83,6 +93,25 @@ def threaded(fn):
         return job, queue
 
     return call
+
+
+def check_for_exceptions(thread_handlers):
+    for thread, queue in thread_handlers:
+        if not thread.is_alive() and not queue.empty():
+            result = queue.get()
+            if isinstance(result, marlo.utils.ExceptionHolder):
+                raise result.exception
+
+
+def join_all(thread_handlers):
+    for thread_handler in thread_handlers:
+        t, q = thread_handler
+        while t.is_alive():
+            marlo.utils.check_for_exceptions(thread_handlers)
+            t.join(1)
+
+    marlo.utils.check_for_exceptions(thread_handlers)
+
 
 def find_free_port():
     """Find a random free port where a Minecraft Client can possibly be launched.
@@ -93,6 +122,7 @@ def find_free_port():
     with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as s:
         s.bind(('', 0))
         return s.getsockname()[1]
+
 
 def launch_clients(number_of_clients, replaceable=False):
     """Launches a series of Minecraft Client which can be used by 
