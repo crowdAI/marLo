@@ -12,6 +12,7 @@ from queue import Queue
 
 import socket
 from contextlib import closing
+import time
 
 from marlo.launch_minecraft_in_background import launch_minecraft_in_background
 
@@ -83,8 +84,9 @@ def threaded(fn):
         try:
             queue.put(fn(*args, **kwargs))
         except Exception as e:
+            print("Exception in threaded function: " + str(e))
             queue.put(ExceptionHolder(e))
-
+          
     def call(*args, **kwargs):
         queue = Queue()
         job = Thread(target=wrap, args=(queue,) + args, kwargs=kwargs)
@@ -92,6 +94,25 @@ def threaded(fn):
         return job, queue
 
     return call
+
+
+def check_for_exceptions(thread_handlers):
+    for thread, queue in thread_handlers:
+        if not thread.is_alive() and not queue.empty():
+            result = queue.get()
+            if isinstance(result, marlo.utils.ExceptionHolder):
+                raise result.exception
+
+
+def join_all(thread_handlers):
+    for thread_handler in thread_handlers:
+        t, q = thread_handler
+        while t.is_alive():
+            marlo.utils.check_for_exceptions(thread_handlers)
+            t.join(1)
+
+    marlo.utils.check_for_exceptions(thread_handlers)
+
 
 def find_free_port():
     """Find a random free port where a Minecraft Client can possibly be launched.
@@ -102,6 +123,7 @@ def find_free_port():
     with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as s:
         s.bind(('', 0))
         return s.getsockname()[1]
+
 
 def launch_clients(number_of_clients, replaceable=False):
     """Launches a series of Minecraft Client which can be used by 
