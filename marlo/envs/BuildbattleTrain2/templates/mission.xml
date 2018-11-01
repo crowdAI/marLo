@@ -121,7 +121,7 @@
 		<AgentStart>
 			
                     
-			<Placement x="2" y="6" z="-1"/>
+			<Placement x="2.5" y="6" z="-1.5"/>
 			
                         
 			<Inventory>
@@ -200,7 +200,7 @@
 		<AgentStart>
 			
                     
-			<Placement x="1" y="6" z="-1"/>
+			<Placement x="1.5" y="6" z="-1.5"/>
 			
                         
 			<Inventory>
