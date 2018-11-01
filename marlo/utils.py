@@ -12,7 +12,6 @@ from queue import Queue
 
 import socket
 from contextlib import closing
-import time
 
 from marlo.launch_minecraft_in_background import launch_minecraft_in_background
 
@@ -86,7 +85,7 @@ def threaded(fn):
         except Exception as e:
             print("Exception in threaded function: " + str(e))
             queue.put(ExceptionHolder(e))
-          
+
     def call(*args, **kwargs):
         queue = Queue()
         job = Thread(target=wrap, args=(queue,) + args, kwargs=kwargs)
