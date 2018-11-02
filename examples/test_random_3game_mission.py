@@ -24,8 +24,7 @@ all_join_tokens = [marlo.make('MarLo-' + mission + '-v0',
                                       [
                                           "MarLo-Agent-0",
                                           "MarLo-Agent-1"
-                                      ],
-                                  "comp_all_commands": ["move", "turn", "use"]
+                                      ]
                               }) for mission in missions]
 
 
