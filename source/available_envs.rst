@@ -96,5 +96,26 @@ Available Environments
         .. figure:: https://media.giphy.com/media/ZcaMeSnzLrMY1NWM7f/giphy.gif
           :align: center
     - **Find the goal! Without a lift...**
-        
+
         More Information : :meth:`marlo.envs.Vertical.main`
+        
+  * - ``MarLo-MobchaseTrainX-v0``
+        .. figure:: https://preview.ibb.co/iHKxL0/mobchase.png
+          :align: center
+    - **Help catch the Mob!MarLo multi-agent missions MobchaseTrain1 to MobchaseTrain5.**
+
+        More Information : :meth:`marlo.envs.MobchaseTrain1.main`
+
+  * - ``MarLo-BuildbattleTrainX-v0``
+        .. figure:: https://preview.ibb.co/gb87L0/buildbattle.png
+          :align: center
+    - **Let's build battle! MarLo multi-agent missions BuildbattleTrain1 to BuildbattleTrain5.** 
+
+        More Information : :meth:`marlo.envs.BuildbattleTrain1.main`
+
+  * - ``MarLo-TreasurehuntTrainX-v0``
+        .. figure:: https://preview.ibb.co/gVroSf/treasurehunt.png
+          :align: center
+    - **Treasure hunting we go! MarLo multi-agent missions TreasurehuntTrain1 to TreasurehuntTrain5.**
+
+        More Information : :meth:`marlo.envs.TreasurehuntTrain1.main`
