@@ -16,6 +16,23 @@ from chainerrl.misc.ask_yes_no import ask_yes_no
 from chainerrl.misc.makedirs import makedirs
 
 
+# By default all experiment logging is relative to the current directory. Change with set_log_base_dir.
+_log_dir = "."
+
+
+def set_log_base_dir(log_dir):
+    """Change the default directory for experiment logs & results."""
+    global _log_dir
+    if log_dir != '' and not log_dir.endswith('/'):
+        _log_dir = log_dir + '/'
+    else:
+        _log_dir = log_dir
+
+
+def get_log_base_dir():
+    return _log_dir
+
+
 def save_agent_replay_buffer(agent, t, outdir, suffix='', logger=None):
     logger = logger or logging.getLogger(__name__)
     filename = os.path.join(outdir, '{}{}.replay.pkl'.format(t, suffix))
