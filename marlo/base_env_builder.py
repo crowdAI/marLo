@@ -574,7 +574,7 @@ class MarloEnvBuilderBase(gym.Env):
                 e = e.find(ns + "AgentHandlers")
                 vp = e.find(ns + "VideoProducer")
                 if vp is None:
-                    vp = etree.Element(ns + "VideoProducer")
+                    vp = ElementTree.Element(ns + "VideoProducer")
                     e.append(vp)
                 w = vp.find(ns + "Width")
                 w.text = str(params.videoResolution[0] if params.videoResolution else '800')
