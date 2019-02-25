@@ -75,6 +75,11 @@ The framework is written as an extension to `OpenAI's Gym framework <https://git
     - 
 
 
+Please consider citing the following paper if you find this work useful : 
+
+Diego Perez-Liebana, Katja Hofmann, Sharada Prasanna Mohanty, Noburu Kuno, Andre Kramer, Sam Devlin, Raluca D. Gaina
+**“The Multi-Agent Reinforcement Learning in MalmÖ (MARLÖ) Competition”, 2019, Challenges in Machine Learning (NIPS Workshop), 2018**; _`<http://arxiv.org/abs/1901.08129>`.
+
 Contents
 ----------------
 - `Installation <https://marlo.readthedocs.io/en/latest/installation.html>`_
@@ -126,3 +131,4 @@ Submission Instructions
 Authors
 ----------------
 - `Sharada Mohanty <https://twitter.com/MeMohanty>`_
+
