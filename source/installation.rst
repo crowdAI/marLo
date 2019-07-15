@@ -30,8 +30,7 @@ Alternate Approach
   In order to install Malmo using PyPi, you should:
   
   Install the malmo Python wheel:
-  
-  .. code-block:: bash
+    .. code-block:: bash
 
       pip3 install malmo
   
