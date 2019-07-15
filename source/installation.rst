@@ -29,6 +29,12 @@ Alternate Approach
   The following section requires you to install the Malmo mod separately via either the PyPi wheel or the latest docker image.
   In order to install Malmo using PyPi, you should:
   
+  Install the malmo Python wheel:
+  
+  .. code-block:: bash
+
+      pip3 install malmo
+  
   Download Malmo into a “MalmoPlatform” directory/folder in your current directory/folder (uses Git)
     .. code-block:: bash
 
@@ -48,7 +54,6 @@ Alternate Approach
   
   .. code-block:: bash
 
-    pip3 install -U malmo
     pip3 install -U marlo
     # Test installation by :
     python3 -c "import marlo"
