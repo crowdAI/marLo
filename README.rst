@@ -10,7 +10,9 @@ MarLÖ : Reinforcement Learning + Minecraft = Awesomeness
 The `Malmo platform <https://github.com/Microsoft/malmo>`_ provides an API which enables access to actions, observations (i.e. location, surroundings, video frames, game statistics) and other general data that Minecraft provides. Marlo, on the other hand, is a wrapper for Malmo that provides a higher level API and more standardized RL-friendly environment for scientific study.
 
 The framework is written as an extension to `OpenAI's Gym framework <https://github.com/openai/gym>`_
-, which is a toolkit for developing and comparing reinforcement learning algorithms, thus providing an industry-standard and familiar platform for scientists, developers and popular RL frameworks.
+, which is a toolkit for developing and comparing reinforcement learning algorithms, thus providing an industry-standard and familiar platform for scientists, developers and popular RL frameworks. 
+
+The framework was used in the `2018 MarLo Challenge <https://www.crowdai.org/challenges/marlo-2018>`_.
 
 .. list-table::
   :header-rows: 0
@@ -85,7 +87,6 @@ Contents
 - `Installation <https://marlo.readthedocs.io/en/latest/installation.html>`_
 - `Usage <https://marlo.readthedocs.io/en/latest/usage.html>`_
 - `Available Environments <https://marlo.readthedocs.io/en/latest/available_envs.html>`_
-- `Submission Instructions <https://marlo.readthedocs.io/en/latest/submit.html>`_
 - `Development <https://marlo.readthedocs.io/en/latest/development.html>`_
 
 Simple Example
@@ -121,13 +122,6 @@ Simple Example
       print("info", info)
   env.close()
  
-Submission Instructions
-------------------------
-
-  Please follow the instructions in the Warm Up round starter kit : `https://github.com/crowdAI/marlo-multi-agent-starter-kit`_
-
-.. _https://github.com/crowdAI/marlo-multi-agent-starter-kit: https://github.com/crowdAI/marlo-multi-agent-starter-kit
-
 Authors
 ----------------
 - `Sharada Mohanty <https://twitter.com/MeMohanty>`_
