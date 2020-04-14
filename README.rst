@@ -6,7 +6,7 @@ MarLÖ : Reinforcement Learning + Minecraft = Awesomeness
 .. image:: https://readthedocs.org/projects/marlo/badge/
 
 
-**YOU-NEED-TO-READ-THIS** : We are actively looking for maintainers of this library. If you are interested in helping maintain this library, please drop in a line [here](https://twitter.com/MeMohanty/) :smile:
+**YOU-NEED-TO-READ-THIS** : We are actively looking for **maintainers** for this library. If you are interested in helping maintain this library, please drop in a line [here](https://twitter.com/MeMohanty/) :smile:
 
 **MarLÖ** (short for Multi-Agent Reinforcement Learning in MalmÖ) is a high level API built on top of `Project MalmÖ <https://github.com/Microsoft/malmo>`_ to facilitate Reinforcement Learning experiments with a great degree of generalizability, capable of solving problems in pseudo-random, procedurally changing single and multi agent environments withing the world of the mediatic phenomenon game `Minecraft <https://en.wikipedia.org/wiki/Minecraft>`_ .
 
