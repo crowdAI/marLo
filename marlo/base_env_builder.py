@@ -577,8 +577,14 @@ class MarloEnvBuilderBase(gym.Env):
                     vp = ElementTree.Element(ns + "VideoProducer")
                     e.append(vp)
                 w = vp.find(ns + "Width")
+                if w is None:
+                    w = ElementTree.Element(ns + "Width")
+                    vp.append(w)
                 w.text = str(params.videoResolution[0] if params.videoResolution else '800')
                 h = vp.find(ns + "Height")
+                if h is None:
+                    h = ElementTree.Element(ns + "Height")
+                    vp.append(h)
                 h.text = str(params.videoResolution[1] if params.videoResolution else '600')
                 if params.videoWithDepth is not None:
                     vp.attrib['want_depth'] = 'true' if params.videoWithDepth else 'false'
